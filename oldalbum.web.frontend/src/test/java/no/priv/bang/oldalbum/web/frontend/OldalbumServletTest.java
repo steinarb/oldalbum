@@ -406,7 +406,7 @@ class OldalbumServletTest {
 
         assertEquals(SC_NOT_FOUND, response.getStatusCode());
         assertEquals("text/html", response.getContentType());
-        assertThat(response.getOutputStreamContent()).contains("bundle.js");
+        assertThat(response.getOutputStreamContent()).contains("index.js");
     }
 
     @Test
