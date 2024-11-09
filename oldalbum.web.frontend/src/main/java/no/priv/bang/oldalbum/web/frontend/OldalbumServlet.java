@@ -250,7 +250,7 @@ public class OldalbumServlet extends FrontendServlet {
         if (entryIsPictureOrAlbumWithPictures(entry)) {
             navigationLinks.appendChild(new Element("li").appendChild(downloadLink(entry, locale, servletContextPath)));
         }
-        navigationLinks.appendChild(new Element("li").appendChild(settingsLink(request, servletContextPath)));
+        navigationLinks.appendChild(new Element("li").appendChild(settingsLink(request, servletContextPath, isLoggedIn)));
         navigationLinks.appendChild(new Element("li").attr(CLASS, "float-right").appendChild(loginLink(request, locale, entry)));
         return new Element("nav").attr(CLASS, "image-navbar").appendChild(navigationLinks);
     }
@@ -264,7 +264,11 @@ public class OldalbumServlet extends FrontendServlet {
             .appendText(label);
     }
 
-    Element settingsLink(HttpServletRequest request, String servletContextPath) {
+    Element settingsLink(HttpServletRequest request, String servletContextPath, boolean isLoggedIn) {
+        if (!isLoggedIn) {
+            return new Element("span");
+        }
+        
         var originalUrl = urlEncode(request.getRequestURL().toString());
         var settingsUrl = UriBuilder.fromPath(servletContextPath + "/pages/settings").queryParam("originalUri", originalUrl).build().toASCIIString();
         return new Element("a").attr("href", settingsUrl).appendText("Settings");
