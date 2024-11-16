@@ -13,4 +13,4 @@ User-Agent: *
 Crawl-Delay: 10
 Disallow: /auth/
 Disallow: /pages/settings/
-Disallow: /api/image/download/
+Disallow: /api/
