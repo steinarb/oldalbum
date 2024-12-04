@@ -79,7 +79,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -102,7 +102,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -125,7 +125,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -145,7 +145,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setConnectionFactory(connectionFactory);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -159,7 +159,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -173,7 +173,7 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     @Test
@@ -183,7 +183,7 @@ class OldAlbumUrlInitDatabaseTest {
         var component = new OldAlbumUrlInitDatabase();
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, () -> component.activate());
+        assertThrows(OldAlbumException.class, component::activate);
     }
 
     private void addSchemaToDatasource(DataSource datasource, MockLogService logservice) throws SQLException {
