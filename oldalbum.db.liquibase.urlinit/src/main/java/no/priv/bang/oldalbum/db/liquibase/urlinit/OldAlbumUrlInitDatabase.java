@@ -19,7 +19,8 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
@@ -93,6 +94,9 @@ public class OldAlbumUrlInitDatabase {
             } catch (IOException e) {
                 var message = String.format("Failed to load oldalbum database content because loading from %s failed", databaseContentUrl);
                 throw new OldAlbumException(message, e);
+            } catch (URISyntaxException e) {
+                var message = String.format("Parse error for oldalbum database content URL %s", databaseContentUrl);
+                throw new OldAlbumException(message, e);
             }
         } else {
             throw new OldAlbumException("Failed to load oldalbum database content because DATABASE_CONTENT_URL wasn't set");
@@ -143,11 +147,11 @@ public class OldAlbumUrlInitDatabase {
         if (connectionFactory == null) {
             connectionFactory = new HttpConnectionFactory() {
 
-                    @Override
-                    public HttpURLConnection connect(String url) throws IOException {
-                        return (HttpURLConnection) new URL(url).openConnection();
-                    }
-                };
+                @Override
+                public HttpURLConnection connect(String url) throws IOException, URISyntaxException {
+                    return (HttpURLConnection) new URI(url).toURL().openConnection();
+                }
+            };
         }
         return connectionFactory;
     }

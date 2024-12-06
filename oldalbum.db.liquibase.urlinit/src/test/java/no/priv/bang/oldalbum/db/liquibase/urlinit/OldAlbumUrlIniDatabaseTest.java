@@ -15,9 +15,11 @@
  */
 package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.io.IOException;
 import java.net.HttpURLConnection;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -149,8 +151,22 @@ class OldAlbumUrlInitDatabaseTest {
     }
 
     @Test
+    void testInsertDataWithHTTPConnectionIOException() throws Exception {
+        var sqlUrl = "https://gist.githubusercontent.com/steinarb/8a1de4e37f82d4d5eeb97778b0c8d459/raw/6cddf18f12e98d704e85af6264d81867f68a097c/dumproutes.sql";
+        var environment = mock(Environment.class);
+        when(environment.getEnv(anyString())).thenReturn(sqlUrl);
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        when(connectionFactory.connect(anyString())).thenThrow(IOException.class);
+        var component = new OldAlbumUrlInitDatabase();
+        component.setEnvironment(environment);
+        component.setConnectionFactory(connectionFactory);
+        var e = assertThrows(OldAlbumException.class, component::activate);
+        assertThat(e.getMessage()).startsWith("Failed to load oldalbum database content because loading from");
+    }
+
+    @Test
     void testInsertDataWithMalformedUrl() throws Exception {
-        var sqlUrl = "xxx";
+        var sqlUrl = "https://%&xxx";
         var environment = mock(Environment.class);
         when(environment.getEnv(anyString())).thenReturn(sqlUrl);
         var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
@@ -159,7 +175,8 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, component::activate);
+        var e = assertThrows(OldAlbumException.class, component::activate);
+        assertThat(e.getMessage()).startsWith("Parse error for oldalbum database content URL");
     }
 
     @Test
@@ -173,7 +190,8 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
-        assertThrows(OldAlbumException.class, component::activate);
+        var e = assertThrows(OldAlbumException.class, component::activate);
+        assertThat(e.getMessage()).startsWith("Failed to load oldalbum database content because HTTP statuscode of").endsWith("404");
     }
 
     @Test

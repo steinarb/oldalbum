@@ -1436,6 +1436,14 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testDownloadImageUrlToTempFileWithUnparsableImageUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var albumEntry = AlbumEntry.with().imageUrl("https://&%www.bang.priv.no/sb/pics/moto/places/notfound.jpg").build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.downloadImageUrlAndStreamImageWithModifiedMetadata(albumEntry));
+        assertThat(e.getMessage()).startsWith("Unable to parse download album entry url");
+    }
+
+    @Test
     void testFindMarkerSequenceAndCreateIfNotFoundWithEmptyNodeList() {
         var provider = new OldAlbumServiceProvider();
         var root = new IIOMetadataNode("root");
@@ -1619,6 +1627,17 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadMetadataOnNonImageFileWithBrokenUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        assertThat(logservice.getLogmessages()).isEmpty();
+        provider.ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile("http://%&localhost/logback.xml", ImageMetadata.with());
+        assertThat(logservice.getLogmessages()).isNotEmpty().first().asString().startsWith("[DEBUG] Failed to parse URL for instaloader description file");
+    }
+
+    @Test
     void testReadMetadataOnNonImageFile() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
@@ -1654,6 +1673,17 @@ class OldAlbumServiceProviderTest {
         var imageUrl = "https://www.bang.priv.com/sb/pics/moto/places/gravva1.jpg";
         var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
         assertThat(e.getMessage()).startsWith("HTTP Connection error when reading metadata for");
+    }
+
+    @Test
+    void testReadImageMetadataWithBrokenUrl() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+
+        var imageUrl = "https://www.%&bang.priv.com/sb/pics/moto/places/gravva1.jpg";
+        var e = assertThrows(OldAlbumException.class, () -> provider.readMetadata(imageUrl));
+        assertThat(e.getMessage()).startsWith("URL parse error when reading metadata");
     }
 
     @Test
@@ -2111,6 +2141,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testBatchAddPicturesWithUrlParseException() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(1)
+            .batchAddUrl("http://%&lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .build();
+        var e = assertThrows(OldAlbumException.class, () -> provider.batchAddPictures(request));
+        assertThat(e.getMessage()).startsWith("Syntax error parsing URL");
+    }
+
+    @Test
     void testGetEntryWithSQLException() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
@@ -2456,7 +2503,7 @@ class OldAlbumServiceProviderTest {
         return null;
     }
 
-    HttpConnectionFactory mockHttpConnectionReturningClasspathResource(String classpathResource, long lastModifiedTime) throws IOException {
+    HttpConnectionFactory mockHttpConnectionReturningClasspathResource(String classpathResource, long lastModifiedTime) throws Exception {
         var connectionFactory = mock(HttpConnectionFactory.class);
         var inputstream = getClass().getClassLoader().getResourceAsStream(classpathResource);
         var connection = mock(HttpURLConnection.class);

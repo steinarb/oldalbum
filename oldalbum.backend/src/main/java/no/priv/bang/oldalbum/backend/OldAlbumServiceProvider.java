@@ -25,7 +25,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
-import java.net.URL;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.attribute.FileTime;
 import java.sql.Connection;
@@ -709,6 +710,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             }
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Unable to download album entry matching id=%d from url=\"%s\"", albumEntry.id(), albumEntry.imageUrl()), e);
+        } catch (URISyntaxException e) {
+            throw new OldAlbumException(String.format("Unable to parse download album entry url=\"%s\" matching id=%d", albumEntry.imageUrl(), albumEntry.id()), e);
         }
 
         return imageAndWriter;
@@ -854,6 +857,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 .build();
         } catch (IOException e) {
             throw new OldAlbumException(String.format("HTTP Connection error when reading metadata for %s", imageUrl), e);
+        } catch (URISyntaxException e) {
+            throw new OldAlbumException("URL parse error when reading metadata", e);
         }
     }
 
@@ -953,7 +958,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         };
     }
 
-    private void ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(
+    void ifDescriptionIsEmptyTryLookingForInstaloaderTxtDescriptionFile(
         String imageUrl,
         Builder metadataBuilder)
     {
@@ -967,6 +972,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             } catch (IOException e) {
                 logger.debug("Failed to load instaloader description file {}", descriptionTxtUrl);
+            } catch (URISyntaxException e) {
+                logger.debug("Failed to parse URL for instaloader description file {}", descriptionTxtUrl);
             }
         }
     }
@@ -1148,6 +1155,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             document.setBaseUri(request.batchAddUrl());
         } catch (IOException e) {
             throw new OldAlbumException(String.format("Got error parsing the content of URL: %s", request.batchAddUrl()), e);
+        } catch (URISyntaxException e) {
+            throw new OldAlbumException(String.format("Syntax error parsing URL: %s", request.batchAddUrl()), e);
         }
 
         return document;
@@ -1298,8 +1307,8 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             connectionFactory = new HttpConnectionFactory() {
 
                 @Override
-                public HttpURLConnection connect(String url) throws IOException {
-                    return (HttpURLConnection) new URL(url).openConnection();
+                public HttpURLConnection connect(String url) throws IOException, URISyntaxException {
+                    return (HttpURLConnection) new URI(url).toURL().openConnection();
                 }
             };
         }

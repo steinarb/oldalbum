@@ -17,9 +17,10 @@ package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
+import java.net.URISyntaxException;
 
 interface HttpConnectionFactory {
 
-    HttpURLConnection connect(String url) throws IOException;
+    HttpURLConnection connect(String url) throws IOException, URISyntaxException;
 
 }
