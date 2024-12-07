@@ -202,6 +202,21 @@ class OldAlbumUrlInitDatabaseTest {
     }
 
     @Test
+    void testInsertDataWithHostNotFound() throws Exception {
+        var sqlUrl = "http://nosuchhost/missing";
+        var environment = mock(Environment.class);
+        when(environment.getEnv(anyString())).thenReturn(sqlUrl);
+        var datasource = createDataSource("dbwithoutschema"); // An empty database that has no schema, will cause LiquibaseException when attempting to insert
+        var logservice = new MockLogService();
+        var component = new OldAlbumUrlInitDatabase();
+        component.setEnvironment(environment);
+        component.setLogService(logservice);
+        component.setDatasource(datasource);
+        var e = assertThrows(OldAlbumException.class, component::activate);
+        assertThat(e.getMessage()).startsWith("Failed to load oldalbum database content because loading from ");
+    }
+
+    @Test
     void testInsertDataWithNoInitialDataUrl() {
         var datasource = mock(DataSource.class);
         var logservice = new MockLogService();
