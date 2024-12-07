@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.db.liquibase.urlinit;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
+import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.Mockito.*;
 
 import java.io.IOException;
@@ -190,6 +191,12 @@ class OldAlbumUrlInitDatabaseTest {
         component.setEnvironment(environment);
         component.setLogService(logservice);
         component.setDatasource(datasource);
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(404);
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        component.setConnectionFactory(connectionFactory);
         var e = assertThrows(OldAlbumException.class, component::activate);
         assertThat(e.getMessage()).startsWith("Failed to load oldalbum database content because HTTP statuscode of").endsWith("404");
     }
