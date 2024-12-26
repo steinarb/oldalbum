@@ -1,5 +1,5 @@
 import React from 'react';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import LeftButton from './LeftButton';
 import RightButton from './RightButton';

@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
-import { NavLink } from 'react-router-dom';
+import { NavLink } from 'react-router';
 import Locale from './Locale';
 import EditModeButton from './EditModeButton';
 import CopyLinkButton from './CopyLinkButton';
