@@ -1,14 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    LOGIN_CHECK_RECEIVE,
-    LOGOUT_RECEIVE,
-} from '../reduxactions';
+import { api } from '../api';
 const initialState = false;
 
 const canModifyAlbumReducer = createReducer(initialState, builder => {
     builder
-        .addCase(LOGIN_CHECK_RECEIVE, (state, action) => action.payload.canModifyAlbum)
-        .addCase(LOGOUT_RECEIVE, (state, action) => action.payload.canModifyAlbum);
+        .addMatcher(api.endpoints.getLogin.matchFulfilled, (state, action) => action.payload.canModifyAlbum);
 });
 
 export default canModifyAlbumReducer;

@@ -1,11 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    LOGIN_CHECK_RECEIVE,
-} from '../reduxactions';
+import { api } from '../api';
 
 const haveReceivedInitialLoginStatusReducer = createReducer(false, builder => {
     builder
-        .addCase(LOGIN_CHECK_RECEIVE, () => true);
+        .addMatcher(api.endpoints.getLogin.matchFulfilled, () => true);
 });
 
 export default haveReceivedInitialLoginStatusReducer;

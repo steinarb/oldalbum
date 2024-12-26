@@ -1,15 +1,11 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    SORT_ALBUM_ENTRIES_BY_DATE_REQUEST,
-    SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE,
-    SORT_ALBUM_ENTRIES_BY_DATE_FAILURE,
-} from '../reduxactions';
+import { api } from '../api';
 
 const sortingStatusReducer = createReducer('', (builder) => {
     builder
-        .addCase(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST, () => 'Sorting started')
-        .addCase(SORT_ALBUM_ENTRIES_BY_DATE_RECEIVE, () => 'Sorting complete')
-        .addCase(SORT_ALBUM_ENTRIES_BY_DATE_FAILURE, () => '');
+        .addMatcher(api.endpoints.postSortalbumbydate.matchPending, () => 'Sorting started')
+        .addMatcher(api.endpoints.postSortalbumbydate.matchFulfilled, () => 'Sorting complete')
+        .addMatcher(api.endpoints.postSortalbumbydate.matchRejected, () => '');
 });
 
 export default sortingStatusReducer;

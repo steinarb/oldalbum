@@ -10,6 +10,7 @@ import {
     MODIFY_PICTURE_PARENT_SELECTED,
     MODIFY_PICTURE_BASENAME_FIELD_CHANGED,
     ADD_PICTURE_BASENAME_FIELD_CHANGED,
+    ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED,
     CLEAR_ALBUM_FORM,
     CLEAR_PICTURE_FORM,
 } from '../reduxactions';
@@ -27,6 +28,7 @@ const albumentryPathReducer = createReducer(initialState, builder => {
         .addCase(ADD_ALBUM_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, true))
         .addCase(MODIFY_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false))
         .addCase(ADD_PICTURE_BASENAME_FIELD_CHANGED, (state, action) => replaceLastElementInPathWithBasename(state, action.payload, false))
+        .addCase(ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED, (state, action) => replaceLastElementInPathWithBasenameFromLoadedUrl(state, action.payload, false))
         .addCase(CLEAR_ALBUM_FORM, () => initialState)
         .addCase(CLEAR_PICTURE_FORM, () => initialState);
 });
@@ -45,4 +47,19 @@ function replaceLastElementInPathWithBasename(state, basename, endsWithSlash) {
     pathElements.pop();
     pathElements.push(basename);
     return pathElements.join('/') + (endsWithSlash ? '/' : '');
+}
+
+
+function replaceLastElementInPathWithBasenameFromLoadedUrl(state, imageUrl, endsWithSlash) {
+    const basename = extractBasename(imageUrl);
+    return replaceLastElementInPathWithBasename(state, basename, endsWithSlash);
+}
+
+
+function extractBasename(url) {
+    const paths = url.split('/');
+    const filename = paths.pop();
+    const fileAndExtension = filename.split('.');
+    const basename = fileAndExtension.shift();
+    return basename;
 }

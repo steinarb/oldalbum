@@ -1,13 +1,19 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
+import {
     CLOSE_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
     REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
 } from '../reduxactions';
 
 export default function PasswordProtectedWarningDialog() {
     const displayPasswordProtectionWarningDialog = useSelector(state => state.displayPasswordProtectionWarningDialog);
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const dispatch = useDispatch();
 
     if (!displayPasswordProtectionWarningDialog) {

@@ -1,13 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    ALLROUTES_RECEIVE,
-    UPDATE_ALLROUTES,
-} from '../reduxactions';
+import { isAllroutes } from '../matchers';
 
 const dateOfLastChildOfAlbumReducer = createReducer({}, builder => {
     builder
-        .addCase(ALLROUTES_RECEIVE, (state, action) => findDateOfLastChildOfEachAlbum(action.payload))
-        .addCase(UPDATE_ALLROUTES, (state, action) => findDateOfLastChildOfEachAlbum(action.payload));
+        .addMatcher(isAllroutes, (state, action) => findDateOfLastChildOfEachAlbum(action.payload));
 });
 
 export default dateOfLastChildOfAlbumReducer;

@@ -1,6 +1,10 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
+import {
     SET_ALBUM_GROUP_BY_YEAR,
     UNSET_ALBUM_GROUP_BY_YEAR,
 } from '../reduxactions';
@@ -8,7 +12,9 @@ import {
 export default function AlbumGroupByYearButton(props) {
     const { album } = props;
     const { id } = album;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const albumGroupByYear = useSelector(state => state.albumGroupByYear[id] === undefined ? true : state.albumGroupByYear[id]);
     const dispatch = useDispatch();
 

@@ -1,21 +1,28 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_REQUEST } from '../reduxactions';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetTogglepasswordprotectionMutation,
+} from '../api';
 
 export default function TogglePasswordProtection(props) {
     const item = props.item;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const loggedIn = useSelector(state => state.loggedIn);
-    const dispatch = useDispatch();
     const commandText = item.requireLogin ?
           text.removepasswordprotection :
           (item.album ? text.protectalbumwithpassword : text.protectpicturewithpassword);
+    const [ getTogglepasswordprotection ] = useGetTogglepasswordprotectionMutation();
+    const onTogglePasswordProtectionClicked = async () => { await getTogglepasswordprotection(item.id) }
 
     if (!loggedIn) {
         return null;
     }
 
     return (<span className="{props.styleName} alert" role="alert">
-                <span className="alert-link" onClick={() => dispatch(TOGGLE_ALBUMENTRY_REQUIRE_LOGIN_REQUEST(item.id))}>{commandText}</span>
+                <span className="alert-link" onClick={onTogglePasswordProtectionClicked}>{commandText}</span>
             </span>);
 }

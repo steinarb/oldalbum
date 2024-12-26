@@ -1,12 +1,19 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { SORT_ALBUM_ENTRIES_BY_DATE_REQUEST } from '../reduxactions';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostSortalbumbydateMutation,
+} from '../api';
 
 export default function SortByDateButton(props) {
     const { item } = props;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
-    const dispatch = useDispatch();
+    [ postSortalbumbydate ] = usePostSortalbumbydateMutation();
+    const onClicked = async () => await postSortalbumbydate(item);
 
     // Button doesn't show up if: 1. edit not allowed
     if (!showEditControls) {
@@ -14,10 +21,6 @@ export default function SortByDateButton(props) {
     }
 
     return(
-        <button
-            className={(props.className || '') + ' btn btn-light'}
-            type="button"
-            onClick={() => dispatch(SORT_ALBUM_ENTRIES_BY_DATE_REQUEST(item))}>
-            {text.sortbydate}</button>
+        <button className={(props.className || '') + ' btn btn-light'} type="button" onClick={onClicked}>{text.sortbydate}</button>
     );
 }

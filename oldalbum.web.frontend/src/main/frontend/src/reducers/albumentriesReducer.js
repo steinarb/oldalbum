@@ -1,13 +1,9 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    ALLROUTES_RECEIVE,
-    UPDATE_ALLROUTES,
-} from '../reduxactions';
+import { isAllroutes } from '../matchers';
 
-const albumentriesReducer = createReducer({}, builder => {
+const albumentriesReducer = createReducer([], builder => {
     builder
-        .addCase(ALLROUTES_RECEIVE, (state, action) => createMapFromIdToAlbumentry(action.payload))
-        .addCase(UPDATE_ALLROUTES, (state, action) => createMapFromIdToAlbumentry(action.payload));
+        .addMatcher(isAllroutes, (state, action) => createMapFromIdToAlbumentry(action.payload));
 });
 
 export default albumentriesReducer;

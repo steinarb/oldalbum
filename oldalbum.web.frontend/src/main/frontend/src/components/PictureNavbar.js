@@ -1,5 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import { NavLink } from 'react-router';
 import Locale from './Locale';
 import EditModeButton from './EditModeButton';
@@ -11,7 +15,9 @@ import LoginLogoutButton from './LoginLogoutButton';
 
 export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const anchor = item.path.split('/').pop();
 
     return (

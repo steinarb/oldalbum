@@ -1,5 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { push } from 'redux-first-history';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostAddalbumMutation,
+} from '../api';
 import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
@@ -11,12 +17,14 @@ import {
     ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD,
     ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
     ADD_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED,
-    ADD_ALBUM_UPDATE_BUTTON_CLICKED,
     ADD_ALBUM_CANCEL_BUTTON_CLICKED,
+    CLEAR_ALBUM_FORM,
 } from '../reduxactions';
 
 export default function AddAlbum() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
@@ -30,9 +38,24 @@ export default function AddAlbum() {
     const [ queryParams ] = useSearchParams();
     const parent = queryParams.get('parent');
     const parentId = parseInt(parent, 10);
-    const parentalbum = albums.find(a => a.id === parentId);
+    const parentalbum = albums.find(a => a.id === parentId) || {};
     const uplocation = parentalbum.path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const [ postAddalbum ] = usePostAddalbumMutation();
+    const onAddAlbumClicked = async () => {
+        await postAddalbum({
+            parent,
+            path,
+            album: true,
+            title,
+            description,
+            lastModified,
+            requireLogin,
+            groupByYear,
+        });
+        dispatch(push(path));
+        dispatch(CLEAR_ALBUM_FORM());
+    }
 
     return(
         <div>
@@ -138,11 +161,7 @@ export default function AddAlbum() {
                         <label htmlFor="require-login" className="form-check-label col-11">{text.albumGroupByYear}</label>
                     </div>
                     <div>
-                        <button
-                            className="btn btn-light me-1"
-                            type="button"
-                            onClick={() => dispatch(ADD_ALBUM_UPDATE_BUTTON_CLICKED())}>
-                            {text.add}</button>
+                        <button className="btn btn-light me-1" type="button"onClick={onAddAlbumClicked}>{text.add}</button>
                         <button
                             className="btn btn-light me-1"
                             type="button"

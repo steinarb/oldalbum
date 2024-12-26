@@ -1,5 +1,11 @@
 import React from 'react';
+import { push } from 'redux-first-history';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostModifyalbumMutation,
+} from '../api';
 import { NavLink } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
@@ -12,12 +18,14 @@ import {
     MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD,
     MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
     MODIFY_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED,
-    MODIFY_ALBUM_UPDATE_BUTTON_CLICKED,
     MODIFY_ALBUM_CANCEL_BUTTON_CLICKED,
+    CLEAR_ALBUM_FORM,
 } from '../reduxactions';
 
 export default function ModifyAlbum() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const albumentryid = useSelector(state => state.albumentryid);
     const parent = useSelector(state => state.albumentryParent);
     const path = useSelector(state => state.albumentryPath);
@@ -27,12 +35,30 @@ export default function ModifyAlbum() {
     const lastModified = useSelector(state => state.albumentryLastModified);
     const requireLogin = useSelector(state => state.albumentryRequireLogin);
     const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
+    const sort = useSelector(state => state.albumentrySort);
     const allroutes = useSelector(state => state.allroutes);
     const albumentries = useSelector(state => state.albumentries);
     const dispatch = useDispatch();
     const albums = allroutes.filter(r => r.album).filter(r => r.id !== albumentryid);
     const uplocation = (albumentries[albumentryid] || {}).path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const [ postModifyalbum ] = usePostModifyalbumMutation();
+    const onModifyAlbumClicked = async () => {
+        await postModifyalbum({
+            id: albumentryid,
+            parent,
+            path,
+            album: true,
+            title,
+            description,
+            lastModified,
+            requireLogin,
+            groupByYear,
+            sort,
+        });
+        dispatch(push(path));
+        dispatch(CLEAR_ALBUM_FORM());
+    }
 
     return(
         <div>
@@ -154,7 +180,7 @@ export default function ModifyAlbum() {
                         <button
                             className="btn btn-light me-1"
                             type="button"
-                            onClick={() => dispatch(MODIFY_ALBUM_UPDATE_BUTTON_CLICKED())}>
+                            onClick={() => dispatch(onModifyAlbumClicked)}>
                             {text.update}</button>
                         <button
                             className="btn btn-light me-1"

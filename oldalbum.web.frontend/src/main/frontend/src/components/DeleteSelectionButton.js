@@ -1,22 +1,25 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { DELETE_SELECTION_REQUEST } from '../reduxactions';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostDeleteselectionMutation,
+} from '../api';
 
 export default function DeleteSelectionButton(props) {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
     const selectedentries = useSelector(state => state.selectedentries);
-    const dispatch = useDispatch();
     const selectionExists = !!selectedentries.length;
+    const [ postDeleteselection ] = usePostDeleteselectionMutation();
+    const onDelete = async () => await postDeleteselection(selectedentries.map(e => e.id));
 
     // Button doesn't show up if: 1. edit not allowed, 2: there is no selection
     if (!showEditControls || !selectionExists) {
         return null;
     }
 
-    return(<button
-               className={(props.className || '') + ' btn btn-light'}
-               type="button"
-               onClick={() => dispatch(DELETE_SELECTION_REQUEST(selectedentries))}>
-               {text.deleteselection}</button>);
+    return(<button className={(props.className || '') + ' btn btn-light'} type="button" onClick={onDelete}>{text.deleteselection}</button>);
 }

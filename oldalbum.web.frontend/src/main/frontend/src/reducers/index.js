@@ -1,4 +1,6 @@
 import { combineReducers } from 'redux';
+import { createReducer } from '@reduxjs/toolkit';
+import { api } from '../api';
 import alert from './alertReducer';
 import messageBanner from './messageBannerReducer';
 import modifyFailedError from './modifyFailedErrorReducer';
@@ -28,9 +30,6 @@ import batchAddUrl from './batchAddUrlReducer';
 import batchAddImportYear from './batchAddImportYearReducer';
 import batchAddDefaultTitle from './batchAddDefaultTitleReducer';
 import locale from './localeReducer';
-import availableLocales from './availableLocalesReducer';
-import displayTexts from './displayTextsReducer';
-import errors from './errorsReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loggedIn from './loggedInReducer';
 import username from './usernameReducer';
@@ -45,8 +44,9 @@ import dateOfLastChildOfAlbum from './dateOfLastChildOfAlbumReducer';
 import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogReducer';
 import sharedLinkItem from './sharedLinkItemReducer';
 
-export default (routerReducer) => combineReducers({
+export default (routerReducer, basename) => combineReducers({
     router: routerReducer,
+    [api.reducerPath]: api.reducer,
     alert,
     messageBanner,
     modifyFailedError,
@@ -76,9 +76,6 @@ export default (routerReducer) => combineReducers({
     batchAddImportYear,
     batchAddDefaultTitle,
     locale,
-    availableLocales,
-    displayTexts,
-    errors,
     haveReceivedInitialLoginStatus,
     loggedIn,
     username,
@@ -92,4 +89,5 @@ export default (routerReducer) => combineReducers({
     dateOfLastChildOfAlbum,
     displayPasswordProtectionWarningDialog,
     sharedLinkItem,
+    basename: createReducer(basename, (builder) => builder),
 });

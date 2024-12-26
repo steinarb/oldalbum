@@ -1,5 +1,11 @@
 import React from 'react';
+import { push } from 'redux-first-history';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostModifypictureMutation,
+} from '../api';
 import { NavLink } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
@@ -13,10 +19,13 @@ import {
     MODIFY_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED,
     MODIFY_PICTURE_UPDATE_BUTTON_CLICKED,
     MODIFY_PICTURE_CANCEL_BUTTON_CLICKED,
+    CLEAR_PICTURE_FORM,
 } from '../reduxactions';
 
 export default function ModifyPicture() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const albumentryid = useSelector(state => state.albumentryid);
     const parent = useSelector(state => state.albumentryParent);
     const path = useSelector(state => state.albumentryPath);
@@ -35,6 +44,23 @@ export default function ModifyPicture() {
     const albums = allroutes.filter(r => r.album).filter(r => r.id !== albumentryid) || [];
     const uplocation = (albumentries[albumentryid] || {}).path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const [ postModifypicture ] = usePostModifypictureMutation();
+    const onModifyPictureClicked = async () => {
+        await postModifypicture({
+            id: albumentryid,
+            parent,
+            path,
+            album: false,
+            title,
+            description,
+            imageUrl,
+            thumbnailUrl,
+            lastModified,
+            requireLogin,
+        });
+        dispatch(push(path));
+        dispatch(CLEAR_PICTURE_FORM());
+    }
 
     return(
         <div>
@@ -161,16 +187,12 @@ export default function ModifyPicture() {
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
                     <div>
-                        <button
-                            className="btn btn-light me-1"
-                            type="button"
-                            onClick={() => dispatch(MODIFY_PICTURE_UPDATE_BUTTON_CLICKED())}>
-                            {text.update}</button>
+                        <button className="btn btn-light me-1" type="button" onClick={onModifyPictureClicked}>{text.update}</button>
                         <button
                             className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(MODIFY_PICTURE_CANCEL_BUTTON_CLICKED())}>
-                            {text.cancel}</button>
+                        {text.cancel}</button>
                     </div>
                 </div>
             </form>

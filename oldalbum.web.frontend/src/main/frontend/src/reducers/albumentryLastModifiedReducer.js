@@ -3,7 +3,6 @@ import {
     FILL_MODIFY_ALBUM_FORM,
     FILL_MODIFY_PICTURE_FORM,
     FILL_ADD_PICTURE_FORM,
-    IMAGE_METADATA_RECEIVE,
     MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED,
     MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE,
     MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD,
@@ -15,6 +14,7 @@ import {
     CLEAR_ALBUM_FORM,
     CLEAR_PICTURE_FORM,
 } from '../reduxactions';
+import { api } from '../api';
 const initialState = '';
 
 const albumentryLastModifiedReducer = createReducer(initialState, builder => {
@@ -22,7 +22,7 @@ const albumentryLastModifiedReducer = createReducer(initialState, builder => {
         .addCase(FILL_MODIFY_ALBUM_FORM, (state, action) => action.payload.lastModified ? new Date(action.payload.lastModified).toISOString() : initialState)
         .addCase(FILL_MODIFY_PICTURE_FORM, (state, action) => new Date(action.payload.lastModified).toISOString())
         .addCase(FILL_ADD_PICTURE_FORM, (state, action) => action.payload.lastModified)
-        .addCase(IMAGE_METADATA_RECEIVE, (state, action) => new Date(action.payload.lastModified).toISOString())
+        .addMatcher(api.endpoints.postImageMetadata.matchFulfilled, (state, action) => new Date(action.payload.lastModified).toISOString())
         .addCase(MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED, (state, action) =>  action.payload + 'T' + state.split('T')[1])
         .addCase(MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE, () => new Date().toISOString())
         .addCase(MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD, () => initialState)

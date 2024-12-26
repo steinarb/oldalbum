@@ -1,15 +1,22 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetLogoutMutation,
+} from '../api';
 import { stringify } from 'qs';
-import { LOGOUT_REQUEST } from '../reduxactions';
 
 export default function LoginLogoutButton() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const loggedIn = useSelector(state => state.loggedIn);
     const username = useSelector(state => state.username);
     const canLogin = useSelector(state => state.canLogin);
     const routerBasename = useSelector(state => state.router.basename);
-    const dispatch = useDispatch();
+    const [ getLogout ] = useGetLogoutMutation();
+    const onLogoutClicked = async () => { await getLogout() }
 
     if (!canLogin) {
         return null;
@@ -17,7 +24,7 @@ export default function LoginLogoutButton() {
 
     if (loggedIn) {
         return (<span className="{props.styleName} alert" role="alert">
-                    {text.loggedinas} {username} <span className="alert-link" onClick={() => dispatch(LOGOUT_REQUEST())}>{text.logout}</span>
+                    {text.loggedinas} {username} <span className="alert-link" onClick={onLogoutClicked}>{text.logout}</span>
                 </span>);
     }
 

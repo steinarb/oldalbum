@@ -1,14 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    ALLROUTES_RECEIVE,
-    UPDATE_ALLROUTES,
-} from '../reduxactions';
+import { isAllroutes } from '../matchers';
 
 // Creates a map from id to array of children
 const childentriesReducer = createReducer({}, builder => {
     builder
-        .addCase(ALLROUTES_RECEIVE, (state, action) => createMapFromIdToArrayOfChildren(action.payload))
-        .addCase(UPDATE_ALLROUTES, (state, action) => createMapFromIdToArrayOfChildren(action.payload));
+        .addMatcher(isAllroutes, (state, action) => createMapFromIdToArrayOfChildren(action.payload));
 });
 
 export default childentriesReducer;

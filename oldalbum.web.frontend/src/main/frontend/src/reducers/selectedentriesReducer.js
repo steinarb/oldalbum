@@ -5,12 +5,14 @@ import {
     SET_SELECTION_VALUE,
     CLEAR_SELECTION,
 } from '../reduxactions';
+import { api } from '../api';
 
 const selectedentriesReducer = createReducer([], (builder) => {
     builder
         .addCase(SELECT_PICTURE_ALBUMENTRY, (state, action) => addIfNotPresent(state, action.payload))
         .addCase(UNSELECT_PICTURE_ALBUMENTRY, (state, action) => removeIfPresent(state, action.payload))
         .addCase(SET_SELECTION_VALUE, (state, action) => action.payload)
+        .addMatcher(api.endpoints.postDeleteselection.matchFulfilled, () => [])
         .addCase(CLEAR_SELECTION, () => []);
 });
 

@@ -1,10 +1,16 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import LinkIntact from './bootstrap/LinkIntact';
 import { SHARE_LINK } from '../reduxactions';
 
 export default function CopyLinkButton(props) {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const alert = useSelector(state => state.alert);
     const dispatch = useDispatch();
     const displayedAlert = alert ? '- ' + alert : '';

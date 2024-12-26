@@ -1,5 +1,12 @@
 import React from 'react';
+import { push } from 'redux-first-history';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostAddpictureMutation,
+    usePostImageMetadataMutation,
+} from '../api';
 import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
@@ -7,16 +14,19 @@ import {
     ADD_PICTURE_TITLE_FIELD_CHANGED,
     ADD_PICTURE_DESCRIPTION_FIELD_CHANGED,
     ADD_PICTURE_IMAGEURL_FIELD_CHANGED,
+    ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED,
     ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED,
     ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED,
     ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED,
     ADD_PICTURE_UPDATE_BUTTON_CLICKED,
     ADD_PICTURE_CANCEL_BUTTON_CLICKED,
-    IMAGE_METADATA_REQUEST,
+    CLEAR_PICTURE_FORM,
 } from '../reduxactions';
 
 export default function AddPicture() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const path = useSelector(state => state.albumentryPath);
     const basename = useSelector(state => state.albumentryBasename);
     const title = useSelector(state => state.albumentryTitle);
@@ -32,9 +42,32 @@ export default function AddPicture() {
     const [ queryParams ] = useSearchParams();
     const parent = queryParams.get('parent');
     const parentId = parseInt(parent, 10);
-    const parentalbum = albums.find(a => a.id === parentId);
+    const parentalbum = albums.find(a => a.id === parentId) || {};
     const uplocation = parentalbum.path || '/';
     const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const [ postAddpicture ] = usePostAddpictureMutation();
+    const onAddPictureClicked = async () => {
+        await postAddpicture({
+            parent,
+            path,
+            album: false,
+            title,
+            description,
+            imageUrl,
+            thumbnailUrl,
+            lastModified,
+            contentType,
+            contentLength,
+            requireLogin,
+        });
+        dispatch(push(path));
+        dispatch(CLEAR_PICTURE_FORM());
+    }
+    const [ postImageMetadata ] = usePostImageMetadataMutation();
+    const onImageLoaded = async () => {
+        await postImageMetadata(imageUrl);
+        dispatch(ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED(imageUrl));
+    }
 
     return(
         <div>
@@ -53,10 +86,7 @@ export default function AddPicture() {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row mb-2">
-                        <img
-                            className="img-thumbnail fullsize-img-thumbnail"
-                            src={imageUrl}
-                            onLoad={() => dispatch(IMAGE_METADATA_REQUEST(imageUrl))} />
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} onLoad={onImageLoaded} />
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
@@ -155,13 +185,13 @@ export default function AddPicture() {
                         <button
                             className="btn btn-light me-1"
                             type="button"
-                            onClick={() => dispatch(ADD_PICTURE_UPDATE_BUTTON_CLICKED())}>
-                            {text.add}</button>
+                            onClick={onAddPictureClicked}>
+                        {text.add}</button>
                         <button
                             className="btn btn-light me-1"
                             type="button"
                             onClick={() => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED())}>
-                            {text.cancel}</button>
+                        {text.cancel}</button>
                     </div>
                 </div>
             </form>

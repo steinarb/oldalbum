@@ -1,5 +1,9 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import { NavLink } from 'react-router';
 import Locale from './Locale';
 import EditModeButton from './EditModeButton';
@@ -7,7 +11,9 @@ import LoginLogoutButton from './LoginLogoutButton';
 import CopyLinkButton from './CopyLinkButton';
 
 export default function LoadingOrNotFound() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const openGraphTitle = (document.head.querySelector('meta[property="og:title"]') || {}).content;
     const titleText = openGraphTitle || text.notfoundTitle;
     const message = openGraphTitle ? text.pageIsLoading : text.resourcenotfound;

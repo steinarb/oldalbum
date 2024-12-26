@@ -1,17 +1,24 @@
 import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
-import { RELOAD_SHIRO_CONFIG_REQUEST } from '../reduxactions';
+import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    useGetReloadshiroconfigMutation,
+} from '../api';
 
 export default function ReloadShiroConfigButton() {
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const canModifyAlbum = useSelector(state => state.canModifyAlbum);
-    const dispatch = useDispatch();
+    const [ getReloadshiroconfig ] = useGetReloadshiroconfigMutation();
+    const onReloadShiroFilterClicked = async () => { await getReloadshiroconfig() }
 
     if (!canModifyAlbum) {
         return null;
     }
 
     return (<span className="{props.styleName} alert" role="alert">
-                <span className="alert-link" onClick={() => dispatch(RELOAD_SHIRO_CONFIG_REQUEST())}>{text.reloadshirofilter}</span>
+                <span className="alert-link" onClick={onReloadShiroFilterClicked}>{text.reloadshirofilter}</span>
             </span>);
 }

@@ -1,10 +1,16 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 
 export default function AlbumHideShowYearsButton(props) {
     const { album } = props;
     const { id } = album;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const albumGroupByYear = useSelector(state => state.albumGroupByYear[id] === undefined ? true : state.albumGroupByYear[id]);
     const childentriesByYear = useSelector(state => state.childentriesByYear[id]) || {};
     const ariaControls = id in childentriesByYear ? Object.keys(childentriesByYear[id]).map(k => 'collapse' + k.toString()).join(' ') : [];

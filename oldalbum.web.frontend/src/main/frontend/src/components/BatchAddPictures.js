@@ -1,22 +1,30 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostBatchAddPicturesMutation,
+} from '../api';
+import {
     BATCH_ADD_URL_FIELD_CHANGED,
     IMPORT_YEAR_FIELD_CHANGED,
     DEFAULT_TITLE_FIELD_CHANGED,
-    BATCH_ADD_PICTURES_FROM_URL_REQUEST,
 } from '../reduxactions';
 
 export default function BatchAddPictures(props) {
     const { item, className='' } = props;
     const { id } = item;
     const parent = id; // The new pictures will have this as a parent
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
     const batchAddUrl = useSelector(state => state.batchAddUrl);
     const importYear = useSelector(state => state.batchAddImportYear);
     const defaultTitle = useSelector(state => state.batchAddDefaultTitle);
     const dispatch = useDispatch();
+    const [ postBatchAddPictures ] = usePostBatchAddPicturesMutation();
+    const onAddAlbumClicked = async () => { await postBatchAddPictures({ parent, batchAddUrl, importYear, defaultTitle }) }
 
     if (!showEditControls) {
         return null;
@@ -53,12 +61,7 @@ export default function BatchAddPictures(props) {
                             value={defaultTitle}
                             onChange={e => dispatch(DEFAULT_TITLE_FIELD_CHANGED(e.target.value))}/>
                     </div>
-                    <button
-                        className="btn btn-light col-4"
-                        type="button"
-                        onClick={() => dispatch(BATCH_ADD_PICTURES_FROM_URL_REQUEST({ parent, batchAddUrl, importYear, defaultTitle }))}>
-                        {text.batchaddpictures}
-                    </button>
+                    <button className="btn btn-light col-4" type="button" onClick={onAddAlbumClicked}>{text.batchaddpictures}</button>
                 </div>
             </div>
         </div>

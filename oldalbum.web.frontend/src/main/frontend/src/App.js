@@ -1,5 +1,6 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
+import { useGetLoginQuery, useGetAllroutesQuery } from './api';
 import { Routes, Route } from 'react-router';
 import { HistoryRouter as Router } from "redux-first-history/rr6";
 import './App.css';
@@ -13,9 +14,11 @@ import AddPicture from './components/AddPicture';
 import LoadingOrNotFound from './components/LoadingOrNotFound';
 import PasswordProtectedWarningDialog from './components/PasswordProtectedWarningDialog';
 
+
 export default function App(props) {
     const { history, basename } = props;
-    const allroutes = useSelector(state => state.allroutes);
+    const { isSuccess: loginIsSuccess } = useGetLoginQuery();
+    const { data: allroutes = [] } = useGetAllroutesQuery(undefined, { skip: !loginIsSuccess });
 
     return (
         <div>

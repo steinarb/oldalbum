@@ -1,5 +1,9 @@
 import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+} from '../api';
 import { NavLink } from 'react-router';
 import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
@@ -31,7 +35,9 @@ import MessageBanner from './MessageBanner';
 
 export default function Album(props) {
     const { item } = props;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const parent = useSelector(state => (state.albumentries[item.parent] || {}).path) || '/';
     const children = useSelector(state => state.childentries[item.id]);
     const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id]);

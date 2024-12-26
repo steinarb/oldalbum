@@ -1,14 +1,10 @@
 import { createReducer } from '@reduxjs/toolkit';
-import {
-    LOGIN_CHECK_RECEIVE,
-    LOGOUT_RECEIVE,
-} from '../reduxactions';
+import { api } from '../api';
 const initialState = false;
 
 const loginresultReducer = createReducer(initialState, (builder) => {
     builder
-        .addCase(LOGIN_CHECK_RECEIVE, (state, action) => action.payload.success)
-        .addCase(LOGOUT_RECEIVE, (state, action) => action.payload.success);
+        .addMatcher(api.endpoints.getLogin.matchFulfilled, (state, action) => action.payload.success);
 });
 
 export default loginresultReducer;

@@ -1,19 +1,26 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import {
+    useGetDefaultlocaleQuery,
+    useGetDisplaytextsQuery,
+    usePostDeleteentryMutation,
+} from '../api';
 import { push } from 'redux-first-history';
-import { DELETE_ALBUMENTRY_REQUEST } from '../reduxactions';
 
 export default function DeleteButton(props) {
     const { item } = props;
-    const text = useSelector(state => state.displayTexts);
+    const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
+    const locale = useSelector(state => state.locale);
+    const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
     const parent = useSelector(state => state.albumentries[item.parent]);
     const childentries = useSelector(state => state.childentries[item.id]);
     const parentpath = (parent || {}).path || '';
     const children = childentries || [];
     const dispatch = useDispatch();
-    const onDelete = (item, parentpath) => {
-        dispatch(DELETE_ALBUMENTRY_REQUEST(item));
+    const [ postDeleteentry ] = usePostDeleteentryMutation();
+    const onDelete = async () => {
+        await postDeleteentry(item);
         dispatch(push(parentpath));
     };
 
@@ -25,6 +32,6 @@ export default function DeleteButton(props) {
     return(<button
                className={(props.className || '') + ' btn btn-light'}
                type="button"
-               onClick={() => onDelete(item, parentpath)}>
+               onClick={onDelete}>
                {text.delete}</button>);
 }
