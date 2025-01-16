@@ -3,6 +3,8 @@ import { isAnyOf } from '@reduxjs/toolkit';
 import { push } from 'redux-first-history';
 import { parse } from 'qs';
 import { api } from './api';
+import { albumPrepare } from './reducers/albumSlice';
+import { picturePrepare } from './reducers/pictureSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
     TOGGLE_EDIT_MODE_ON,
@@ -11,11 +13,7 @@ import {
     HIDE_EDIT_CONTROLS,
     CLEAR_ALERT,
     CLEAR_SELECTION,
-    FILL_MODIFY_ALBUM_FORM,
-    FILL_ADD_ALBUM_FORM,
     FILL_MODIFY_PICTURE_FORM,
-    FILL_ADD_PICTURE_FORM,
-    CLEAR_ALBUM_FORM,
     CLEAR_PICTURE_FORM,
     SHARE_LINK,
     OPEN_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
@@ -29,7 +27,8 @@ import {
     SET_SELECTION_VALUE,
     START_SELECTION_DOWNLOAD,
 } from './reduxactions';
-import { isAllroutes, cancelAlbumClicked, cancelPictureClicked } from './matchers';
+import { isAllroutes } from './matchers';
+import { extractBasename } from './pathutilities';
 
 const listenerMiddleware = createListenerMiddleware();
 
@@ -64,26 +63,6 @@ listenerMiddleware.startListening({
         } else {
             listenerApi.dispatch(HIDE_EDIT_CONTROLS());
         }
-    }
-})
-
-listenerMiddleware.startListening({
-    matcher: cancelAlbumClicked,
-    effect: (action, listenerApi) => {
-        const parentId = listenerApi.getState().albumentryParent;
-        const parent = listenerApi.getState().albumentries[parentId];
-        listenerApi.dispatch(CLEAR_ALBUM_FORM());
-        listenerApi.dispatch(push(parent.path));
-    }
-})
-
-listenerMiddleware.startListening({
-    matcher: cancelPictureClicked,
-    effect: (action, listenerApi) => {
-        const parentId = listenerApi.getState().albumentryParent;
-        const parent = listenerApi.getState().albumentries[parentId];
-        listenerApi.dispatch(CLEAR_ALBUM_FORM());
-        listenerApi.dispatch(push(parent.path));
     }
 })
 
@@ -163,7 +142,9 @@ listenerMiddleware.startListening({
                 const albumentries = findAlbumentries(listenerApi.getState());
                 const idInt = parseInt(id, 10);
                 const album = albumentries[idInt];
-                listenerApi.dispatch(FILL_MODIFY_ALBUM_FORM(album));
+                const basename = extractBasename(album.path);
+                const lastModified = album.lastModified ? new Date(album.lastModified).toISOString() : album.lastModified;
+                listenerApi.dispatch(albumPrepare({ ...album, basename, lastModified }));
             }
         }
 
@@ -175,10 +156,7 @@ listenerMiddleware.startListening({
                 const parentalbum = albumentries[parentId];
                 const path = (parentalbum.path ? parentalbum.path : '/') + '/';
                 const sort = (parentalbum.childcount || 0) + 1;
-                const title = '';
-                const description = '';
-                const requireLogin = false;
-                listenerApi.dispatch(FILL_ADD_ALBUM_FORM({ parent: parentId, path, album: true, title, description, requireLogin, sort }));
+                listenerApi.dispatch(albumPrepare({ parent: parentId, path, sort }));
             }
         }
 
@@ -188,7 +166,9 @@ listenerMiddleware.startListening({
                 const albumentries = findAlbumentries(listenerApi.getState());
                 const idInt = parseInt(id, 10);
                 const picture = albumentries[idInt];
-                listenerApi.dispatch(FILL_MODIFY_PICTURE_FORM(picture));
+                const basename = extractBasename(picture.path);
+                const lastModified = new Date(picture.lastModified).toISOString();
+                listenerApi.dispatch(picturePrepare({ ...picture, basename, lastModified }));
             }
         }
 
@@ -200,16 +180,8 @@ listenerMiddleware.startListening({
                 const parentalbum = albumentries[parentId];
                 const path = parentalbum.path || '';
                 const sort = (parentalbum.childcount || 0) + 1;
-                const basename = '';
-                const title = '';
-                const description = '';
-                const imageUrl = '';
-                const thumbnailUrl = '';
-                const contentLength = '';
-                const contentType = '';
-                const lastModified = '';
-                const requireLogin = false;
-                listenerApi.dispatch(FILL_ADD_PICTURE_FORM({ parent: parentId, path, album: false, basename, title, description, imageUrl, thumbnailUrl, sort, contentLength, contentType, lastModified, requireLogin }));
+                const lastModified = new Date().toISOString();
+                listenerApi.dispatch(picturePrepare({ parent: parentId, path, sort, lastModified }));
             }
         }
     }

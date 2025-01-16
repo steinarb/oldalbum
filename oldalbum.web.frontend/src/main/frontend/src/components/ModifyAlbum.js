@@ -9,61 +9,36 @@ import {
 import { NavLink } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
-    MODIFY_ALBUM_PARENT_SELECTED,
-    MODIFY_ALBUM_BASENAME_FIELD_CHANGED,
-    MODIFY_ALBUM_TITLE_FIELD_CHANGED,
-    MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED,
-    MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED,
-    MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE,
-    MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD,
-    MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
-    MODIFY_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED,
-    MODIFY_ALBUM_CANCEL_BUTTON_CLICKED,
-    CLEAR_ALBUM_FORM,
-} from '../reduxactions';
+    setParent,
+    setBasename,
+    setTitle,
+    setDescription,
+    setLastModified,
+    setLastModifiedToCurrentDate,
+    clearLastModified,
+    setRequireLogin,
+    setGroupByYear,
+    clearAlbum,
+} from '../reducers/albumSlice';
 
 export default function ModifyAlbum() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const albumentryid = useSelector(state => state.albumentryid);
-    const parent = useSelector(state => state.albumentryParent);
-    const path = useSelector(state => state.albumentryPath);
-    const basename = useSelector(state => state.albumentryBasename);
-    const title = useSelector(state => state.albumentryTitle);
-    const description = useSelector(state => state.albumentryDescription);
-    const lastModified = useSelector(state => state.albumentryLastModified);
-    const requireLogin = useSelector(state => state.albumentryRequireLogin);
-    const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
-    const sort = useSelector(state => state.albumentrySort);
+    const album = useSelector(state => state.album);
+    const uplocation = album.path;
     const allroutes = useSelector(state => state.allroutes);
-    const albumentries = useSelector(state => state.albumentries);
     const dispatch = useDispatch();
-    const albums = allroutes.filter(r => r.album).filter(r => r.id !== albumentryid);
-    const uplocation = (albumentries[albumentryid] || {}).path || '/';
-    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const albums = allroutes.filter(r => r.album).filter(r => r.id !== album.id);
+    const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postModifyalbum ] = usePostModifyalbumMutation();
-    const onModifyAlbumClicked = async () => {
-        await postModifyalbum({
-            id: albumentryid,
-            parent,
-            path,
-            album: true,
-            title,
-            description,
-            lastModified,
-            requireLogin,
-            groupByYear,
-            sort,
-        });
-        dispatch(push(path));
-        dispatch(CLEAR_ALBUM_FORM());
-    }
+    const onModifyAlbumClicked = async () => { await postModifyalbum(album); dispatch(push(uplocation)); }
+    const onCancelClicked = () => { dispatch(clearAlbum()); dispatch(push(uplocation)); }
 
     return(
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <NavLink to={uplocation}>
+                <NavLink to={album.path}>
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
@@ -82,8 +57,8 @@ export default function ModifyAlbum() {
                             <select
                                 id="parent"
                                 className="form-control"
-                                value={parent}
-                                onChange={e => dispatch(MODIFY_ALBUM_PARENT_SELECTED(albums.find(a => a.id === parseInt(e.target.value))))}>
+                                value={album.parent}
+                                onChange={e => dispatch(setParent(albums.find(a => a.id === parseInt(e.target.value))))}>
                                 { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
                             </select>
                         </div>
@@ -91,7 +66,7 @@ export default function ModifyAlbum() {
                     <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={album.path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -99,11 +74,11 @@ export default function ModifyAlbum() {
                         <div className="col-7">
                             <input
                                 id="basename"
-                                disabled={path === '/'}
+                                disabled={album.path === '/'}
                                 className="form-control"
                                 type="text"
-                                value={basename}
-                                onChange={e => dispatch(MODIFY_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
+                                value={album.basename}
+                                onChange={e => dispatch(setBasename(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -113,8 +88,8 @@ export default function ModifyAlbum() {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={title}
-                                onChange={e => dispatch(MODIFY_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
+                                value={album.title}
+                                onChange={e => dispatch(setTitle(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -124,8 +99,8 @@ export default function ModifyAlbum() {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={description}
-                                onChange={e => dispatch(MODIFY_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
+                                value={album.description}
+                                onChange={e => dispatch(setDescription(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -136,7 +111,7 @@ export default function ModifyAlbum() {
                                 className="form-control"
                                 type="date"
                                 value={lastmodified}
-                                onChange={e => dispatch(MODIFY_ALBUM_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
+                                onChange={e => dispatch(setLastModified(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -145,14 +120,14 @@ export default function ModifyAlbum() {
                             <button
                                 className="btn btn-light me-1"
                                 type="button"
-                                onClick={() => dispatch(MODIFY_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE())}
+                                onClick={() => dispatch(setLastModifiedToCurrentDate())}
                             >
                                 {text.setTodaysDate}
                             </button>
                             <button
                                 className="btn btn-light me-1"
                                 type="button"
-                                onClick={() => dispatch(MODIFY_ALBUM_CLEAR_LASTMODIFIED_FIELD())}
+                                onClick={() => dispatch(clearLastModified())}
                             >
                                 {text.clearDate}
                             </button>
@@ -163,8 +138,8 @@ export default function ModifyAlbum() {
                             id="require-login"
                             className="form-check col-1"
                             type="checkbox"
-                            checked={requireLogin}
-                            onChange={e => dispatch(MODIFY_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
+                            checked={album.requireLogin}
+                            onChange={e => dispatch(setRequireLogin(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
                     <div className="form-group row mb-2">
@@ -172,8 +147,8 @@ export default function ModifyAlbum() {
                             id="require-login"
                             className="form-check col-1"
                             type="checkbox"
-                            checked={groupByYear}
-                            onChange={e => dispatch(MODIFY_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED(e.target.checked))} />
+                            checked={album.groupByYear}
+                            onChange={e => dispatch(setGroupByYear(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.albumGroupByYear}</label>
                     </div>
                     <div className="container">
@@ -185,7 +160,7 @@ export default function ModifyAlbum() {
                         <button
                             className="btn btn-light me-1"
                             type="button"
-                            onClick={() => dispatch(MODIFY_ALBUM_CANCEL_BUTTON_CLICKED())}>
+                            onClick={onCancelClicked}>
                             {text.cancel}</button>
                     </div>
                 </div>

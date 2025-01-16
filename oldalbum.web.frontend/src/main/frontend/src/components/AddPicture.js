@@ -7,72 +7,42 @@ import {
     usePostAddpictureMutation,
     usePostImageMetadataMutation,
 } from '../api';
+import {
+    clearPicture,
+    setBasename,
+    setTitle,
+    setDescription,
+    setImageUrl,
+    setThumbnailUrl,
+    setLastModified,
+    setRequireLogin,
+    setGroupByYear,
+} from '../reducers/pictureSlice'
 import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
-import {
-    ADD_PICTURE_BASENAME_FIELD_CHANGED,
-    ADD_PICTURE_TITLE_FIELD_CHANGED,
-    ADD_PICTURE_DESCRIPTION_FIELD_CHANGED,
-    ADD_PICTURE_IMAGEURL_FIELD_CHANGED,
-    ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED,
-    ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED,
-    ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED,
-    ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED,
-    ADD_PICTURE_UPDATE_BUTTON_CLICKED,
-    ADD_PICTURE_CANCEL_BUTTON_CLICKED,
-    CLEAR_PICTURE_FORM,
-} from '../reduxactions';
+import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';
 
 export default function AddPicture() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const path = useSelector(state => state.albumentryPath);
-    const basename = useSelector(state => state.albumentryBasename);
-    const title = useSelector(state => state.albumentryTitle);
-    const description = useSelector(state => state.albumentryDescription);
-    const imageUrl = useSelector(state => state.albumentryImageUrl);
-    const thumbnailUrl = useSelector(state => state.albumentryThumbnailUrl);
-    const lastModified = useSelector(state => state.albumentryLastModified);
-    const contentLength = useSelector(state => state.albumentryContentLength);
-    const contentType = useSelector(state => state.albumentryContentType);
-    const requireLogin = useSelector(state => state.albumentryRequireLogin);
-    const albums = useSelector(state => state.allroutes).filter(r => r.album);
+    const picture = useSelector(state => state.picture);
+    const parentalbum = useSelector(state => state.albumentries[picture.parent]) || { path: '' };
     const dispatch = useDispatch();
-    const [ queryParams ] = useSearchParams();
-    const parent = queryParams.get('parent');
-    const parentId = parseInt(parent, 10);
-    const parentalbum = albums.find(a => a.id === parentId) || {};
-    const uplocation = parentalbum.path || '/';
-    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const lastmodified = picture.lastModified ? picture.lastModified.split('T')[0] : '';
     const [ postAddpicture ] = usePostAddpictureMutation();
-    const onAddPictureClicked = async () => {
-        await postAddpicture({
-            parent,
-            path,
-            album: false,
-            title,
-            description,
-            imageUrl,
-            thumbnailUrl,
-            lastModified,
-            contentType,
-            contentLength,
-            requireLogin,
-        });
-        dispatch(push(path));
-        dispatch(CLEAR_PICTURE_FORM());
-    }
+    const onAddPictureClicked = async () => { await postAddpicture(picture); dispatch(push(picture.path)); }
+    const onCancelPictureClicked = () => { dispatch(clearPicture()); dispatch(push(parentalbum.path)); }
     const [ postImageMetadata ] = usePostImageMetadataMutation();
     const onImageLoaded = async () => {
-        await postImageMetadata(imageUrl);
-        dispatch(ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED(imageUrl));
+        await postImageMetadata(picture.imageUrl);
+        dispatch(ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED(picture.imageUrl));
     }
 
     return(
         <div>
             <nav className="navbar navbar-expand-lg navbar-light bg-light">
-                <NavLink to={uplocation}>
+                <NavLink to={parentalbum.path}>
                     <div className="container">
                         <div className="column">
                             <span className="row oi oi-chevron-top" title="chevron top" aria-hidden="true"></span>
@@ -86,12 +56,12 @@ export default function AddPicture() {
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
                     <div className="form-group row mb-2">
-                        <img className="img-thumbnail fullsize-img-thumbnail" src={imageUrl} onLoad={onImageLoaded} />
+                        <img className="img-thumbnail fullsize-img-thumbnail" src={picture.imageUrl} onLoad={onImageLoaded} />
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={picture.path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -101,8 +71,8 @@ export default function AddPicture() {
                                 id="basename"
                                 className="form-control"
                                 type="text"
-                                value={basename}
-                                onChange={e => dispatch(ADD_PICTURE_BASENAME_FIELD_CHANGED(e.target.value))} />
+                                value={picture.basename}
+                                onChange={e => dispatch(setBasename(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -112,8 +82,8 @@ export default function AddPicture() {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={title}
-                                onChange={e => dispatch(ADD_PICTURE_TITLE_FIELD_CHANGED(e.target.value))} />
+                                value={picture.title}
+                                onChange={e => dispatch(setTitle(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -123,8 +93,8 @@ export default function AddPicture() {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={description}
-                                onChange={e => dispatch(ADD_PICTURE_DESCRIPTION_FIELD_CHANGED(e.target.value))} />
+                                value={picture.description}
+                                onChange={e => dispatch(setDescription(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -134,8 +104,8 @@ export default function AddPicture() {
                                 id="imageUrl"
                                 className="form-control"
                                 type="text"
-                                value={imageUrl}
-                                onChange={e => dispatch(ADD_PICTURE_IMAGEURL_FIELD_CHANGED(e.target.value))} />
+                                value={picture.imageUrl}
+                                onChange={e => dispatch(setImageUrl(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -145,20 +115,20 @@ export default function AddPicture() {
                                 id="thumbnailUrl"
                                 className="form-control"
                                 type="text"
-                                value={thumbnailUrl}
-                                onChange={e => dispatch(ADD_PICTURE_THUMBNAILURL_FIELD_CHANGED(e.target.value))} />
+                                value={picture.thumbnailUrl}
+                                onChange={e => dispatch(setThumbnailUrl(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="contentLength" className="col-form-label col-5">{text.contentlengthinbytes}</label>
                         <div className="col-7">
-                            <input id="contentLength" readOnly className="form-control" type="text" value={contentLength}/>
+                            <input id="contentLength" readOnly className="form-control" type="text" value={picture.contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row mb-2">
                         <label htmlFor="contentType" className="col-form-label col-5">{text.contenttype}</label>
                         <div className="col-7">
-                            <input id="contentType" readOnly className="form-control" type="text" value={contentType}/>
+                            <input id="contentType" readOnly className="form-control" type="text" value={picture.contentType}/>
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -169,7 +139,7 @@ export default function AddPicture() {
                                 className="form-control"
                                 type="date"
                                 value={lastmodified}
-                                onChange={e => dispatch(ADD_PICTURE_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
+                                onChange={e => dispatch(setLastModified(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -177,8 +147,8 @@ export default function AddPicture() {
                             id="require-login"
                             className="form-check col-1"
                             type="checkbox"
-                            checked={requireLogin}
-                            onChange={e => dispatch(ADD_PICTURE_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
+                            checked={picture.requireLogin}
+                            onChange={e => dispatch(setRequireLogin(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
                     <div>
@@ -190,7 +160,7 @@ export default function AddPicture() {
                         <button
                             className="btn btn-light me-1"
                             type="button"
-                            onClick={() => dispatch(ADD_PICTURE_CANCEL_BUTTON_CLICKED())}>
+                            onClick={onCancelPictureClicked}>
                         {text.cancel}</button>
                     </div>
                 </div>

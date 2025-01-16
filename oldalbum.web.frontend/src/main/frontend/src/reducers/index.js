@@ -11,21 +11,9 @@ import childentries from './childentriesReducer';
 import childentriesByYear from './childentriesByYearReducer';
 import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
-import albumentryid from './albumentryidReducer';
+import album from './albumSlice';
+import picture from './pictureSlice';
 import albumGroupByYear from './albumGroupByYearReducer';
-import albumentryParent from './albumentryParentReducer';
-import albumentryPath from './albumentryPathReducer';
-import albumentryBasename from './albumentryBasenameReducer';
-import albumentryTitle from './albumentryTitleReducer';
-import albumentryDescription from './albumentryDescriptionReducer';
-import albumentryImageUrl from './albumentryImageUrlReducer';
-import albumentryThumbnailUrl from './albumentryThumbnailUrlReducer';
-import albumentryLastModified from './albumentryLastModifiedReducer';
-import albumentryContentLength from './albumentryContentLengthReducer';
-import albumentryContentType from './albumentryContentTypeReducer';
-import albumentryRequireLogin from './albumentryRequireLoginReducer';
-import albumentryGroupByYear from './albumentryGroupByYearReducer';
-import albumentrySort from './albumentrySortReducer';
 import batchAddUrl from './batchAddUrlReducer';
 import batchAddImportYear from './batchAddImportYearReducer';
 import batchAddDefaultTitle from './batchAddDefaultTitleReducer';
@@ -58,20 +46,8 @@ export default (routerReducer, basename) => combineReducers({
     previousentry,
     nextentry,
     albumGroupByYear,
-    albumentryid,
-    albumentryParent,
-    albumentryPath,
-    albumentryBasename,
-    albumentryTitle,
-    albumentryDescription,
-    albumentryImageUrl,
-    albumentryThumbnailUrl,
-    albumentryLastModified,
-    albumentryContentLength,
-    albumentryContentType,
-    albumentryRequireLogin,
-    albumentryGroupByYear,
-    albumentrySort,
+    album,
+    picture,
     batchAddUrl,
     batchAddImportYear,
     batchAddDefaultTitle,

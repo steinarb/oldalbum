@@ -121,6 +121,8 @@ export const api = createApi({
     }),
 });
 
+console.log(api);
+
 export const {
     useGetLoginQuery,
     useGetAllroutesQuery,

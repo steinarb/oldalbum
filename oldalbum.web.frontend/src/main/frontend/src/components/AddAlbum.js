@@ -9,53 +9,33 @@ import {
 import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
-    ADD_ALBUM_BASENAME_FIELD_CHANGED,
-    ADD_ALBUM_TITLE_FIELD_CHANGED,
-    ADD_ALBUM_DESCRIPTION_FIELD_CHANGED,
-    ADD_ALBUM_LASTMODIFIED_FIELD_CHANGED,
-    ADD_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE,
-    ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD,
-    ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED,
-    ADD_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED,
-    ADD_ALBUM_CANCEL_BUTTON_CLICKED,
-    CLEAR_ALBUM_FORM,
-} from '../reduxactions';
+    setBasename,
+    setTitle,
+    setDescription,
+    setLastModified,
+    setLastModifiedToCurrentDate,
+    clearLastModified,
+    setRequireLogin,
+    setGroupByYear,
+    clearAlbum,
+} from '../reducers/albumSlice';
 
 export default function AddAlbum() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const path = useSelector(state => state.albumentryPath);
-    const basename = useSelector(state => state.albumentryBasename);
-    const title = useSelector(state => state.albumentryTitle);
-    const description = useSelector(state => state.albumentryDescription);
-    const lastModified = useSelector(state => state.albumentryLastModified);
-    const requireLogin = useSelector(state => state.albumentryRequireLogin);
-    const groupByYear = useSelector(state => !!state.albumentryGroupByYear);
+    const album = useSelector(state => state.album);
     const allroutes = useSelector(state => state.allroutes);
-    const dispatch = useDispatch();
     const albums = allroutes.filter(r => r.album);
+    const albumentries = useSelector(state => state.albumentries);
+    const parentalbum = albumentries[album.parent] || {};
+    const dispatch = useDispatch();
     const [ queryParams ] = useSearchParams();
-    const parent = queryParams.get('parent');
-    const parentId = parseInt(parent, 10);
-    const parentalbum = albums.find(a => a.id === parentId) || {};
     const uplocation = parentalbum.path || '/';
-    const lastmodified = lastModified ? lastModified.split('T')[0] : '';
+    const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postAddalbum ] = usePostAddalbumMutation();
-    const onAddAlbumClicked = async () => {
-        await postAddalbum({
-            parent,
-            path,
-            album: true,
-            title,
-            description,
-            lastModified,
-            requireLogin,
-            groupByYear,
-        });
-        dispatch(push(path));
-        dispatch(CLEAR_ALBUM_FORM());
-    }
+    const onAddAlbumClicked = async () => { await postAddalbum(album); dispatch(push(album.path)); }
+    const onCancelClicked = () => { dispatch(clearAlbum()); dispatch(push(uplocation)); }
 
     return(
         <div>
@@ -76,7 +56,7 @@ export default function AddAlbum() {
                     <div className="form-group row mb-2">
                         <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
                         <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={path} readOnly={true} />
+                            <input id="path" className="form-control" type="text" value={album.path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -86,8 +66,8 @@ export default function AddAlbum() {
                                 id="basename"
                                 className="form-control"
                                 type="text"
-                                value={basename}
-                                onChange={e => dispatch(ADD_ALBUM_BASENAME_FIELD_CHANGED(e.target.value))} />
+                                value={album.basename}
+                                onChange={e => dispatch(setBasename(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -97,8 +77,8 @@ export default function AddAlbum() {
                                 id="title"
                                 className="form-control"
                                 type="text"
-                                value={title}
-                                onChange={e => dispatch(ADD_ALBUM_TITLE_FIELD_CHANGED(e.target.value))} />
+                                value={album.title}
+                                onChange={e => dispatch(setTitle(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -108,8 +88,8 @@ export default function AddAlbum() {
                                 id="description"
                                 className="form-control"
                                 type="text"
-                                value={description}
-                                onChange={e => dispatch(ADD_ALBUM_DESCRIPTION_FIELD_CHANGED(e.target.value))}/>
+                                value={album.description}
+                                onChange={e => dispatch(setDescription(e.target.value))}/>
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -120,7 +100,7 @@ export default function AddAlbum() {
                                 className="form-control"
                                 type="date"
                                 value={lastmodified}
-                                onChange={e => dispatch(ADD_ALBUM_LASTMODIFIED_FIELD_CHANGED(e.target.value))} />
+                                onChange={e => dispatch(setLastModified(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -129,14 +109,14 @@ export default function AddAlbum() {
                             <button
                                 className="btn btn-light me-1"
                                 type="button"
-                                onClick={() => dispatch(ADD_ALBUM_SET_LASTMODIFIED_FIELD_TO_CURRENT_DATE())}
+                                onClick={() => dispatch(setLastModifiedToCurrentDate())}
                             >
                                 {text.setTodaysDate}
                             </button>
                             <button
                                 className="btn btn-light me-1"
                                 type="button"
-                                onClick={() => dispatch(ADD_ALBUM_CLEAR_LASTMODIFIED_FIELD())}
+                                onClick={() => dispatch(clearLastModified())}
                             >
                                 {text.clearDate}
                             </button>
@@ -147,8 +127,8 @@ export default function AddAlbum() {
                             id="require-login"
                             className="form-check col-1"
                             type="checkbox"
-                            checked={requireLogin}
-                            onChange={e => dispatch(ADD_ALBUM_REQUIRE_LOGIN_FIELD_CHANGED(e.target.checked))} />
+                            checked={album.requireLogin}
+                            onChange={e => dispatch(setRequireLogin(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
                     <div className="form-group row mb-2">
@@ -156,8 +136,8 @@ export default function AddAlbum() {
                             id="require-login"
                             className="form-check col-1"
                             type="checkbox"
-                            checked={groupByYear}
-                            onChange={e => dispatch(ADD_ALBUM_GROUP_BY_YEAR_FIELD_CHANGED(e.target.checked))} />
+                            checked={album.groupByYear}
+                            onChange={e => dispatch(setGroupByYear(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.albumGroupByYear}</label>
                     </div>
                     <div>
@@ -165,7 +145,7 @@ export default function AddAlbum() {
                         <button
                             className="btn btn-light me-1"
                             type="button"
-                            onClick={() => dispatch(ADD_ALBUM_CANCEL_BUTTON_CLICKED())}>
+                            onClick={onCancelClicked}>
                             {text.cancel}</button>
                     </div>
                 </div>
