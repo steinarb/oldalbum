@@ -275,10 +275,10 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
     @Test
     void testAddPicture() throws Exception {
-        var pictureToAdd = AlbumEntry.with().parent(1).path("/newalbum/").album(true).title("A new album").description("A new album for new pictures").sort(2).build();
+        var pictureToAdd = AlbumEntryWithBasename.with().id(2).parent(1).path("/moto/vfr96/acirc1").basename("acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).build();
         var logservice = new MockLogService();
         var backendService = mock(OldAlbumService.class);
-        when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd));
+        when(backendService.addEntry(any())).thenReturn(Arrays.asList(pictureToAdd.convertTo()));
         var useradmin = mock(UserManagementService.class);
         var oldalbumadmin = Role.with().id(7).rolename("oldalbumadmin").description("Modify albums").build();
         when(useradmin.getRoles()).thenReturn(Collections.singletonList(oldalbumadmin));

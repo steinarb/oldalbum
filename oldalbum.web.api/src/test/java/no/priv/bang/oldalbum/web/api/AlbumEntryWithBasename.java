@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2025 Steinar Bang
+ * Copyright 2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,17 +13,17 @@
  * See the License for the specific language governing permissions and limitations
  * under the License.
  */
-package no.priv.bang.oldalbum.services.bean;
+package no.priv.bang.oldalbum.web.api;
 
 import java.util.Date;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 
-@JsonIgnoreProperties(ignoreUnknown = true)
-public record AlbumEntry(
+public record AlbumEntryWithBasename(
     int id,
     int parent,
     String path,
+    String basename,
     boolean album,
     String title,
     String description,
@@ -37,16 +37,36 @@ public record AlbumEntry(
     boolean requireLogin,
     Boolean groupByYear)
 {
+    public AlbumEntry convertTo() {
+        return AlbumEntry.with()
+            .id(id)
+            .parent(parent)
+            .path(path)
+            .album(album)
+            .title(title)
+            .description(description)
+            .imageUrl(imageUrl)
+            .thumbnailUrl(thumbnailUrl)
+            .sort(sort)
+            .lastModified(lastModified)
+            .contentType(contentType)
+            .contentLength(contentLength)
+            .childcount(childcount)
+            .requireLogin(requireLogin)
+            .groupByYear(groupByYear)
+            .build();
+    }
 
     public static Builder with() {
         return new Builder();
     }
 
-    public static Builder with(AlbumEntry albumEntry) {
+    public static Builder with(AlbumEntryWithBasename albumEntry) {
         var builder = new Builder();
         builder.id = albumEntry.id;
         builder.parent = albumEntry.parent;
         builder.path = albumEntry.path;
+        builder.basename = albumEntry.basename;
         builder.album = albumEntry.album;
         builder.title = albumEntry.title;
         builder.description = albumEntry.description;
@@ -66,6 +86,8 @@ public record AlbumEntry(
         private int id = -1;
         private int parent;
         private String path;
+        public String basename;
+
         private boolean album;
         private String title;
         private String description;
@@ -81,11 +103,12 @@ public record AlbumEntry(
 
         private Builder() {}
 
-        public AlbumEntry build() {
-            return new AlbumEntry(
+        public AlbumEntryWithBasename build() {
+            return new AlbumEntryWithBasename(
                 id,
                 parent,
                 path,
+                basename,
                 album,
                 title,
                 description,
@@ -112,6 +135,11 @@ public record AlbumEntry(
 
         public Builder path(String path) {
             this.path = path;
+            return this;
+        }
+
+        public Builder basename(String basename) {
+            this.basename = basename;
             return this;
         }
 
