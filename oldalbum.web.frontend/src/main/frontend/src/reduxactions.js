@@ -1,8 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
 export const SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT = createAction('SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT');
-export const SET_ALBUM_GROUP_BY_YEAR = createAction('SET_ALBUM_GROUP_BY_YEAR');
-export const UNSET_ALBUM_GROUP_BY_YEAR = createAction('UNSET_ALBUM_GROUP_BY_YEAR');
 export const TOGGLE_EDIT_MODE_ON = createAction('TOGGLE_EDIT_MODE_ON');
 export const TOGGLE_EDIT_MODE_OFF = createAction('TOGGLE_EDIT_MODE_OFF');
 export const SHOW_EDIT_CONTROLS = createAction('SHOW_EDIT_CONTROLS');

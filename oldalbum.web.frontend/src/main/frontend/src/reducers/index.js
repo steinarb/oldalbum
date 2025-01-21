@@ -11,7 +11,7 @@ import previousentry from './previousentryReducer';
 import nextentry from './nextentryReducer';
 import album from './albumSlice';
 import picture from './pictureSlice';
-import albumGroupByYear from './albumGroupByYearReducer';
+import albumGroupByYear from './albumGroupByYearSlice';
 import batchAddUrl from './batchAddUrlReducer';
 import batchAddImportYear from './batchAddImportYearReducer';
 import batchAddDefaultTitle from './batchAddDefaultTitleReducer';

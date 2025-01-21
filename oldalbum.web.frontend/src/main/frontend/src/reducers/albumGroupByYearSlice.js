@@ -1,19 +1,21 @@
-import { createReducer } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 import Cookies from 'js-cookie';
-import {
-    SET_ALBUM_GROUP_BY_YEAR,
-    UNSET_ALBUM_GROUP_BY_YEAR,
-} from '../reduxactions';
 import { isAllroutes } from '../matchers';
 
-const initialGroupByAlbumSetting = JSON.parse(Cookies.get('albumGroupByYear') || '{}');
+const initialState = JSON.parse(Cookies.get('albumGroupByYear') || '{}');
 
-const groupByYearReducer = createReducer(initialGroupByAlbumSetting, builder => {
-    builder
-        .addMatcher(isAllroutes, (state, action) => saveGroupByYearInitialState(state, action.payload))
-        .addCase(SET_ALBUM_GROUP_BY_YEAR, (state, action) => setAlbumGroupByYear(state, action.payload))
-        .addCase(UNSET_ALBUM_GROUP_BY_YEAR, (state, action) => unsetAlbumGroupByYear(state, action.payload));
+const groupByYearSlice = createSlice({
+    name: 'groupByYear',
+    initialState,
+    reducers: {
+        setAlbum: (state, action) => setAlbumGroupByYear(state, action.payload),
+        unsetAlbum: (state, action) => unsetAlbumGroupByYear(state, action.payload),
+    },
+    extraReducers: builder => builder.addMatcher(isAllroutes, (state, action) => saveGroupByYearInitialState(state, action.payload)),
 });
+
+export const { setAlbum, unsetAlbum } = groupByYearSlice.actions;
+export default groupByYearSlice.reducer;
 
 function setAlbumGroupByYear(state, album) {
     const nextState = { ...state };
@@ -39,5 +41,3 @@ function saveGroupByYearInitialState(state, allroutes) {
 
     return Object.assign(groupByYearInitialState, state);
 }
-
-export default groupByYearReducer;
