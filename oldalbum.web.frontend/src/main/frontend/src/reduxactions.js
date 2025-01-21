@@ -1,7 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const SET_ALERT = createAction('SET_ALERT');
-export const CLEAR_ALERT = createAction('CLEAR_ALERT');
 export const SET_MESSAGE_BANNER = createAction('SET_MESSAGE_BANNER');
 export const CLEAR_MESSAGE_BANNER = createAction('CLEAR_MESSAGE_BANNER');
 export const SET_CHILDENTRIES_BY_YEAR = createAction('SET_CHILDENTRIES_BY_YEAR');
@@ -19,7 +17,6 @@ export const CLEAR_BATCH_ADD_URL_FIELD = createAction('CLEAR_BATCH_ADD_URL_FIELD
 export const FILL_MODIFY_PICTURE_FORM = createAction('FILL_MODIFY_PICTURE_FORM');
 export const CLEAR_PICTURE_FORM = createAction('CLEAR_PICTURE_FORM');
 export const ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED = createAction('ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED');
-export const SET_MODIFY_FAILED_ERROR = createAction('SET_MODIFY_FAILED_ERROR');
 export const SELECT_PICTURE_ALBUMENTRY = createAction('SELECT_PICTURE_ALBUMENTRY');
 export const UNSELECT_PICTURE_ALBUMENTRY = createAction('UNSELECT_PICTURE_ALBUMENTRY');
 export const ALBUM_SELECT_ALL = createAction('ALBUM_SELECT_ALL');

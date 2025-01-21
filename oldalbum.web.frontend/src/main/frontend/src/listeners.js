@@ -11,7 +11,6 @@ import {
     TOGGLE_EDIT_MODE_OFF,
     SHOW_EDIT_CONTROLS,
     HIDE_EDIT_CONTROLS,
-    CLEAR_ALERT,
     CLEAR_SELECTION,
     FILL_MODIFY_PICTURE_FORM,
     CLEAR_PICTURE_FORM,
@@ -133,7 +132,6 @@ listenerMiddleware.startListening({
         const pathname = findPathname(location, basename);
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
 
-        listenerApi.dispatch(CLEAR_ALERT());
         listenerApi.dispatch(CLEAR_SELECTION());
 
         if (pathname === '/modifyalbum') {
