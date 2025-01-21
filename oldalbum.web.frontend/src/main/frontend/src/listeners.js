@@ -6,10 +6,9 @@ import { api } from './api';
 import { albumPrepare } from './reducers/albumSlice';
 import { picturePrepare } from './reducers/pictureSlice';
 import { setMessage, clearMessage } from './reducers/messageBannerSlice';
+import { toggleOn, toggleOff } from  './reducers/editModeSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
-    TOGGLE_EDIT_MODE_ON,
-    TOGGLE_EDIT_MODE_OFF,
     SHOW_EDIT_CONTROLS,
     HIDE_EDIT_CONTROLS,
     CLEAR_SELECTION,
@@ -46,8 +45,8 @@ listenerMiddleware.startListening({
 listenerMiddleware.startListening({
     matcher: isAnyOf(
         api.endpoints.getLogin.matchFulfilled,
-        TOGGLE_EDIT_MODE_ON,
-        TOGGLE_EDIT_MODE_OFF,
+        toggleOn,
+        toggleOff,
     ),
     effect: (action, listenerApi) => {
         const loggedIn = listenerApi.getState().loggedIn;

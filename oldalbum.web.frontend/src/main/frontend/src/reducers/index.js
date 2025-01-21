@@ -21,7 +21,7 @@ import loggedIn from './loggedInReducer';
 import username from './usernameReducer';
 import sortingStatus from './sortingStatusReducer';
 import showEditControls from './showEditControlsReducer';
-import editMode from './editModeReducer';
+import editMode from './editModeSlice';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogReducer';

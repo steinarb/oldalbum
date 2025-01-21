@@ -4,10 +4,7 @@ import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
 } from '../api';
-import {
-    TOGGLE_EDIT_MODE_ON,
-    TOGGLE_EDIT_MODE_OFF,
-} from '../reduxactions';
+import { toggleOn, toggleOff } from  '../reducers/editModeSlice';
 
 export default function EditModeButton(props) {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
@@ -25,14 +22,14 @@ export default function EditModeButton(props) {
     if (editMode) {
         return (
             <div className={props.className}>
-                <span onClick={() => dispatch(TOGGLE_EDIT_MODE_OFF())}>{text.switcheditmodeoff}</span>
+                <span onClick={() => dispatch(toggleOff())}>{text.switcheditmodeoff}</span>
             </div>
         );
     }
 
     return(
         <div className={props.className}>
-            <span onClick={() => dispatch(TOGGLE_EDIT_MODE_ON())}>{text.switcheditmodeon}</span>
+            <span onClick={() => dispatch(toggleOn())}>{text.switcheditmodeon}</span>
         </div>
     );
 }
