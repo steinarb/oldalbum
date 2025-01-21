@@ -1,7 +1,5 @@
 import { createAction } from '@reduxjs/toolkit';
 
-export const SET_MESSAGE_BANNER = createAction('SET_MESSAGE_BANNER');
-export const CLEAR_MESSAGE_BANNER = createAction('CLEAR_MESSAGE_BANNER');
 export const SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT = createAction('SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT');
 export const SET_ALBUM_GROUP_BY_YEAR = createAction('SET_ALBUM_GROUP_BY_YEAR');
 export const UNSET_ALBUM_GROUP_BY_YEAR = createAction('UNSET_ALBUM_GROUP_BY_YEAR');

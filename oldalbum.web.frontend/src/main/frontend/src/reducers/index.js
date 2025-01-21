@@ -1,7 +1,7 @@
 import { combineReducers } from 'redux';
 import { createReducer } from '@reduxjs/toolkit';
 import { api } from '../api';
-import messageBanner from './messageBannerReducer';
+import messageBanner from './messageBannerSlice';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
 import selectedentries from './selectedentriesReducer';

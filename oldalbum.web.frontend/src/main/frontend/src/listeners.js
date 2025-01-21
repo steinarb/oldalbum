@@ -5,6 +5,7 @@ import { parse } from 'qs';
 import { api } from './api';
 import { albumPrepare } from './reducers/albumSlice';
 import { picturePrepare } from './reducers/pictureSlice';
+import { setMessage, clearMessage } from './reducers/messageBannerSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
     TOGGLE_EDIT_MODE_ON,
@@ -15,8 +16,6 @@ import {
     SHARE_LINK,
     OPEN_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
     SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
-    SET_MESSAGE_BANNER,
-    CLEAR_MESSAGE_BANNER,
     CLOSE_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
     REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
     CLEAR_SHARED_LINK_ITEM,
@@ -73,9 +72,9 @@ listenerMiddleware.startListening({
 
         copyCurrentUrlToClipboard();
         const text = listenerApi.getState().displayTexts;
-        listenerApi.dispatch(SET_MESSAGE_BANNER(text.urlcopiedtoclipboard));
+        listenerApi.dispatch(setMessage(text.urlcopiedtoclipboard));
         await listenerApi.delay(2000); // 2s wait before taking down the banner
-        listenerApi.dispatch(CLEAR_MESSAGE_BANNER());
+        listenerApi.dispatch(clearMessage());
     }
 })
 
@@ -87,9 +86,9 @@ listenerMiddleware.startListening({
         const locale = listenerApi.getState().locale;
         const text = api.endpoints.getDisplaytexts.select(locale)(listenerApi.getState()).data;
         const messageText = formatMessageText(albumEntry, text);
-        listenerApi.dispatch(SET_MESSAGE_BANNER(messageText));
+        listenerApi.dispatch(setMessage(messageText));
         await listenerApi.delay(5000); // 5s wait before taking down the banner
-        listenerApi.dispatch(CLEAR_MESSAGE_BANNER());
+        listenerApi.dispatch(clearMessage());
     }
 })
 
