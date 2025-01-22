@@ -6,11 +6,10 @@ import { api } from './api';
 import { albumPrepare } from './reducers/albumSlice';
 import { picturePrepare } from './reducers/pictureSlice';
 import { setMessage, clearMessage } from './reducers/messageBannerSlice';
-import { toggleOn, toggleOff } from  './reducers/editModeSlice';
+import { toggleOn, toggleOff } from './reducers/editModeSlice';
+import { show, hide } from './reducers/showEditControlsSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
-    SHOW_EDIT_CONTROLS,
-    HIDE_EDIT_CONTROLS,
     CLEAR_SELECTION,
     SHARE_LINK,
     OPEN_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
@@ -54,9 +53,9 @@ listenerMiddleware.startListening({
         const canModifyAlbum = listenerApi.getState().canModifyAlbum;
         const showEditControl = loggedIn && editMode && canModifyAlbum;
         if (showEditControl) {
-            listenerApi.dispatch(SHOW_EDIT_CONTROLS());
+            listenerApi.dispatch(show());
         } else {
-            listenerApi.dispatch(HIDE_EDIT_CONTROLS());
+            listenerApi.dispatch(hide());
         }
     }
 })

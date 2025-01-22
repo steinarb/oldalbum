@@ -1,8 +1,6 @@
 import { createAction } from '@reduxjs/toolkit';
 
 export const SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT = createAction('SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT');
-export const SHOW_EDIT_CONTROLS = createAction('SHOW_EDIT_CONTROLS');
-export const HIDE_EDIT_CONTROLS = createAction('HIDE_EDIT_CONTROLS');
 export const BATCH_ADD_URL_FIELD_CHANGED = createAction('BATCH_ADD_URL_FIELD_CHANGED');
 export const IMPORT_YEAR_FIELD_CHANGED = createAction('IMPORT_YEAR_FIELD_CHANGED');
 export const DEFAULT_TITLE_FIELD_CHANGED = createAction('DEFAULT_TITLE_FIELD_CHANGED');
