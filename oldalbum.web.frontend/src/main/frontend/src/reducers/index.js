@@ -12,9 +12,7 @@ import nextentry from './nextentryReducer';
 import album from './albumSlice';
 import picture from './pictureSlice';
 import albumGroupByYear from './albumGroupByYearSlice';
-import batchAddUrl from './batchAddUrlReducer';
-import batchAddImportYear from './batchAddImportYearReducer';
-import batchAddDefaultTitle from './batchAddDefaultTitleReducer';
+import batchAdd from './batchAddSlice';
 import locale from './localeReducer';
 import haveReceivedInitialLoginStatus from './haveReceivedInitialLoginStatusReducer';
 import loggedIn from './loggedInReducer';
@@ -41,9 +39,7 @@ export default (routerReducer, basename) => combineReducers({
     albumGroupByYear,
     album,
     picture,
-    batchAddUrl,
-    batchAddImportYear,
-    batchAddDefaultTitle,
+    batchAdd,
     locale,
     haveReceivedInitialLoginStatus,
     loggedIn,
