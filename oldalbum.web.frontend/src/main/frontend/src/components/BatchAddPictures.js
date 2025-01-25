@@ -14,6 +14,7 @@ export default function BatchAddPictures(props) {
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
     const batchAdd = useSelector(state => state.batchAdd);
+    const importYear = batchAdd.importYear ? batchAdd.importYear.toString() : '';
     const dispatch = useDispatch();
     const [ postBatchAddPictures ] = usePostBatchAddPicturesMutation();
     const onBatchAddClicked = async () => await postBatchAddPictures(batchAdd);
@@ -45,7 +46,7 @@ export default function BatchAddPictures(props) {
                             id="importYear"
                             className="form-control"
                             type="text"
-                            value={batchAdd.importYear}
+                            value={importYear}
                             onChange={e => dispatch(setImportYear(e.target.value))}/>
                     </div>
                     <label htmlFor="defaultTitle" className="col-form-label col-1">{text.title}</label>

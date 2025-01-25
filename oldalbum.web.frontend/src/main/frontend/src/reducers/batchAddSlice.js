@@ -4,7 +4,7 @@ import { api } from '../api';
 const initialState = {
     parent:  -1,
     batchAddUrl: '',
-    importYear: -1,
+    importYear: null,
     defaultTitle: '',
 };
 
