@@ -22,7 +22,7 @@ import showEditControls from './showEditControlsSlice';
 import editMode from './editModeSlice';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
-import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogReducer';
+import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogSlice';
 import sharedLinkItem from './sharedLinkItemReducer';
 
 export default (routerReducer, basename) => combineReducers({

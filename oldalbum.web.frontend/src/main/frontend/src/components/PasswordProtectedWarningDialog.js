@@ -4,10 +4,8 @@ import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
 } from '../api';
-import {
-    CLOSE_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
-    REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
-} from '../reduxactions';
+import { closeWarningDialog } from '../reducers/displayPasswordProtectionWarningDialogSlice';
+import { REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG } from '../reduxactions';
 
 export default function PasswordProtectedWarningDialog() {
     const displayPasswordProtectionWarningDialog = useSelector(state => state.displayPasswordProtectionWarningDialog);
@@ -27,7 +25,7 @@ export default function PasswordProtectedWarningDialog() {
             <p>{text.removepassportprotection}</p>
             <p><em>{text.notedoesntaffectparentorsiblings}</em></p>
             <div className="row">
-                <button type="button" className="btn btn-secondary col ms-5" onClick={() => dispatch(CLOSE_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED())}>{text.dontremove}</button>
+                <button type="button" className="btn btn-secondary col ms-5" onClick={() => dispatch(closeWarningDialog())}>{text.dontremove}</button>
                 <button type="button" className="btn btn-primary col ms-5 me-5" onClick={() => dispatch(REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG())}>{text.remove}</button>
             </div>
         </dialog>
