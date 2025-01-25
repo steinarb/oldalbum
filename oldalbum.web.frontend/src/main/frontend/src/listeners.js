@@ -68,7 +68,8 @@ listeners.startListening({
         }
 
         copyCurrentUrlToClipboard();
-        const text = listenerApi.getState().displayTexts;
+        const locale = listenerApi.getState().locale;
+        const text = api.endpoints.getDisplaytexts.select(locale)(listenerApi.getState()).data;
         listenerApi.dispatch(setMessage(text.urlcopiedtoclipboard));
         await listenerApi.delay(2000); // 2s wait before taking down the banner
         listenerApi.dispatch(clearMessage());
