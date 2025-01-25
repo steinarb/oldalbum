@@ -23,7 +23,7 @@ import editMode from './editModeSlice';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogSlice';
-import sharedLinkItem from './sharedLinkItemReducer';
+import sharedLinkItem from './sharedLinkItemSlice';
 
 export default (routerReducer, basename) => combineReducers({
     router: routerReducer,

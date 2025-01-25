@@ -5,7 +5,7 @@ import {
     useGetDisplaytextsQuery,
 } from '../api';
 import LinkIntact from './bootstrap/LinkIntact';
-import { SHARE_LINK } from '../reduxactions';
+import { shareLink } from '../reducers/sharedLinkItemSlice';
 
 export default function CopyLinkButton(props) {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
@@ -16,6 +16,6 @@ export default function CopyLinkButton(props) {
     const displayedAlert = alert ? '- ' + alert : '';
 
     return (
-        <span onClick={() => dispatch(SHARE_LINK(props.item))} className={props.className || ''}><LinkIntact/> {text.copylink} {displayedAlert}</span>
+        <span onClick={() => dispatch(shareLink(props.item))} className={props.className || ''}><LinkIntact/> {text.copylink} {displayedAlert}</span>
     );
 }

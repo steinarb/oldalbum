@@ -10,12 +10,11 @@ import { toggleOn, toggleOff } from './reducers/editModeSlice';
 import { show, hide } from './reducers/showEditControlsSlice';
 import { clearSelection, setSelection } from './reducers/selectedentriesSlice';
 import { openWarningDialog, closeWarningDialog } from './reducers/displayPasswordProtectionWarningDialogSlice';
+import { shareLink, clearSharedLink } from './reducers/sharedLinkItemSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
-    SHARE_LINK,
     SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
     REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
-    CLEAR_SHARED_LINK_ITEM,
     ALBUM_SELECT_ALL,
     START_SELECTION_DOWNLOAD,
 } from './reduxactions';
@@ -59,7 +58,7 @@ listeners.startListening({
 })
 
 listeners.startListening({
-    actionCreator: SHARE_LINK,
+    actionCreator: shareLink,
     effect: async (action, listenerApi) => {
         const item = action.payload;
         if (item.requireLogin) {
@@ -95,7 +94,7 @@ listeners.startListening({
         const sharedItem = listenerApi.getState().sharedLinkItem;
         listenerApi.dispatch(api.endpoints.getTogglepasswordprotection.initiate(sharedItem.id));
         listenerApi.dispatch(closeWarningDialog());
-        listenerApi.dispatch(CLEAR_SHARED_LINK_ITEM());
+        listenerApi.dispatch(clearSharedLink());
     }
 })
 
