@@ -4,7 +4,7 @@ import { api } from '../api';
 import messageBanner from './messageBannerSlice';
 import allroutes from './allroutesReducer';
 import albumentries from './albumentriesReducer';
-import selectedentries from './selectedentriesReducer';
+import selectedentries from './selectedentriesSlice';
 import childentries from './childentriesReducer';
 import childentriesByYear from './childentriesByYearReducer';
 import previousentry from './previousentryReducer';

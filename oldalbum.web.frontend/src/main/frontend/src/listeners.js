@@ -8,9 +8,9 @@ import { picturePrepare } from './reducers/pictureSlice';
 import { setMessage, clearMessage } from './reducers/messageBannerSlice';
 import { toggleOn, toggleOff } from './reducers/editModeSlice';
 import { show, hide } from './reducers/showEditControlsSlice';
+import { clearSelection, setSelection } from './reducers/selectedentriesSlice';
 import { LOCATION_CHANGE } from 'redux-first-history';
 import {
-    CLEAR_SELECTION,
     SHARE_LINK,
     OPEN_WARNING_DIALOG_ENTRY_IS_PASSWORD_PROTECTED,
     SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
@@ -18,7 +18,6 @@ import {
     REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
     CLEAR_SHARED_LINK_ITEM,
     ALBUM_SELECT_ALL,
-    SET_SELECTION_VALUE,
     START_SELECTION_DOWNLOAD,
 } from './reduxactions';
 import { isAllroutes } from './matchers';
@@ -106,7 +105,7 @@ listenerMiddleware.startListening({
         const album = action.payload;
         const allroutes = listenerApi.getState().allroutes;
         const picturesInAlbum = allroutes.filter(r => r.parent === album.id).filter(r => !r.album);
-        listenerApi.dispatch(SET_SELECTION_VALUE(picturesInAlbum));
+        listenerApi.dispatch(setSelection(picturesInAlbum));
     }
 })
 
@@ -114,7 +113,7 @@ listenerMiddleware.startListening({
     actionCreator: START_SELECTION_DOWNLOAD,
     effect: async (action, listenerApi) => {
         await listenerApi.delay(1000);
-        listenerApi.dispatch(CLEAR_SELECTION());
+        listenerApi.dispatch(clearSelection());
     }
 })
 
@@ -127,7 +126,7 @@ listenerMiddleware.startListening({
         const pathname = findPathname(location, basename);
         const queryParams = parse(location.search, { ignoreQueryPrefix: true });
 
-        listenerApi.dispatch(CLEAR_SELECTION());
+        listenerApi.dispatch(clearSelection());
 
         if (pathname === '/modifyalbum') {
             if (await listenerApi.condition(isAnyOf(allroutesHasData(listenerApi), isAllroutes))) {
