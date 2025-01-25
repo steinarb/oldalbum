@@ -23,16 +23,16 @@ import {
 import { isAllroutes } from './matchers';
 import { extractBasename } from './pathutilities';
 
-const listenerMiddleware = createListenerMiddleware();
+const listeners = createListenerMiddleware();
 
-listenerMiddleware.startListening({
+listeners.startListening({
     matcher: api.endpoints.getLogout.matchFulfilled,
     effect: (action, listenerApi) => {
         location.reload(true); // Stay in current location after logout
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     matcher: api.endpoints.getLogoutUnauthorized.matchFulfilled,
     effect: (action, listenerApi) => {
         const basename = listenerApi.getState().basename;
@@ -40,7 +40,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     matcher: isAnyOf(
         api.endpoints.getLogin.matchFulfilled,
         toggleOn,
@@ -59,7 +59,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     actionCreator: SHARE_LINK,
     effect: async (action, listenerApi) => {
         const item = action.payload;
@@ -75,7 +75,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     actionCreator: SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
     effect: async (action, listenerApi) => {
         const albumEntryId = action.payload;
@@ -89,7 +89,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     actionCreator: REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
     effect: async (action, listenerApi) => {
         const sharedItem = listenerApi.getState().sharedLinkItem;
@@ -99,7 +99,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     actionCreator: ALBUM_SELECT_ALL,
     effect: (action, listenerApi) => {
         const album = action.payload;
@@ -109,7 +109,7 @@ listenerMiddleware.startListening({
     }
 })
 
-listenerMiddleware.startListening({
+listeners.startListening({
     actionCreator: START_SELECTION_DOWNLOAD,
     effect: async (action, listenerApi) => {
         await listenerApi.delay(1000);
@@ -118,7 +118,7 @@ listenerMiddleware.startListening({
 })
 
 // Fill forms from redux state values based on form location
-listenerMiddleware.startListening({
+listeners.startListening({
     type: LOCATION_CHANGE,
     effect: async (action, listenerApi) => {
         const { location = {} } = action.payload || {};
@@ -215,4 +215,4 @@ function formatMessageText(albumEntry, text) {
     }
 }
 
-export default listenerMiddleware;
+export default listeners;
