@@ -91,6 +91,7 @@ class LoginResourceTest extends ShiroTestBase {
         var redirectUrl = "https://myserver.com/resource";
         var response = resource.postLogin(username, password, redirectUrl);
         assertEquals(401, response.getStatus());
+        assertThat(response.getEntity().toString()).contains("unknown user");
     }
 
     @Test
@@ -106,6 +107,7 @@ class LoginResourceTest extends ShiroTestBase {
         var redirectUrl = "https://myserver.com/resource";
         var response = resource.postLogin(username, password, redirectUrl);
         assertEquals(401, response.getStatus());
+        assertThat(response.getEntity().toString()).contains("wrong password");
     }
 
     @Test
@@ -124,6 +126,7 @@ class LoginResourceTest extends ShiroTestBase {
             var redirectUrl = "https://myserver.com/resource";
             var response = resource.postLogin(username, password, redirectUrl);
             assertEquals(401, response.getStatus());
+            assertThat(response.getEntity().toString()).contains("locked account");
         } finally {
             unlockAccount("jad");
         }
@@ -140,6 +143,7 @@ class LoginResourceTest extends ShiroTestBase {
         var redirectUrl = "https://myserver.com/resource";
         var response = resource.postLogin(username, password, redirectUrl);
         assertEquals(401, response.getStatus());
+        assertThat(response.getEntity().toString()).contains("general authentication error");
     }
 
     @Test
