@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import javax.ws.rs.core.Response;
 
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
 import org.apache.shiro.authc.LockedAccountException;
 import org.apache.shiro.authc.UnknownAccountException;
@@ -97,6 +98,13 @@ public class LoginResource extends HtmlTemplateResource {
             var message = "wrong password";
             logger.warn(LOGIN_ERROR + message, e);
             var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message, logservice);
+            fillFormValues(html, originalUri, username, password);
+            setCancelButtonUri(html, originalUri);
+            return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();
+        } catch (ExcessiveAttemptsException  e) {
+            var message = "maximum failed logins limit reached, account is locked";
+            logger.warn(LOGIN_ERROR + message, e);
+            var html = loadHtmlFileAndSetMessage(LOGIN_HTML, message + ". contact system administrator", logservice);
             fillFormValues(html, originalUri, username, password);
             setCancelButtonUri(html, originalUri);
             return Response.status(Response.Status.UNAUTHORIZED).entity(html.html()).build();

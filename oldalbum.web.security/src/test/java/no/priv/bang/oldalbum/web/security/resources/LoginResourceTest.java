@@ -22,6 +22,7 @@ import static org.mockito.Mockito.*;
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.InternalServerErrorException;
 import org.apache.shiro.authc.AuthenticationException;
+import org.apache.shiro.authc.ExcessiveAttemptsException;
 import org.apache.shiro.util.ThreadContext;
 import org.apache.shiro.web.subject.WebSubject;
 import org.junit.jupiter.api.Test;
@@ -108,6 +109,26 @@ class LoginResourceTest extends ShiroTestBase {
         var response = resource.postLogin(username, password, redirectUrl);
         assertEquals(401, response.getStatus());
         assertThat(response.getEntity().toString()).contains("wrong password");
+    }
+
+    @Test
+    void testPostLoginWhenFailedLoginLimitIsReached() {
+        try {
+            lockAccount("jad");
+            // Set up the request
+            var logservice = new MockLogService();
+            createSubjectThrowingExceptionAndBindItToThread(ExcessiveAttemptsException.class);
+            var resource = new LoginResource();
+            resource.setLogservice(logservice);
+            var username = "jad";
+            var password = "wrong";
+            var redirectUrl = "https://myserver.com/resource";
+            var response = resource.postLogin(username, password, redirectUrl);
+            assertEquals(401, response.getStatus());
+            assertThat(response.getEntity().toString()).contains("maximum failed logins limit reached, account is locked. contact system administrator");
+        } finally {
+            unlockAccount("jad");
+        }
     }
 
     @Test
