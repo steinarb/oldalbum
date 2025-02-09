@@ -1,5 +1,5 @@
 /*
- * Copyright 2024 Steinar Bang
+ * Copyright 2024-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -151,9 +151,7 @@ class LoginResourceTest extends ShiroTestBase {
         var username = "jad";
         var password = "wrong";
         var redirectUrl = "https://myserver.com/resource";
-        assertThrows(InternalServerErrorException.class, () -> {
-            resource.postLogin(username, password, redirectUrl);
-        });
+        assertThrows(InternalServerErrorException.class, () -> resource.postLogin(username, password, redirectUrl));
     }
 
     private void lockAccount(String username) {
