@@ -49,7 +49,7 @@ class HtmlTemplateResourceTest {
         }
 
         var resource = new NotFoundFile();
-        assertThrows(InternalServerErrorException.class, () -> resource.expandFile());
+        assertThrows(InternalServerErrorException.class, resource::expandFile);
     }
 
 }
