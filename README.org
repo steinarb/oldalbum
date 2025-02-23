@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2025-02-19 Wed 22:17> |   2.1.8 | Use liquibase 4.31.0                                                                                           |
 | <2025-02-18 Tue 22:22> |   2.1.7 | Bugfix: stop album from showing up empty in the react app                                                      |
 | <2025-02-12 Wed 19:22> |   2.1.6 | Replace axios/saga with RTK query, lock accounts on repeated logn failures, postgresql 42.7.5                  |
 | <2024-12-14 Sat 07:40> |   2.1.5 | Use liquibase 4.30.0, postgresql jdbc 42.7.4, shiro 2.0.2, bang-servlet 1.8.1 and authservice 2.0.4            |
