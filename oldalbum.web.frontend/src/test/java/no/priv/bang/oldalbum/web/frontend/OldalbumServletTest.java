@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,6 +21,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 
+import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -663,6 +664,28 @@ class OldalbumServletTest {
         var servlet = new OldalbumServlet();
         var formattedNow = servlet.formatDateAndSize(AlbumEntry.with().contentLength(-1).build());
         assertThat(formattedNow).isEmpty();
+    }
+
+    @Test
+    void readLinesFromClasspath() {
+        var logservice = new MockLogService();
+
+        var servlet = new OldalbumServlet();
+        servlet.setLogService(logservice);
+
+        var routes = servlet.readLinesFromClasspath("testroutes.txt");
+
+        assertThat(routes).isNotEmpty().hasSize(4);
+    }
+
+    @Test
+    void readLinesFromClasspathWithFileNotFound() {
+        var logservice = new MockLogService();
+
+        var servlet = new OldalbumServlet();
+        servlet.setLogService(logservice);
+
+        assertThrows(OldAlbumException.class, () -> servlet.readLinesFromClasspath("notfound.txt"));
     }
 
     protected void loginUser(String username, String password) {
