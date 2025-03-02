@@ -55,8 +55,8 @@ function exportRoutesPlugin() {
                                 const elementName = path.node.openingElement.name.name;
                                 if (elementName === 'Route') {
                                     path.node.openingElement.attributes.forEach((attribute) => {
-                                        if (attribute.name.name === 'path') {
-                                            routePaths.add( attribute.value.value);
+                                        if (attribute.name.name === 'path' && attribute.value.value) {
+                                            routePaths.add(attribute.value.value);
                                         }
                                     });
                                 }
