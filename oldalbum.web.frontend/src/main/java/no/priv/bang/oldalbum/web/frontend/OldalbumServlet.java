@@ -39,17 +39,14 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardServletPatte
 
 import static org.osgi.service.http.whiteboard.HttpWhiteboardConstants.*;
 
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 import org.osgi.service.log.LogService;
 
-import no.priv.bang.oldalbum.services.OldAlbumException;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.bean.AlbumEntry;
 import no.priv.bang.servlet.frontend.FrontendServlet;
@@ -64,8 +61,7 @@ public class OldalbumServlet extends FrontendServlet {
     private OldAlbumService oldalbum; // NOSONAR set by OSGi dependency injection and not touched after that
 
     public OldalbumServlet() {
-        super();
-        setRoutes(readLinesFromClasspath("assets/routes.txt"));
+        super(OldalbumServlet.class);
     }
 
     @Override
@@ -455,14 +451,5 @@ public class OldalbumServlet extends FrontendServlet {
     @SuppressWarnings("unchecked")
     public static <E extends Throwable> void sneakyThrows(Throwable e) throws E {
         throw (E) e;
-    }
-
-    String[] readLinesFromClasspath(String fileName) {
-        try (var reader = new BufferedReader(new InputStreamReader(this.getClass().getClassLoader().getResourceAsStream(fileName)))) {
-            var lines = reader.lines().toList();
-            return lines.toArray(new String[0]);
-        } catch (Exception e) {
-            throw new OldAlbumException("Failed to read routes list from classpath resource", e);
-        }
     }
 }
