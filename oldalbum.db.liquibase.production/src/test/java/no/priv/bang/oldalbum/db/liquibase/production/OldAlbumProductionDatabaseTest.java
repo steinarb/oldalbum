@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.db.liquibase.production;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.db.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
@@ -25,6 +26,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.assertj.db.type.AssertDbConnectionFactory;
 import org.junit.jupiter.api.Test;
 import org.ops4j.pax.jdbc.derby.impl.DerbyDataSourceFactory;
 import org.osgi.service.jdbc.DataSourceFactory;
@@ -39,12 +41,17 @@ class OldAlbumProductionDatabaseTest {
     @Test
     void testPrepare() throws Exception {
         var datasource = createDataSource("oldalbum");
+        var assertjConnection = AssertDbConnectionFactory.of(datasource).create();
         var logservice = new MockLogService();
         var hook = new OldAlbumProductionDatabase();
         hook.setLogService(logservice);
         hook.activate();
         hook.prepare(datasource);
-        assertDummyDataAsExpected(datasource);
+
+        var albumentries = assertjConnection.table("albumentries").build();
+        assertThat(albumentries).exists().hasNumberOfRows(EXPECTED_NUMBER_OF_ALBUMENTRIES)
+            .row(0)
+            .value("require_login").isFalse();
     }
 
     @Test
@@ -92,35 +99,6 @@ class OldAlbumProductionDatabaseTest {
         var logmessages = logservice.getLogmessages();
         assertEquals(1, logmessages.size());
         assertThat(logmessages.get(0)).startsWith("[ERROR] Error updating schema of oldalbum production database");
-    }
-
-    private void assertDummyDataAsExpected(DataSource datasource) throws Exception {
-        try(var connection = datasource.getConnection()) {
-            var countSql = "select count(*) from albumentries";
-            try(var countStatement = connection.createStatement()) {
-                try(var results = countStatement.executeQuery(countSql)) {
-                    if (results.next()) {
-                        var numberOfRows = results.getInt(1);
-                        assertEquals(EXPECTED_NUMBER_OF_ALBUMENTRIES, numberOfRows);
-                    } else {
-                        fail("Unable to count the rows in albumentries");
-                    }
-                }
-            }
-
-            // The single existing entry will have require_login=false and count will be 0
-            var countWithRequireLoginSql = "select count(*) from albumentries where require_login=true";
-            try(var countStatement = connection.createStatement()) {
-                try(var results = countStatement.executeQuery(countWithRequireLoginSql)) {
-                    if (results.next()) {
-                        var numberOfRows = results.getInt(1);
-                        assertEquals(0, numberOfRows);
-                    } else {
-                        fail("Unable to count the rows with require_login in albumentries");
-                    }
-                }
-            }
-        }
     }
 
     private DataSource createDataSource(String dbname) throws Exception {
