@@ -45,9 +45,7 @@ class OldAlbumLiquibaseTest {
         var albumentries1 = assertjConnection.table("albumentries").build();
         assertThat(albumentries1).exists().isEmpty();
 
-        try(var connection = datasource.getConnection()) {
-            addAlbumEntries(connection);
-        }
+        addAlbumEntries(datasource);
 
         var albumentries2 = assertjConnection.table("albumentries").build();
         assertThat(albumentries2).exists().hasNumberOfRows(2)
@@ -125,9 +123,11 @@ class OldAlbumLiquibaseTest {
             .value("group_by_year").isNull();
     }
 
-    private void addAlbumEntries(Connection connection) throws Exception {
-        addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
-        addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
+    private void addAlbumEntries(DataSource datasource) throws Exception {
+        try(var connection = datasource.getConnection()) {
+            addAlbumEntry(connection, 0, "/album/", true, "Album", "This is an album", null, null, 1, null, null, 0);
+            addAlbumEntry(connection, 1, "/album/bilde01", false, "VFR at Arctic Circle", "This is the VFR up north", "https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg", "https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif", 2, new Date(800275785000L), "image/jpeg", 128186);
+        }
     }
 
     private void addAlbumEntry(Connection connection, int parent, String path, boolean album, String title, String description, String imageUrl, String thumbnailUrl, int sort, Date lastmodified, String contenttype, int size) throws Exception {
