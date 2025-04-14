@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,6 +34,7 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 
+import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
@@ -46,6 +47,8 @@ class OldAlbumShiroFilterTest {
         filter.setRealm(realm);
         var session = new MemorySessionDAO();
         filter.setSession(session);
+        var cipherKeyService = mock(CipherKeyService.class);
+        filter.setCipherKeyService(cipherKeyService);
         var oldalbum = mock(OldAlbumService.class);
         filter.setOldAlbumService(oldalbum);
         var logservice = new MockLogService();
@@ -65,6 +68,8 @@ class OldAlbumShiroFilterTest {
         filter.setRealm(realm);
         var session = new MemorySessionDAO();
         filter.setSession(session);
+        var cipherKeyService = mock(CipherKeyService.class);
+        filter.setCipherKeyService(cipherKeyService);
         var oldalbum = mock(OldAlbumService.class);
         var emptyProtectedUrls = new LinkedHashMap<String, String>();
         var protectedUrls = new LinkedHashMap<String, String>();

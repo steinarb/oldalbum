@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,6 +16,7 @@
 package no.priv.bang.oldalbum.web.security;
 
 import org.apache.shiro.config.Ini;
+import org.apache.shiro.mgt.AbstractRememberMeManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
 import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
@@ -29,6 +30,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPatter
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 
@@ -49,6 +51,7 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter implements Reloadab
     private SessionDAO session;
     private OldAlbumService oldalbum;
     private Logger logger;
+    private CipherKeyService cipherKeyService;
 
     @Reference
     public void setRealm(Realm realm) {
@@ -58,6 +61,11 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter implements Reloadab
     @Reference
     public void setSession(SessionDAO session) {
         this.session = session;
+    }
+
+    @Reference
+    public void setCipherKeyService(CipherKeyService cipherKeyService) {
+        this.cipherKeyService = cipherKeyService;
     }
 
     @Reference
@@ -95,6 +103,9 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter implements Reloadab
         var securityManager = DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager());
         securityManager.setSessionManager(sessionmanager);
         securityManager.setRealm(realm);
+
+        var remembermeManager = (AbstractRememberMeManager)securityManager.getRememberMeManager();
+        remembermeManager.setCipherKey(cipherKeyService.getCipherKey());
 
         setSecurityManager(securityManager);
         setFilterChainResolver(environment.getFilterChainResolver());
