@@ -99,6 +99,13 @@ listeners.startListening({
 })
 
 listeners.startListening({
+    matcher: api.endpoints.getTogglepasswordprotection.matchFulfilled,
+    effect: async (action, listenerApi) => {
+        listenerApi.dispatch(api.endpoints.getReloadshiroconfig.initiate());
+    }
+})
+
+listeners.startListening({
     actionCreator: ALBUM_SELECT_ALL,
     effect: (action, listenerApi) => {
         const album = action.payload;
