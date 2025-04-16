@@ -11,4 +11,4 @@ const sharedLinkItemSlice = createSlice({
 });
 
 export const { shareLink, clearSharedLink } = sharedLinkItemSlice.actions;
-export default sharedLinkItemSlice.reducers;
+export default sharedLinkItemSlice.reducer;
