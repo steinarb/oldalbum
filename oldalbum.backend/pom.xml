@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
-    <!-- Copyright 2020-2023 Steinar Bang                                                -->
+    <!-- Copyright 2020-2025 Steinar Bang                                                -->
     <!--                                                                                 -->
     <!-- Licensed under the Apache License, Version 2.0 (the "License");                 -->
     <!-- you may not use this file except in compliance with the License.                -->
@@ -38,6 +38,14 @@
             <artifactId>jsoup</artifactId>
         </dependency>
         <dependency>
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.twelvemonkeys.imageio</groupId>
+            <artifactId>imageio-metadata</artifactId>
+        </dependency>
+        <dependency>
             <groupId>no.priv.bang.jdbc</groupId>
             <artifactId>jdbc.sqldumper</artifactId>
             <scope>provided</scope>
@@ -49,12 +57,25 @@
             <classifier>features</classifier>
         </dependency>
         <dependency>
-            <groupId>commons-io</groupId>
-            <artifactId>commons-io</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>osgi.core</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
-            <groupId>com.twelvemonkeys.imageio</groupId>
-            <artifactId>imageio-metadata</artifactId>
+            <groupId>org.osgi</groupId>
+            <artifactId>org.osgi.service.component.annotations</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>adapters.logservice</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>no.priv.bang.osgi.service.adapters</groupId>
+            <artifactId>adapters.logservice</artifactId>
+            <type>xml</type>
+            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
@@ -138,27 +159,6 @@
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>osgi.core</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.osgi</groupId>
-            <artifactId>org.osgi.service.component.annotations</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <scope>provided</scope>
-        </dependency>
-        <dependency>
-            <groupId>no.priv.bang.osgi.service.adapters</groupId>
-            <artifactId>adapters.logservice</artifactId>
-            <type>xml</type>
-            <classifier>features</classifier>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.osgi.service.adapters</groupId>
