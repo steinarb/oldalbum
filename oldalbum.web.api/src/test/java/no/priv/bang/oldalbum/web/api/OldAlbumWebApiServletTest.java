@@ -426,6 +426,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         assertThat(logservice.getLogmessages()).hasSizeGreaterThan(originalNumberOfLogmessages);
     }
 
+    @SuppressWarnings("unchecked")
     @Test
     void testDownloadSelectedImages() throws Exception {
         var albumId = 4;
@@ -452,8 +453,7 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
 
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         assertEquals(MediaType.APPLICATION_OCTET_STREAM, response.getContentType());
-        @SuppressWarnings("unchecked")
-            ArgumentCaptor<List<Integer>> argumentCaptor = ArgumentCaptor.forClass((List.class));
+        ArgumentCaptor<List<Integer>> argumentCaptor = ArgumentCaptor.forClass((List.class));
         verify(backend).downloadAlbumEntrySelection(argumentCaptor.capture());
         assertThat(argumentCaptor.getValue()).hasSize(3);
     }
