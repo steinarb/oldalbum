@@ -16,12 +16,9 @@
 package no.priv.bang.oldalbum.web.security;
 
 import org.apache.shiro.config.Ini;
-import org.apache.shiro.mgt.AbstractRememberMeManager;
 import org.apache.shiro.realm.Realm;
 import org.apache.shiro.session.mgt.eis.SessionDAO;
-import org.apache.shiro.web.mgt.DefaultWebSecurityManager;
-import org.apache.shiro.web.servlet.AbstractShiroFilter;
-import org.apache.shiro.web.session.mgt.DefaultWebSessionManager;
+import org.apache.shiro.web.env.IniWebEnvironment;
 import org.osgi.service.component.annotations.Activate;
 import org.osgi.service.component.annotations.Component;
 import org.osgi.service.component.annotations.Reference;
@@ -31,6 +28,7 @@ import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
 import no.priv.bang.authservice.definitions.CipherKeyService;
+import no.priv.bang.authservice.web.security.shirofilter.AuthserviceShiroFilterBase;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.oldalbum.services.ReloadableShiroFilter;
 
@@ -41,17 +39,14 @@ import javax.servlet.Filter;
 @Component(service= {Filter.class, ReloadableShiroFilter.class}, immediate=true)
 @HttpWhiteboardContextSelect("(" + HTTP_WHITEBOARD_CONTEXT_NAME + "=oldalbum)")
 @HttpWhiteboardFilterPattern("/*")
-public class OldAlbumShiroFilter extends AbstractShiroFilter implements ReloadableShiroFilter { // NOSONAR Can't do anything about the inheritance of Shiro
+public class OldAlbumShiroFilter extends AuthserviceShiroFilterBase implements ReloadableShiroFilter { // NOSONAR Can't do anything about the inheritance of Shiro
     private static final Ini INI_FILE = new Ini();
     static {
         // Can't use the Ini.fromResourcePath(String) method because it can't find "shiro.ini" on the classpath in an OSGi context
         INI_FILE.load(OldAlbumShiroFilter.class.getClassLoader().getResourceAsStream("shiro.ini"));
     }
-    private Realm realm;
-    private SessionDAO session;
     private OldAlbumService oldalbum;
     private Logger logger;
-    private CipherKeyService cipherKeyService;
 
     @Reference
     public void setRealm(Realm realm) {
@@ -90,26 +85,13 @@ public class OldAlbumShiroFilter extends AbstractShiroFilter implements Reloadab
 
     boolean loadShiroConfiguration() {
         logger.info("Configuring shiro filter");
-        Thread.currentThread().setContextClassLoader(getClass().getClassLoader()); // Set class loader that can find PassThruAuthenticationFilter for the Shiro INI parser
-        var environment = new OldAlbumWebEnvironment(oldalbum);
-        environment.setIni(INI_FILE);
-        environment.setServletContext(getServletContext());
-        environment.init();
-
-        var sessionmanager = new DefaultWebSessionManager();
-        sessionmanager.setSessionDAO(session);
-        sessionmanager.setSessionIdUrlRewritingEnabled(false);
-
-        var securityManager = DefaultWebSecurityManager.class.cast(environment.getWebSecurityManager());
-        securityManager.setSessionManager(sessionmanager);
-        securityManager.setRealm(realm);
-
-        var remembermeManager = (AbstractRememberMeManager)securityManager.getRememberMeManager();
-        remembermeManager.setCipherKey(cipherKeyService.getCipherKey());
-
-        setSecurityManager(securityManager);
-        setFilterChainResolver(environment.getFilterChainResolver());
+        createShiroWebEnvironmentFromIniFile(getClass().getClassLoader(), INI_FILE);
         return true;
+    }
+
+    @Override
+    protected IniWebEnvironment createShiroIniWebEnvironment() {
+        return new OldAlbumWebEnvironment(oldalbum);
     }
 
 }
