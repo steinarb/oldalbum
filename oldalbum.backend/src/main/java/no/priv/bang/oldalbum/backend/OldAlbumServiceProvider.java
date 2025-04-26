@@ -676,7 +676,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     void writeImageWithModifiedMetadataToZipArchive(ZipOutputStream zipArchive, AlbumEntry albumEntry, ImageAndWriter imageAndWriter) throws IOException {
         var filename = findFileNamePartOfUrl(albumEntry.imageUrl());
         var entry = new ZipEntry(filename);
-        entry.setLastModifiedTime(FileTime.fromMillis(albumEntry.lastModified().getTime()));
+        Optional.ofNullable(albumEntry.lastModified()).ifPresent(lm -> entry.setLastModifiedTime(FileTime.fromMillis(lm.getTime())));
         zipArchive.putNextEntry(entry);
         writeImageWithModifiedMetadataToOutputStream(zipArchive, imageAndWriter.writer(), imageAndWriter.image(), albumEntry);
     }

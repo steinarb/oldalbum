@@ -1374,12 +1374,13 @@ class OldAlbumServiceProviderTest {
 
     @Test
     void testWriteImageWithModifiedMetadataToZipArchiveWithNullLastModifiedDate() throws Exception {
-        var provider = new OldAlbumServiceProvider();
+        var provider = spy(new OldAlbumServiceProvider());
+        doNothing().when(provider).writeImageWithModifiedMetadataToOutputStream(any(), any(), any(), any()); // Mock to avoid different NPE
         var zipArchive = mock(ZipOutputStream.class);
         var imageAndWriter = mock(ImageAndWriter.class);
         var imageEntryWithNullLastModifiedDate = AlbumEntry.with().imageUrl("").build();
 
-        assertThrows(NullPointerException.class, () -> provider.writeImageWithModifiedMetadataToZipArchive(zipArchive, imageEntryWithNullLastModifiedDate, imageAndWriter));
+        assertDoesNotThrow(() -> provider.writeImageWithModifiedMetadataToZipArchive(zipArchive, imageEntryWithNullLastModifiedDate, imageAndWriter));
     }
 
     @Test
