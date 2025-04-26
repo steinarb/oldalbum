@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -673,7 +673,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         };
     }
 
-    private void writeImageWithModifiedMetadataToZipArchive(ZipOutputStream zipArchive, AlbumEntry albumEntry, ImageAndWriter imageAndWriter) throws IOException {
+    void writeImageWithModifiedMetadataToZipArchive(ZipOutputStream zipArchive, AlbumEntry albumEntry, ImageAndWriter imageAndWriter) throws IOException {
         var filename = findFileNamePartOfUrl(albumEntry.imageUrl());
         var entry = new ZipEntry(filename);
         entry.setLastModifiedTime(FileTime.fromMillis(albumEntry.lastModified().getTime()));

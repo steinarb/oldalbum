@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2025 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -51,6 +51,8 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
+import java.util.zip.ZipOutputStream;
+
 import javax.imageio.metadata.IIOMetadataNode;
 import javax.sql.DataSource;
 
@@ -1368,6 +1370,16 @@ class OldAlbumServiceProviderTest {
         var picturefilename = provider.findFileNamePartOfUrl(albumpictures.get(0).imageUrl());
         var zipentry = findZipEntryFor(downloadAlbum.toFile(), picturefilename);
         assertEquals(albumpictures.get(0).lastModified(), new Date(zipentry.getLastModifiedTime().toInstant().toEpochMilli()));
+    }
+
+    @Test
+    void testWriteImageWithModifiedMetadataToZipArchiveWithNullLastModifiedDate() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var zipArchive = mock(ZipOutputStream.class);
+        var imageAndWriter = mock(ImageAndWriter.class);
+        var imageEntryWithNullLastModifiedDate = AlbumEntry.with().imageUrl("").build();
+
+        assertThrows(NullPointerException.class, () -> provider.writeImageWithModifiedMetadataToZipArchive(zipArchive, imageEntryWithNullLastModifiedDate, imageAndWriter));
     }
 
     @Test
