@@ -31,7 +31,6 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.services</artifactId>
-            <version>${project.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -125,13 +124,11 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.backend</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.testutilities</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

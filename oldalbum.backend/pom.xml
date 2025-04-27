@@ -31,7 +31,6 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.services</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jsoup</groupId>
@@ -80,7 +79,6 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.backend.imageio</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
@@ -106,13 +104,11 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase.test</artifactId>
-            <version>${project.version}</version>
             <scope>test</scope>
         </dependency>
         <dependency>

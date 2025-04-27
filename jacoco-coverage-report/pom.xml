@@ -27,52 +27,42 @@
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.services</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.roleadder.test</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase.test</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase.production</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.db.liquibase.urlinit</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.backend</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.web.security</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.web.api</artifactId>
-            <version>${project.version}</version>
         </dependency>
         <dependency>
             <groupId>no.priv.bang.oldalbum</groupId>
             <artifactId>oldalbum.web.frontend</artifactId>
-            <version>${project.version}</version>
         </dependency>
     </dependencies>
 

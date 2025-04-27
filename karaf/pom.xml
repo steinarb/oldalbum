@@ -30,77 +30,66 @@
         <dependency>
             <artifactId>oldalbum.services</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.roleadder.test</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.db.liquibase</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.db.liquibase.test</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.backend</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.backend.imageio</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.web.security</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.web.api</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.web.frontend</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.db.liquibase.urlinit</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
         <dependency>
             <artifactId>oldalbum.db.liquibase.production</artifactId>
             <groupId>no.priv.bang.oldalbum</groupId>
-            <version>${project.version}</version>
             <type>xml</type>
             <classifier>features</classifier>
         </dependency>
