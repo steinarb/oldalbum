@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2025-05-05 Mon 19:16> |   2.2.3 | Fixes NPE in zip file download, uses jersey 2.46 and jackson 2.19.0                                            |
 | <2025-04-24 Thu 18:43> |   2.2.2 | Fixes reload after changing access, fixes URL sharing, fixes shiro rememberme, uses shiro 2.0.4                |
 | <2025-04-05 Sat 19:13> |   2.2.1 | Use liquibase 4.31.1                                                                                           |
 | <2025-03-02 Sun 19:11> |   2.2.0 | Use runtime-incompatible bang-servlet 2.0.0, authservice 2.1.0                                                 |
