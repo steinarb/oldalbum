@@ -27,6 +27,7 @@ import org.osgi.service.http.whiteboard.propertytypes.HttpWhiteboardFilterPatter
 import org.osgi.service.log.LogService;
 import org.osgi.service.log.Logger;
 
+import no.priv.bang.authservice.definitions.AuthserviceShiroConfigService;
 import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.authservice.web.security.shirofilter.AuthserviceShiroFilterBase;
 import no.priv.bang.oldalbum.services.OldAlbumService;
@@ -61,6 +62,11 @@ public class OldAlbumShiroFilter extends AuthserviceShiroFilterBase implements R
     @Reference
     public void setCipherKeyService(CipherKeyService cipherKeyService) {
         this.cipherKeyService = cipherKeyService;
+    }
+
+    @Reference
+    public void setShiroConfigService(AuthserviceShiroConfigService shiroConfigService) {
+        this.shiroConfigService = shiroConfigService;
     }
 
     @Reference

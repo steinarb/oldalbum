@@ -34,6 +34,7 @@ import com.mockrunner.mock.web.MockHttpServletRequest;
 import com.mockrunner.mock.web.MockHttpServletResponse;
 import com.mockrunner.mock.web.MockHttpSession;
 
+import no.priv.bang.authservice.definitions.AuthserviceShiroConfigService;
 import no.priv.bang.authservice.definitions.CipherKeyService;
 import no.priv.bang.oldalbum.services.OldAlbumService;
 import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
@@ -49,6 +50,8 @@ class OldAlbumShiroFilterTest {
         filter.setSession(session);
         var cipherKeyService = mock(CipherKeyService.class);
         filter.setCipherKeyService(cipherKeyService);
+        var shiroConfigService = mock(AuthserviceShiroConfigService.class);
+        filter.setShiroConfigService(shiroConfigService);
         var oldalbum = mock(OldAlbumService.class);
         filter.setOldAlbumService(oldalbum);
         var logservice = new MockLogService();
@@ -70,6 +73,9 @@ class OldAlbumShiroFilterTest {
         filter.setSession(session);
         var cipherKeyService = mock(CipherKeyService.class);
         filter.setCipherKeyService(cipherKeyService);
+        var shiroConfigService = mock(AuthserviceShiroConfigService.class);
+        when(shiroConfigService.getGlobalSessionTimeout()).thenReturn(1800000L);
+        filter.setShiroConfigService(shiroConfigService);
         var oldalbum = mock(OldAlbumService.class);
         var emptyProtectedUrls = new LinkedHashMap<String, String>();
         var protectedUrls = new LinkedHashMap<String, String>();
