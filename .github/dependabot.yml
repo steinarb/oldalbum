@@ -1,0 +1,17 @@
+version: 2
+updates:
+- package-ecosystem: maven
+  directory: "/"
+  schedule:
+    interval: daily
+  ignore:
+    # ignore Maven APIs/SPIs
+    - dependency-name: org.apache.maven:*
+- package-ecosystem: "github-actions"
+  directory: "/"
+  schedule:
+    interval: "daily"
+- package-ecosystem: "npm"
+  directory: "/handlereg.web.frontend/src/main/frontend/"
+  schedule:
+    interval: "daily"
