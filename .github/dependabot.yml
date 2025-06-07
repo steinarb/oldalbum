@@ -12,6 +12,7 @@ updates:
   schedule:
     interval: "daily"
 - package-ecosystem: "npm"
+
   directory: "/oldalbum.web.frontend/src/main/frontend/"
   schedule:
     interval: "daily"
