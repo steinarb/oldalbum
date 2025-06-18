@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2025-06-18 Wed 21:07> |   2.2.6 | User jersey 2.47, jackson 2.19.1                                                                               |
 | <2025-06-14 Sat 20:14> |   2.2.5 | Built for java 21, postgresql 42.7.7, authservice 3.0.0                                                        |
 | <2025-05-17 Sat 15:18> |   2.2.4 | Add support for karaf config of shiro rememberme session timeout                                               |
 | <2025-05-05 Mon 19:16> |   2.2.3 | Fixes NPE in zip file download, uses jersey 2.46 and jackson 2.19.0                                            |
