@@ -1,6 +1,6 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from 'redux-first-history';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
@@ -21,9 +21,10 @@ export default function Picture(props) {
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
+    const navigate = useNavigate();
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => next && dispatch(push(next.path)),
-        onSwipedRight: () => previous && dispatch(push(previous.path)),
+        onSwipedLeft: () => next && navigate(next.path),
+        onSwipedRight: () => previous && navigate(previous.path),
     });
 
     return (

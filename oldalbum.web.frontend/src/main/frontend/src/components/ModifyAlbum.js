@@ -1,5 +1,5 @@
 import React from 'react';
-import { push } from 'redux-first-history';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -32,8 +32,9 @@ export default function ModifyAlbum() {
     const albums = allroutes.filter(r => r.album).filter(r => r.id !== album.id);
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postModifyalbum ] = usePostModifyalbumMutation();
-    const onModifyAlbumClicked = async () => { await postModifyalbum(album); dispatch(push(uplocation)); }
-    const onCancelClicked = () => { dispatch(clearAlbum()); dispatch(push(uplocation)); }
+    const navigate = useNavigate();
+    const onModifyAlbumClicked = async () => { await postModifyalbum(album); navigate(uplocation); }
+    const onCancelClicked = () => { dispatch(clearAlbum()); navigate(uplocation); }
 
     return(
         <div>

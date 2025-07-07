@@ -1,5 +1,5 @@
 import React from 'react';
-import { push } from 'redux-first-history';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -32,8 +32,9 @@ export default function ModifyPicture() {
     const lastmodified = picture.lastModified ? picture.lastModified.split('T')[0] : '';
     const dispatch = useDispatch();
     const [ postModifypicture ] = usePostModifypictureMutation();
-    const onModifyPictureClicked = async () => { await postModifypicture(picture); dispatch(push(picture.path)); }
-    const onCancelClicked = () => { dispatch(clearPicture()); dispatch(push(parentalbum.path)); }
+    const navigate = useNavigate();
+    const onModifyPictureClicked = async () => { await postModifypicture(picture); navigate(picture.path); }
+    const onCancelClicked = () => { dispatch(clearPicture()); navigate(parentalbum.path); }
 
     return(
         <div>

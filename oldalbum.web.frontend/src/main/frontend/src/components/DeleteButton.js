@@ -1,11 +1,11 @@
 import React from 'react';
+import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostDeleteentryMutation,
 } from '../api';
-import { push } from 'redux-first-history';
 
 export default function DeleteButton(props) {
     const { item } = props;
@@ -19,9 +19,10 @@ export default function DeleteButton(props) {
     const children = childentries || [];
     const dispatch = useDispatch();
     const [ postDeleteentry ] = usePostDeleteentryMutation();
+    const navigate = useNavigate();
     const onDelete = async () => {
         await postDeleteentry(item);
-        dispatch(push(parentpath));
+        navigate(parentpath);
     };
 
     // Button doesn't show up if: 1. edit not allowed, 2: this is the root album, 3: this is an album with content

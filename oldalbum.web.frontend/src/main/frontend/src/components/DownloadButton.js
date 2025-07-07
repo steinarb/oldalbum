@@ -10,7 +10,7 @@ import { stringify } from 'qs';
 
 export default function DownloadButton(props) {
     const { className = '', item } = props;
-    const routerBasename = useSelector(state => state.router.basename);
+    const routerBasename = useSelector(state => state.basename);
     const selectedentries = useSelector(state => state.selectedentries);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);

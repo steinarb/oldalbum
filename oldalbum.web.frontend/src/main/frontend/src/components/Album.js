@@ -4,8 +4,7 @@ import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
 } from '../api';
-import { NavLink } from 'react-router';
-import { push } from 'redux-first-history';
+import { NavLink, useNavigate, useLocation } from 'react-router';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
 import { pictureTitle } from './commonComponentCode';
@@ -43,7 +42,8 @@ export default function Album(props) {
     const childrenGroupedByYear = useSelector(state => state.childentriesByYear[item.id]);
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
-    const hash = useSelector(state => state.router.location.hash);
+    const location = useLocation();
+    const hash = location.hash;
     const albumGroupByYear = useSelector(state => state.albumGroupByYear[item.id] === undefined ? true : state.albumGroupByYear[item.id]);
     const showEditControls = useSelector(state => state.showEditControls);
     const sortingStatus = useSelector(state => state.sortingStatus);
@@ -53,9 +53,10 @@ export default function Album(props) {
     const pathFragments = item.path.split('/');
     pathFragments.pop(); // Remove empty element caused by trailing slash
     const anchor = pathFragments.pop();
+    const navigate = useNavigate();
     const swipeHandlers = useSwipeable({
-        onSwipedLeft: () => next && dispatch(push(next.path)),
-        onSwipedRight: () => previous && dispatch(push(previous.path)),
+        onSwipedLeft: () => next && navigate(next.path),
+        onSwipedRight: () => previous && navigate(previous.path),
     });
     useEffect(() => {
         const elem = document.getElementById(targetId);

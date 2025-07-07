@@ -14,7 +14,7 @@ export default function LoginLogoutButton() {
     const loggedIn = useSelector(state => state.loggedIn);
     const username = useSelector(state => state.username);
     const canLogin = useSelector(state => state.canLogin);
-    const routerBasename = useSelector(state => state.router.basename);
+    const routerBasename = useSelector(state => state.basename);
     const [ getLogout ] = useGetLogoutMutation();
     const onLogoutClicked = async () => { await getLogout() }
 

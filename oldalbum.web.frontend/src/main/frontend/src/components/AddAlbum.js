@@ -1,6 +1,6 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { push } from 'redux-first-history';
+import { useNavigate } from 'react-router';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -34,8 +34,9 @@ export default function AddAlbum() {
     const uplocation = parentalbum.path || '/';
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postAddalbum ] = usePostAddalbumMutation();
-    const onAddAlbumClicked = async () => { await postAddalbum(album); dispatch(push(album.path)); }
-    const onCancelClicked = () => { dispatch(clearAlbum()); dispatch(push(uplocation)); }
+    const navigate = useNavigate();
+    const onAddAlbumClicked = async () => { await postAddalbum(album); navigate(album.path); }
+    const onCancelClicked = () => { dispatch(clearAlbum()); navigate(uplocation); }
 
     return(
         <div>
