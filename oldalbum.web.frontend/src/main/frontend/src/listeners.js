@@ -10,7 +10,6 @@ import { show, hide } from './reducers/showEditControlsSlice';
 import { clearSelection, setSelection } from './reducers/selectedentriesSlice';
 import { openWarningDialog, closeWarningDialog } from './reducers/displayPasswordProtectionWarningDialogSlice';
 import { shareLink, clearSharedLink } from './reducers/sharedLinkItemSlice';
-import { LOCATION_CHANGE } from 'redux-first-history';
 import {
     SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT,
     REMOVE_PASSWORD_PROTECTION_AND_CLOSE_WARNING_DIALOG,
@@ -119,68 +118,6 @@ listeners.startListening({
     effect: async (action, listenerApi) => {
         await listenerApi.delay(1000);
         listenerApi.dispatch(clearSelection());
-    }
-})
-
-// Fill forms from redux state values based on form location
-listeners.startListening({
-    type: LOCATION_CHANGE,
-    effect: async (action, listenerApi) => {
-        const { location = {} } = action.payload || {};
-        const basename = listenerApi.getState().basename;
-        const pathname = findPathname(location, basename);
-        const queryParams = parse(location.search, { ignoreQueryPrefix: true });
-
-        listenerApi.dispatch(clearSelection());
-
-        if (pathname === '/modifyalbum') {
-            if (await listenerApi.condition(isAnyOf(allroutesHasData(listenerApi), isAllroutes))) {
-                const { id } = queryParams;
-                const albumentries = findAlbumentries(listenerApi.getState());
-                const idInt = parseInt(id, 10);
-                const album = albumentries[idInt];
-                const basename = extractBasename(album.path);
-                const lastModified = album.lastModified ? new Date(album.lastModified).toISOString() : album.lastModified;
-                listenerApi.dispatch(albumPrepare({ ...album, basename, lastModified }));
-            }
-        }
-
-        if (pathname === '/addalbum') {
-            if (await listenerApi.condition(isAnyOf(allroutesHasData(listenerApi), isAllroutes))) {
-                const { parent } = queryParams;
-                const albumentries = findAlbumentries(listenerApi.getState());
-                const parentId = parseInt(parent, 10);
-                const parentalbum = albumentries[parentId];
-                const path = (parentalbum.path ? parentalbum.path : '/') + '/';
-                const sort = (parentalbum.childcount || 0) + 1;
-                listenerApi.dispatch(albumPrepare({ parent: parentId, path, sort }));
-            }
-        }
-
-        if (pathname === '/modifypicture') {
-            if (await listenerApi.condition(isAnyOf(allroutesHasData(listenerApi), isAllroutes))) {
-                const { id } = queryParams;
-                const albumentries = findAlbumentries(listenerApi.getState());
-                const idInt = parseInt(id, 10);
-                const picture = albumentries[idInt];
-                const basename = extractBasename(picture.path);
-                const lastModified = new Date(picture.lastModified).toISOString();
-                listenerApi.dispatch(picturePrepare({ ...picture, basename, lastModified }));
-            }
-        }
-
-        if (pathname === '/addpicture') {
-            if (await listenerApi.condition(isAnyOf(allroutesHasData(listenerApi), isAllroutes))) {
-                const { parent } = queryParams;
-                const albumentries = findAlbumentries(listenerApi.getState());
-                const parentId = parseInt(parent, 10);
-                const parentalbum = albumentries[parentId];
-                const path = parentalbum.path || '';
-                const sort = (parentalbum.childcount || 0) + 1;
-                const lastModified = new Date().toISOString();
-                listenerApi.dispatch(picturePrepare({ parent: parentId, path, sort, lastModified }));
-            }
-        }
     }
 })
 

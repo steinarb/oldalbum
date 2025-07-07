@@ -1,8 +1,7 @@
 import React from 'react';
 import { useSelector } from 'react-redux';
 import { useGetLoginQuery, useGetAllroutesQuery } from './api';
-import { Routes, Route } from 'react-router';
-import { HistoryRouter as Router } from "redux-first-history/rr6";
+import { Routes, Route, BrowserRouter as Router } from 'react-router';
 import './App.css';
 import Album from './components/Album';
 import Picture from './components/Picture';
@@ -23,7 +22,7 @@ export default function App(props) {
     return (
         <div>
             <PasswordProtectedWarningDialog/>
-            <Router history={history} basename={basename}>
+            <Router basename={basename}>
                 <Routes >
                     { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
                     <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />

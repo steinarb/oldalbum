@@ -25,8 +25,7 @@ import canLogin from './canLoginReducer';
 import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogSlice';
 import sharedLinkItem from './sharedLinkItemSlice';
 
-export default (routerReducer, basename) => combineReducers({
-    router: routerReducer,
+export default (basename) => combineReducers({
     [api.reducerPath]: api.reducer,
     messageBanner,
     allroutes,
