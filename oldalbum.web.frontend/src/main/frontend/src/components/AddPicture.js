@@ -1,13 +1,16 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useNavigate, useLocation } from 'react-router';
+import { parse } from 'qs';
 import {
+    useGetAllroutesQuery,
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostAddpictureMutation,
     usePostImageMetadataMutation,
 } from '../api';
 import {
+    picturePrepare,
     clearPicture,
     setBasename,
     setTitle,
@@ -18,17 +21,25 @@ import {
     setRequireLogin,
     setGroupByYear,
 } from '../reducers/pictureSlice'
-import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';
 
 export default function AddPicture() {
+    const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
+    const location = useLocation();
+    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+    const { parent } = queryParams;
+    const parentId = parseInt(parent, 10);
+    const dispatch = useDispatch();
+    const albumentries = useSelector(state => state.albumentries);
+    const parentalbum = albumentries[parentId] || {};
+    const path = parentalbum.path || '';
+    const sort = (parentalbum.childcount || 0) + 1;
+    useEffect(() => {allRoutesIsSuccess && dispatch(picturePrepare({ parent: parentId, path, sort, lastModified: new Date().toISOString() }))}, [allroutes, parentId]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const picture = useSelector(state => state.picture);
-    const parentalbum = useSelector(state => state.albumentries[picture.parent]) || { path: '' };
-    const dispatch = useDispatch();
     const lastmodified = picture.lastModified ? picture.lastModified.split('T')[0] : '';
     const [ postAddpicture ] = usePostAddpictureMutation();
     const navigate = useNavigate();

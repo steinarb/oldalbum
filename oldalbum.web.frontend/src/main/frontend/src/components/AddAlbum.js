@@ -1,14 +1,16 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { NavLink, useNavigate, useLocation } from 'react-router';
+import { parse } from 'qs';
 import {
+    useGetAllroutesQuery,
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostAddalbumMutation,
 } from '../api';
-import { NavLink, useSearchParams } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
+    albumPrepare,
     setBasename,
     setTitle,
     setDescription,
@@ -21,16 +23,22 @@ import {
 } from '../reducers/albumSlice';
 
 export default function AddAlbum() {
+    const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
+    const location = useLocation();
+    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+    const { parent } = queryParams;
+    const parentId = parseInt(parent, 10);
+    const dispatch = useDispatch();
+    const albumentries = useSelector(state => state.albumentries);
+    const parentalbum = albumentries[parentId] || {};
+    const path = (parentalbum.path ? parentalbum.path : '/') + '/';
+    const sort = (parentalbum.childcount || 0) + 1;
+    useEffect(() => {allRoutesIsSuccess && dispatch(albumPrepare({ parent: parentId, path, sort }))}, [allroutes, parentId]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const album = useSelector(state => state.album);
-    const allroutes = useSelector(state => state.allroutes);
-    const albums = allroutes.filter(r => r.album);
-    const albumentries = useSelector(state => state.albumentries);
-    const parentalbum = albumentries[album.parent] || {};
-    const dispatch = useDispatch();
-    const [ queryParams ] = useSearchParams();
+    const albums = (allRoutesIsSuccess && allroutes.filter(r => r.album)) || [];
     const uplocation = parentalbum.path || '/';
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postAddalbum ] = usePostAddalbumMutation();

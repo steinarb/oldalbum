@@ -1,12 +1,15 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useNavigate, useLocation } from 'react-router';
+import { parse } from 'qs';
 import {
+    useGetAllroutesQuery,
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostModifypictureMutation,
 } from '../api';
 import {
+    selectPicture,
     clearPicture,
     setParent,
     setBasename,
@@ -18,19 +21,23 @@ import {
     setRequireLogin,
     setGroupByYear,
 } from '../reducers/pictureSlice'
-import { NavLink } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 
 export default function ModifyPicture() {
+    const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
+    const location = useLocation();
+    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+    const { id } = queryParams;
+    const idInt = parseInt(id, 10);
+    const dispatch = useDispatch();
+    useEffect(() => {allRoutesIsSuccess && dispatch(selectPicture(allroutes.find(r => r.id === idInt)))}, [allroutes, idInt]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const picture = useSelector(state => state.picture);
     const parentalbum = useSelector(state => state.albumentries[picture.parent]) || { path: '/' };
-    const allroutes = useSelector(state => state.allroutes);
-    const albums = allroutes.filter(r => r.album).filter(r => r.id !== picture.album) || [];
+    const albums = (allRoutesIsSuccess && allroutes.filter(r => r.album).filter(r => r.id !== picture.album)) || [];
     const lastmodified = picture.lastModified ? picture.lastModified.split('T')[0] : '';
-    const dispatch = useDispatch();
     const [ postModifypicture ] = usePostModifypictureMutation();
     const navigate = useNavigate();
     const onModifyPictureClicked = async () => { await postModifypicture(picture); navigate(picture.path); }

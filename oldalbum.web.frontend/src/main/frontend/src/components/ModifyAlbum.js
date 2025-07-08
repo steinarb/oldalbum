@@ -1,14 +1,16 @@
-import React from 'react';
-import { useNavigate } from 'react-router';
+import React, { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { NavLink, useNavigate, useLocation } from 'react-router';
+import { parse } from 'qs';
 import {
+    useGetAllroutesQuery,
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
     usePostModifyalbumMutation,
 } from '../api';
-import { NavLink } from 'react-router';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import {
+    selectAlbum,
     setParent,
     setBasename,
     setTitle,
@@ -22,14 +24,19 @@ import {
 } from '../reducers/albumSlice';
 
 export default function ModifyAlbum() {
+    const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
+    const location = useLocation();
+    const queryParams = parse(location.search, { ignoreQueryPrefix: true });
+    const { id } = queryParams;
+    const idInt = parseInt(id, 10);
+    const dispatch = useDispatch();
+    useEffect(() => {allRoutesIsSuccess && dispatch(selectAlbum(allroutes.find(r => r.id === idInt)))}, [allroutes, idInt]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const album = useSelector(state => state.album);
     const uplocation = album.path;
-    const allroutes = useSelector(state => state.allroutes);
-    const dispatch = useDispatch();
-    const albums = allroutes.filter(r => r.album).filter(r => r.id !== album.id);
+    const albums = (allRoutesIsSuccess && allroutes.filter(r => r.album).filter(r => r.id !== album.id)) || [];
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postModifyalbum ] = usePostModifyalbumMutation();
     const navigate = useNavigate();
