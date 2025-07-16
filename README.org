@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2025-07-16 Wed 12:04> |   2.2.8 | Use apacehe shiro 2.0.5, bang-servlet 3.0.1, and authservice 3.0.3                                        |
 | <2025-07-11 Fri 19:16> |   2.2.7 | Use liquibase 4.33.0                                                                                           |
 | <2025-06-18 Wed 21:07> |   2.2.6 | User jersey 2.47, jackson 2.19.1                                                                               |
 | <2025-06-14 Sat 20:14> |   2.2.5 | Built for java 21, postgresql 42.7.7, authservice 3.0.0                                                        |
