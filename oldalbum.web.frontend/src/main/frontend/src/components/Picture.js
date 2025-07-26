@@ -23,6 +23,7 @@ export default function Picture(props) {
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
     const navigate = useNavigate();
     const swipeHandlers = useSwipeable({
+        onSwipedDown: () => parent && navigate(parent),
         onSwipedLeft: () => next && navigate(next.path),
         onSwipedRight: () => previous && navigate(previous.path),
     });
