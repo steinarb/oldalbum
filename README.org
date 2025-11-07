@@ -50,7 +50,8 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
-| <2025-09-20 Sat 22:59> |   3.0.5 | Use postgresql 42.7.8 and authservice 3.0.4 which uses postgresql 42.7.8                                                        |
+| <2025-11-07 Fri 16:22> |   3.0.6 | Use apacehe shiro 2.0.6, bang-servlet 3.0.2, and authservice 3.0.5                                             |
+| <2025-09-20 Sat 22:59> |   3.0.5 | Use postgresql 42.7.8 and authservice 3.0.4 which uses postgresql 42.7.8                                       |
 | <2025-09-20 Sat 15:44> |   3.0.4 | Mistaken release (released oldalbum instead of authservice, need to increment from this version)               |
 | <2025-07-16 Wed 12:04> |   2.2.8 | Use apacehe shiro 2.0.5, bang-servlet 3.0.1, and authservice 3.0.3                                             |
 | <2025-07-11 Fri 19:16> |   2.2.7 | Use liquibase 4.33.0                                                                                           |
