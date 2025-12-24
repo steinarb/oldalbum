@@ -50,7 +50,7 @@
     <properties>
         <junit.jupiter.version>6.0.1</junit.jupiter.version>
         <open-iconic.version>1.1.1</open-iconic.version>
-        <twelvemonkeys.version>3.12.0</twelvemonkeys.version>
+        <twelvemonkeys.version>3.13.0</twelvemonkeys.version>
         <sonar.cpd.exclusions>
             **/OldAlbumDerbyTestDatabase.java,
             **/OldAlbumProductionDatabase.java,
