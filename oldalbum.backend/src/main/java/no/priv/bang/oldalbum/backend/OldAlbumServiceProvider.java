@@ -908,11 +908,25 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                     if (nestedEntry.getIdentifier().equals(EXIF_USER_COMMENT)) {
                         var userCommentRaw = (byte[]) nestedEntry.getValue();
                         var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
-                        metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+                        if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
+                            metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+                        } else {
+                            // Start of user comment not a valid EXIF encoding, try UTF-8 on the entire field
+                            metadataBuilder.description(new String(userCommentRaw, 0, indexOfFirstZeroByte(userCommentRaw), StandardCharsets.UTF_8));
+                        }
                     }
                 }
             }
         }
+    }
+
+    int indexOfFirstZeroByte(byte[] bytes) {
+        int indxexOfFirstZeroByte = 0;
+        while (indxexOfFirstZeroByte < bytes.length && bytes[indxexOfFirstZeroByte] != 0) {
+            ++indxexOfFirstZeroByte;
+        }
+
+        return indxexOfFirstZeroByte;
     }
 
     void extractExifDatetime(final Builder metadataBuilder, Entry entry, String imageUrl) {

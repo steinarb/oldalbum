@@ -1606,6 +1606,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWithExifMetadataFromRolleiPDFS240SESlideScanner() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/PICT000023.jpeg";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/PICT000023.jpeg");
+        assertThat(imageMetadata).isNotNull();
+        assertThat(imageMetadata.lastModified()).isEqualTo(new Date(lastModifiedTime));
+        assertThat(imageMetadata.title()).isEqualTo(" ");
+        assertThat(imageMetadata.description()).isEqualTo("EXIF_HDL_ID_1");
+    }
+
+    @Test
     void testReadJpegWithDescriptionInExifMetadata() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
