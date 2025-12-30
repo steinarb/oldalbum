@@ -336,7 +336,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var sql = String.format("select albumentry_id, parent, localpath, album, title, description, imageurl, thumbnailurl, sort, lastmodified, contenttype, contentlength, require_login, group_by_year from albumentries where albumentry_id in (%s)", selectedentryIdGroup);
         try(var connection = datasource.getConnection()) {
             try(var statement = connection.createStatement()) {
-                try(var results = statement.executeQuery(sql)) {
+                try(var results = statement.executeQuery(sql)) { // NOSONAR no risk of SQL injection here since the joined ids are all integers
                     while(results.next()) {
                         var entry = unpackAlbumEntry(results);
                         selectedentries.add(entry);
