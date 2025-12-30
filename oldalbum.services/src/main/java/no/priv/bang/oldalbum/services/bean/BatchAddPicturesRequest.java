@@ -15,7 +15,7 @@ package no.priv.bang.oldalbum.services.bean;
  * under the License.
  */
 
-public record BatchAddPicturesRequest(int parent, String batchAddUrl, Integer importYear, String defaultTitle) {
+public record BatchAddPicturesRequest(int parent, String batchAddUrl, Integer importYear, String defaultTitle, Boolean sortByDate) {
 
     public static Builder with() {
         return new Builder();
@@ -29,9 +29,10 @@ public record BatchAddPicturesRequest(int parent, String batchAddUrl, Integer im
         private String batchAddUrl;
         private Integer importYear;
         private String defaultTitle;
+        private Boolean sortBydate;
 
         public BatchAddPicturesRequest build() {
-            return new BatchAddPicturesRequest(parent, batchAddUrl, importYear, defaultTitle);
+            return new BatchAddPicturesRequest(parent, batchAddUrl, importYear, defaultTitle, sortBydate);
         }
 
         public Builder parent(int parent) {
@@ -51,6 +52,11 @@ public record BatchAddPicturesRequest(int parent, String batchAddUrl, Integer im
 
         public Builder defaultTitle(String defaultTitle) {
             this.defaultTitle = defaultTitle;
+            return this;
+        }
+        
+        public Builder sortBydate(Boolean sortBydate) {
+            this.sortBydate = sortBydate;
             return this;
         }
 

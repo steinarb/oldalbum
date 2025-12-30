@@ -1897,7 +1897,8 @@ class OldAlbumServiceProviderTest {
         when(connection.getResponseCode()).thenReturn(200);
         var connectionStubbing = when(connection.getInputStream());
         connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
-        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
+        for (int i=0; i<109; ++i) { // Need 109 + 1 == 110 JPEG streams
             connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
         }
 
@@ -1937,12 +1938,84 @@ class OldAlbumServiceProviderTest {
         var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
-        // Check that added pictures have expected values for all important fields
-        var lastAddedPicture = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size() - 1);
+        // Check that the last added picture have expected values for all important fields
+        // In particular: the date should not be the most recent date
+        var lastAddedPicture = entriesAfterBatchAdd.stream().filter(p -> p.parent() == parentId).sorted(Comparator.comparing(AlbumEntry::sort).reversed()).findFirst().get();
         assertThat(lastAddedPicture.path()).isNotEmpty();
         assertThat(lastAddedPicture.title()).isNull();
         assertThat(lastAddedPicture.description()).isNotEmpty();
-        assertThat(lastAddedPicture.lastModified()).isNotNull();
+        assertThat(lastAddedPicture.lastModified()).isEqualTo(provider.parseExifDateTimeAtOsloTimezone("1970:01:01 01:00:00"));
+
+        // Check that a second import will continue to increase the sort value
+        var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
+        var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
+        assertThat(lastSortValueInSecondBatchAdd).isGreaterThan(lastSortValue);
+    }
+
+    @Test
+    void testBatchAddPicturesWithSortByDate() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var database = createEmptyBase("emptyoldalbum3");
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(database);
+        provider.activate(Collections.emptyMap());
+
+        // Mocked HTTP request
+        var connectionFactory = mock(HttpConnectionFactory.class);
+        var connection = mock(HttpURLConnection.class);
+        when(connection.getResponseCode()).thenReturn(200);
+        var connectionStubbing = when(connection.getInputStream());
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1_with_exif_datetime.jpg"));
+        for (int i=0; i<109; ++i) { // Need 109 + 1 == 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        }
+
+        connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("html/pictures_directory_list_nginx_mkpicidx.html"));
+        for (int i=0; i<110; ++i) { // Need 110 JPEG streams
+            connectionStubbing = connectionStubbing.thenReturn(getClass().getClassLoader().getResourceAsStream("jpeg/acirc1.jpg"));
+        }
+
+        when(connectionFactory.connect(anyString())).thenReturn(connection);
+        provider.setConnectionFactory(connectionFactory);
+
+        // Prepare empty database with an album to put pictures in
+        AlbumEntry parentForBatchAddedPictures = AlbumEntry.with()
+            .parent(1)
+            .path("/pictures/")
+            .album(true)
+            .title("A lot of pictures")
+            .description("Pictures added using the batch functionality")
+            .sort(2)
+            .requireLogin(true)
+            .build();
+        var entriesBeforeBatchAdd = provider.addEntry(parentForBatchAddedPictures);
+        var parentId = entriesBeforeBatchAdd.get(0).id();
+
+        // Do the batch import
+        var request = BatchAddPicturesRequest.with()
+            .parent(parentId)
+            .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .sortBydate(true)
+            .build();
+        var entriesAfterBatchAdd = provider.batchAddPictures(request);
+
+        // Check that pictures have been added
+        assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that sort is incremented during batch import
+        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
+        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
+        assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that the last added picture have expected values for all important fields
+        // In particular: the date should be the most recent date
+        var lastAddedPicture = entriesAfterBatchAdd.stream().filter(p -> p.parent() == parentId).sorted(Comparator.comparing(AlbumEntry::sort).reversed()).findFirst().get();
+        assertThat(lastAddedPicture.path()).isNotEmpty();
+        assertThat(lastAddedPicture.title()).isNull();
+        assertThat(lastAddedPicture.description()).isNotEmpty();
+        assertThat(lastAddedPicture.lastModified()).isEqualTo(provider.parseExifDateTimeAtOsloTimezone("1996:06:08 11:16:21"));
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);

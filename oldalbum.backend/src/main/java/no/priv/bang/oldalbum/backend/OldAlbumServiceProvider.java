@@ -41,6 +41,7 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -1010,17 +1011,27 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         var document = loadAndParseIndexHtml(request);
         getAlbumEntry(request.parent()).ifPresent(parent -> {
             var sort = findHighestSortValueInParentAlbum(request.parent());
+            var unsortedPictures = new ArrayList<AlbumEntry>();
             var links = document.select("a");
             for (var link: links) {
                 if (hrefIsJpeg(link.attr("href"))) {
-                    ++sort;
-                    var picture = createPictureFromUrl(link, parent, sort, request.importYear(), request.defaultTitle());
-                    addEntry(picture);
+                    unsortedPictures.add(createPictureFromUrl(link, parent, request.importYear(), request.defaultTitle()));
                 }
+            }
+            var pictures = Boolean.TRUE.equals(request.sortByDate()) ?
+                sortPicturesByLastModifiedDateAscending(unsortedPictures) :
+                unsortedPictures; // keep current order if sortByDate is null or false
+            for (var picture : pictures) {
+                ++sort;
+                addEntry(AlbumEntry.with(picture).sort(sort).build());
             }
         });
 
         return fetchAllRoutes(null, true); // All edits are logged in
+    }
+
+    private List<AlbumEntry> sortPicturesByLastModifiedDateAscending(ArrayList<AlbumEntry> unsortedPictures) {
+        return unsortedPictures.stream().sorted(Comparator.comparing(AlbumEntry::lastModified)).toList();
     }
 
     @Override
@@ -1082,7 +1093,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return bundle.getString(key);
     }
 
-    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, int sort, Integer importYear, String defaultTitle) {
+    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, Integer importYear, String defaultTitle) {
         var basename = findBasename(link);
         var path = parent.path() + basename;
         var imageUrl = link.absUrl("href");
@@ -1106,7 +1117,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             .title(title)
             .description(description)
             .requireLogin(parent.requireLogin())
-            .sort(sort)
             .build();
     }
 

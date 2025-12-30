@@ -5,7 +5,7 @@ import {
     useGetDisplaytextsQuery,
     usePostBatchAddPicturesMutation,
 } from '../api';
-import { setParent, setUrl, setImportYear, setDefaultTitle } from '../reducers/batchAddSlice';
+import { setParent, setUrl, setImportYear, setDefaultTitle, setSortByDate } from '../reducers/batchAddSlice';
 
 export default function BatchAddPictures(props) {
     const { item, className='' } = props;
@@ -57,6 +57,15 @@ export default function BatchAddPictures(props) {
                             type="text"
                             value={batchAdd.defaultTitle}
                             onChange={e => dispatch(setDefaultTitle(e.target.value))}/>
+                    </div>
+                    <div className="form-group">
+                        <input
+                            id="sort-by-date"
+                            className="form-check-1"
+                            type="checkbox"
+                            checked={batchAdd.sortByDate}
+                            onChange={e => dispatch(setSortByDate(e.target.checked))} />
+                        <label htmlFor="sort-by-date" className="sort-bydate-label">{text.sortbydate}</label>
                     </div>
                     <button className="btn btn-light col-4" type="button" onClick={onBatchAddClicked}>{text.batchaddpictures}</button>
                 </div>

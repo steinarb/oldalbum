@@ -15,6 +15,7 @@ package no.priv.bang.oldalbum.services.bean;
  * under the License.
  */
 
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
@@ -27,16 +28,19 @@ class BatchAddPicturesRequestTest {
         var batchAddUrl = "http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/";
         var importYear = 1967;
         var defaultTitle = "Daisy";
+        var sortByDate = Boolean.TRUE;
         var bean = BatchAddPicturesRequest.with()
             .parent(parent)
             .batchAddUrl(batchAddUrl)
             .importYear(importYear)
             .defaultTitle(defaultTitle)
+            .sortBydate(sortByDate)
             .build();
         assertEquals(parent, bean.parent());
         assertEquals(batchAddUrl, bean.batchAddUrl());
         assertEquals(importYear, bean.importYear());
         assertEquals(defaultTitle, bean.defaultTitle());
+        assertThat(bean.sortByDate()).isTrue();
     }
 
     @Test
