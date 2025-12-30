@@ -21,7 +21,7 @@ export const albumSlice = createSlice({
     name: 'album',
     initialState,
     reducers: {
-        selectAlbum: (_, action) => action.payload,
+        selectAlbum: (_, action) => ({ ...action.payload, basename: extractBasename(action.payload.path) }),
         clearAlbum: () => initialState,
         albumPrepare: (_, action) => ({ ...initialState, ...action.payload }),
         setParent: (state, action) => ({ ...state, parent: parseInt(action.payload) }),

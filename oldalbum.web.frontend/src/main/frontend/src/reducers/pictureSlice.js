@@ -25,7 +25,7 @@ export const pictureSlice = createSlice({
     name: 'picture',
     initialState,
     reducers: {
-        selectPicture: (_, action) => ({ ...action.payload, lastModified: new Date(action.payload.lastModified).toISOString() }),
+        selectPicture: (_, action) => ({ ...action.payload, lastModified: new Date(action.payload.lastModified).toISOString(), basename: extractBasename(action.payload.path) }),
         clearPicture: () => initialState,
         picturePrepare: (_, action) => ({ ...initialState, ...action.payload }),
         setParent: (state, action) => ({ ...state, parent: parseInt(action.payload) }),
