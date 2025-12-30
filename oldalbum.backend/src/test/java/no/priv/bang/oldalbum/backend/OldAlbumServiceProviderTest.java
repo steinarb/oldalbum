@@ -1937,6 +1937,13 @@ class OldAlbumServiceProviderTest {
         var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
+        // Check that added pictures have expected values for all important fields
+        var lastAddedPicture = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size() - 1);
+        assertThat(lastAddedPicture.path()).isNotEmpty();
+        assertThat(lastAddedPicture.title()).isNull();
+        assertThat(lastAddedPicture.description()).isNotEmpty();
+        assertThat(lastAddedPicture.lastModified()).isNotNull();
+
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
         var lastSortValueInSecondBatchAdd = entriesAfterSecondBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
@@ -1997,6 +2004,13 @@ class OldAlbumServiceProviderTest {
 
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that added pictures have expected values for all important fields
+        var lastAddedPicture = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size() - 1);
+        assertThat(lastAddedPicture.path()).isNotEmpty();
+        assertThat(lastAddedPicture.title()).isEqualTo("Daisy");
+        assertThat(lastAddedPicture.description()).isNotEmpty();
+        assertThat(lastAddedPicture.lastModified()).isNotNull();
 
         // Check that sort is incremented during batch import
         var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
@@ -2064,6 +2078,13 @@ class OldAlbumServiceProviderTest {
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
 
+        // Check that added pictures have expected values for all important fields
+        var lastAddedPicture = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size() - 1);
+        assertThat(lastAddedPicture.path()).isNotEmpty();
+        assertThat(lastAddedPicture.title()).isNull();
+        assertThat(lastAddedPicture.description()).isNotEmpty();
+        assertThat(lastAddedPicture.lastModified()).isNotNull();
+
         // Check that sort is incremented during batch import
         var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
         var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
@@ -2126,6 +2147,13 @@ class OldAlbumServiceProviderTest {
 
         // Check that pictures have been added
         assertThat(entriesAfterBatchAdd).hasSizeGreaterThan(entriesBeforeBatchAdd.size());
+
+        // Check that added pictures have expected values for all important fields
+        var lastAddedPicture = entriesAfterBatchAdd.get(entriesAfterBatchAdd.size() - 1);
+        assertThat(lastAddedPicture.path()).isNotEmpty();
+        assertThat(lastAddedPicture.title()).isNull();
+        assertThat(lastAddedPicture.description()).isNotEmpty();
+        assertThat(lastAddedPicture.lastModified()).isNotNull();
 
         // Check that sort is incremented during batch import
         var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
