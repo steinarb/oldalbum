@@ -92,7 +92,6 @@ import com.twelvemonkeys.imageio.metadata.tiff.TIFFReader;
 import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
 import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
 import com.twelvemonkeys.lang.StringUtil;
-
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
 import no.priv.bang.jdbc.sqldumper.ResultSetSqlDumper;
@@ -878,14 +877,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 }
             }
             var exifSegment = readSegments(input, JPEG.APP1, "Exif");
+            logger.trace("Start extracting EXIF metadata of {}", imageUrl);
             readExifImageMetadata(imageUrl, metadataBuilder, exifSegment);
+            logger.trace("Finished extracting EXIF metadata of {}", imageUrl);
         } catch (IOException e) {
             logger.warn(String.format("Error when reading image metadata for %s",  imageUrl), e);
         }
     }
 
     void readExifImageMetadata(String imageUrl, final Builder metadataBuilder, List<JPEGSegment> exifSegment) {
-        exifSegment.stream().map(s -> s.data()).findFirst().ifPresent(exifData -> {
+        exifSegment.stream().map(s -> s.data()).forEach(exifData -> {
             try {
                 exifData.read();
                 var exif = (CompoundDirectory) new TIFFReader().read(ImageIO.createImageInputStream(exifData));
@@ -898,25 +899,33 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     private void extractMetadataFromExifTags(final Builder metadataBuilder, CompoundDirectory exif, String imageUrl) {
         for (var entry : exif) {
+            logger.trace("EXIF tag identifier: {}  field name: {}  value: {}", entry.getIdentifier(), entry.getFieldName(), entry.getValueAsString());
             if (entry.getIdentifier().equals(EXIF_DATETIME)) {
                 extractExifDatetime(metadataBuilder, entry, imageUrl);
             } else if (entry.getIdentifier().equals(EXIF_DESCRIPTION)) {
                 metadataBuilder.title(entry.getValueAsString());
+            } else if (entry.getIdentifier().equals(EXIF_USER_COMMENT)) {
+                decodeExifUserCommentWithEncoding(metadataBuilder, entry);
             } else if (entry.getIdentifier().equals(EXIF_EXIF)) {
                 var nestedExif = (IFD) entry.getValue();
                 for (var nestedEntry : nestedExif) {
+                    logger.trace("Nested EXIF tag identifier: {}  field name: {}  value: {}", nestedEntry.getIdentifier(), nestedEntry.getFieldName(), nestedEntry.getValueAsString());
                     if (nestedEntry.getIdentifier().equals(EXIF_USER_COMMENT)) {
-                        var userCommentRaw = (byte[]) nestedEntry.getValue();
-                        var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
-                        if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
-                            metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
-                        } else {
-                            // Start of user comment not a valid EXIF encoding, try UTF-8 on the entire field
-                            metadataBuilder.description(new String(userCommentRaw, 0, indexOfFirstZeroByte(userCommentRaw), StandardCharsets.UTF_8));
-                        }
+                        decodeExifUserCommentWithEncoding(metadataBuilder, nestedEntry);
                     }
                 }
             }
+        }
+    }
+
+    void decodeExifUserCommentWithEncoding(final Builder metadataBuilder, Entry entry) {
+        var userCommentRaw = (byte[]) entry.getValue();
+        var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
+        if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
+            metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+        } else {
+            // Start of user comment not a valid EXIF encoding, try UTF-8 on the entire field
+            metadataBuilder.description(new String(userCommentRaw, 0, indexOfFirstZeroByte(userCommentRaw), StandardCharsets.UTF_8));
         }
     }
 

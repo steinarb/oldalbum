@@ -1623,6 +1623,23 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWithExifMetadataFromRolleiPDFS240SESlideScannerWithSavedMultipleDirectories() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/PICT000023.JPG";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/PICT000023.JPG");
+        assertThat(imageMetadata).isNotNull();
+        assertThat(imageMetadata.lastModified()).hasToString("Mon May 20 02:00:00 CEST 2002");
+        assertThat(imageMetadata.title()).isEqualTo(" Verandablomster");
+        assertThat(imageMetadata.description()).isEqualTo("Blomster i kassen på verandaen i Nico Hambros vei 97");
+    }
+
+    @Test
     void testReadJpegWithDescriptionInExifMetadata() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
