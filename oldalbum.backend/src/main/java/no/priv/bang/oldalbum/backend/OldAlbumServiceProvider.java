@@ -940,13 +940,17 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
     void extractExifDatetime(final Builder metadataBuilder, Entry entry, String imageUrl) {
         try {
-            var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
-            exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
-            var datetime = exifDateTimeFormat.parse(entry.getValueAsString());
+            var datetime = parseExifDateTimeAtOsloTimezone(entry.getValueAsString());
             metadataBuilder.lastModified(datetime);
         } catch (ParseException e) {
             throw new OldAlbumException(String.format("Error parsing EXIF 306/DateTime entry of %s",  imageUrl), e);
         }
+    }
+
+    Date parseExifDateTimeAtOsloTimezone(String datetime) throws ParseException {
+        var exifDateTimeFormat = new SimpleDateFormat("yyyy:MM:dd hh:mm:ss");
+        exifDateTimeFormat.setTimeZone(TimeZone.getTimeZone("Europe/Oslo"));
+        return exifDateTimeFormat.parse(datetime);
     }
 
     private String findJfifComment(IIOMetadata metadata) {
