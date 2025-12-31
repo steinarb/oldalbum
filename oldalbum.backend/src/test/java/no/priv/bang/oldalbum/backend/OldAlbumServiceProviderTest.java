@@ -1634,7 +1634,7 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/PICT000023.JPG");
         assertThat(imageMetadata).isNotNull();
-        assertThat(imageMetadata.lastModified()).isEqualTo("2002-05-20T02:00:00");
+        assertThat(imageMetadata.lastModified()).isEqualTo(provider.parseExifDateTimeAtOsloTimezone("2002:05:20 02:00:00"));
         assertThat(imageMetadata.title()).isEqualTo(" Verandablomster");
         assertThat(imageMetadata.description()).isEqualTo("Blomster i kassen på verandaen i Nico Hambros vei 97");
     }
