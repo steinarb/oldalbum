@@ -36,6 +36,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -49,6 +50,7 @@ import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Properties;
+import java.util.TimeZone;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipInputStream;
 import java.util.zip.ZipOutputStream;
@@ -89,12 +91,14 @@ import no.priv.bang.osgi.service.mocks.logservice.MockLogService;
 
 class OldAlbumServiceProviderTest {
     private static final Locale NB_NO = Locale.forLanguageTag("nb-no");
+    private static final DateFormat UTCFormat = DateFormat.getDateInstance(3, NB_NO);
 
     private static DataSource datasource;
     private static DataSource unmodifiedDataSource;
 
     @BeforeAll
     static void setupDataSource() throws Exception {
+        UTCFormat.setTimeZone(TimeZone.getTimeZone("UTC"));
         datasource = createNewTestDatabase("oldalbum");
         unmodifiedDataSource = createNewTestDatabase("oldalbum5");
     }
@@ -1634,7 +1638,7 @@ class OldAlbumServiceProviderTest {
 
         var imageMetadata = provider.readMetadata("http://localhost/PICT000023.JPG");
         assertThat(imageMetadata).isNotNull();
-        assertThat(imageMetadata.lastModified()).hasToString("Mon May 20 02:00:00 CEST 2002");
+        assertThat(imageMetadata.lastModified()).withDateFormat(UTCFormat).isEqualTo("2002-05-20T02:00:00");
         assertThat(imageMetadata.title()).isEqualTo(" Verandablomster");
         assertThat(imageMetadata.description()).isEqualTo("Blomster i kassen på verandaen i Nico Hambros vei 97");
     }
