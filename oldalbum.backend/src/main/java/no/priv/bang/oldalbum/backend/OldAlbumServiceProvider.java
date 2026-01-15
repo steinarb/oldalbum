@@ -825,7 +825,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     ArrayList<Entry> findEntriesOfSubdirectory(ArrayList<Entry> entries) {
         var indexOfExistingIFDDirectory = findIndexOfEntryWithTiffTag(entries, EXIF_EXIF);
         if (indexOfExistingIFDDirectory < 0) {
-            return new ArrayList<Entry>();
+            return new ArrayList<>();
         } else {
             var ifd = (IFD) entries.get(indexOfExistingIFDDirectory).getValue();
             var subdirectoryEntries = new ArrayList<Entry>();
