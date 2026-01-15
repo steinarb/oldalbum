@@ -756,7 +756,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
 
         var rawUserObject = (byte[]) unknown.getUserObject();
         var serializedDirectory = removeExifPrefix(rawUserObject);
-        try(var input = new ByteArrayImageInputStream((byte[]) serializedDirectory)) {
+        try(var input = new ByteArrayImageInputStream(serializedDirectory)) {
             return new TIFFReader().read(input);
         } catch (IOException e) {
             logger.info("Unable to parse existing EXIF directory: {}", e);
