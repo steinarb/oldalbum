@@ -96,7 +96,6 @@ import com.twelvemonkeys.imageio.metadata.tiff.TIFFWriter;
 import com.twelvemonkeys.imageio.stream.ByteArrayImageInputStream;
 import com.twelvemonkeys.imageio.util.ImageTypeSpecifiers;
 import com.twelvemonkeys.lang.StringUtil;
-import com.twelvemonkeys.xml.XMLSerializer;
 
 import static com.twelvemonkeys.imageio.metadata.jpeg.JPEGSegmentUtil.*;
 
@@ -821,8 +820,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
                 markerSequence.appendChild(exif);
             }
         }
-
-        new XMLSerializer(System.out, "UTF-8").serialize(markerSequence, false);
     }
 
     ArrayList<Entry> findEntriesOfSubdirectory(ArrayList<Entry> entries) {
@@ -875,7 +872,6 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     IIOMetadataNode findMarkerSequenceAndCreateIfNotFound(IIOMetadataNode metadataAsTree) {
-        new XMLSerializer(System.out, "UTF-8").serialize(metadataAsTree, false);
         var markerSequence = (IIOMetadataNode) metadataAsTree.getElementsByTagName("markerSequence").item(0);
         if (markerSequence == null) {
             markerSequence = new IIOMetadataNode("markerSequence");
