@@ -1603,6 +1603,22 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testFindExistingExifDirectoryWithEmptyDirectory() {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var unknown = new IIOMetadataNode("unknown");
+        unknown.setUserObject("EXIFXXX".getBytes());
+        markerSequence.appendChild(unknown);
+
+        assertThat(logservice.getLogmessages()).isEmpty(); // Verify precondition that nothing has been logged
+        assertThat(provider.findExistingExifDirectory(markerSequence)).isNull();
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().get(0)).startsWith("[INFO] Unable to parse existing EXIF directory");
+    }
+
+    @Test
     void testFormatExifUserComment() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
