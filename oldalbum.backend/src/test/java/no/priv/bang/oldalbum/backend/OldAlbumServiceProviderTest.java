@@ -457,9 +457,7 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.updateEntry(modifiedAlbum);
         var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
-        assertEquals(modifiedAlbum.title(), updatedAlbum.title());
-        assertEquals(modifiedAlbum.description(), updatedAlbum.description());
-        assertEquals(modifiedAlbum.requireLogin(), updatedAlbum.requireLogin());
+        assertThat(updatedAlbum).isEqualTo(modifiedAlbum);
     }
 
     @Test
@@ -483,10 +481,12 @@ class OldAlbumServiceProviderTest {
             .build();
         var allroutes = provider.updateEntry(modifiedPicture);
         var updatedPicture = allroutes.stream().filter(r -> r.id() == 5).findFirst().get();
-        assertEquals(modifiedTitle, updatedPicture.title());
-        assertEquals(modifiedDescription, updatedPicture.description());
-        assertEquals(modifiedDate, updatedPicture.lastModified());
-        assertEquals(requireLogin, updatedPicture.requireLogin());
+        assertThat(updatedPicture)
+            .hasFieldOrPropertyWithValue("title", modifiedTitle)
+            .hasFieldOrPropertyWithValue("description", modifiedDescription)
+            .hasFieldOrPropertyWithValue("lastModified", modifiedDate)
+            .hasFieldOrPropertyWithValue("requireLogin", requireLogin)
+            .isEqualTo(modifiedPicture);
     }
 
     @Test
@@ -613,10 +613,12 @@ class OldAlbumServiceProviderTest {
         assertNotEquals(albumToAdd.id(), addedAlbum.id()); // Placeholder ID is replaced with an actual database id
         assertThat(addedAlbum.id()).isPositive();
         assertEquals(1, addedAlbum.parent());
-        assertEquals(albumToAdd.title(), addedAlbum.title());
-        assertEquals(albumToAdd.description(), addedAlbum.description());
-        assertEquals(albumToAdd.requireLogin(), addedAlbum.requireLogin());
-        assertEquals(albumToAdd.groupByYear(), addedAlbum.groupByYear());
+        assertThat(addedAlbum)
+            .hasFieldOrPropertyWithValue("parent", 1)
+            .hasFieldOrPropertyWithValue("title", albumToAdd.title())
+            .hasFieldOrPropertyWithValue("description", albumToAdd.description())
+            .hasFieldOrPropertyWithValue("requireLogin", albumToAdd.requireLogin())
+            .hasFieldOrPropertyWithValue("groupByYear", albumToAdd.groupByYear());
     }
 
     @Test
@@ -656,14 +658,15 @@ class OldAlbumServiceProviderTest {
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         var addedPicture = allroutes.stream().filter(r -> "/sylane4".equals(r.path())).findFirst().get();
         assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.parent());
-        assertEquals(pictureToAdd.title(), addedPicture.title());
-        assertEquals(pictureToAdd.description(), addedPicture.description());
-        assertEquals(pictureToAdd.lastModified(), addedPicture.lastModified());
-        assertEquals(pictureToAdd.contentType(), addedPicture.contentType());
-        assertEquals(pictureToAdd.contentLength(), addedPicture.contentLength());
-        assertEquals(pictureToAdd.requireLogin(), pictureToAdd.requireLogin());
-        assertNull(addedPicture.groupByYear());
+        assertThat(addedPicture)
+            .hasFieldOrPropertyWithValue("parent", 1)
+            .hasFieldOrPropertyWithValue("title", pictureToAdd.title())
+            .hasFieldOrPropertyWithValue("description", pictureToAdd.description())
+            .hasFieldOrPropertyWithValue("lastModified", pictureToAdd.lastModified())
+            .hasFieldOrPropertyWithValue("contentType", pictureToAdd.contentType())
+            .hasFieldOrPropertyWithValue("contentLength", pictureToAdd.contentLength())
+            .hasFieldOrPropertyWithValue("requireLogin", pictureToAdd.requireLogin())
+            .hasFieldOrPropertyWithValue("groupByYear", null);
     }
 
     @Test
@@ -720,10 +723,11 @@ class OldAlbumServiceProviderTest {
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.path())).findFirst().get();
         assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.parent());
-        assertEquals(pictureToAdd.title(), addedPicture.title());
-        assertEquals(pictureToAdd.description(), addedPicture.description());
-        assertNull(addedPicture.lastModified());
+        assertThat(addedPicture)
+            .hasFieldOrPropertyWithValue("parent", 1)
+            .hasFieldOrPropertyWithValue("title", pictureToAdd.title())
+            .hasFieldOrPropertyWithValue("description", pictureToAdd.description())
+            .hasFieldOrPropertyWithValue("lastModified", null);
     }
 
     @Test
@@ -748,10 +752,11 @@ class OldAlbumServiceProviderTest {
         assertThat(allroutes).hasSizeGreaterThan(numberOfEntriesBeforeAdd);
         var addedPicture = allroutes.stream().filter(r -> "/sylane5".equals(r.path())).findFirst().get();
         assertNotEquals(pictureToAdd.id(), addedPicture.id()); // Placeholder ID is replaced with an actual database id
-        assertEquals(1, addedPicture.parent());
-        assertEquals(pictureToAdd.title(), addedPicture.title());
-        assertEquals(pictureToAdd.description(), addedPicture.description());
-        assertNull(addedPicture.lastModified());
+        assertThat(addedPicture)
+            .hasFieldOrPropertyWithValue("parent", 1)
+            .hasFieldOrPropertyWithValue("title", pictureToAdd.title())
+            .hasFieldOrPropertyWithValue("description", pictureToAdd.description())
+            .hasFieldOrPropertyWithValue("lastModified", null);
     }
 
     @Test
