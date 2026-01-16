@@ -454,6 +454,7 @@ class OldAlbumServiceProviderTest {
             .contentLength(0)
             .childcount(2)
             .requireLogin(true)
+            .groupByYear(true)
             .build();
         var allroutes = provider.updateEntry(modifiedAlbum);
         var updatedAlbum = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
