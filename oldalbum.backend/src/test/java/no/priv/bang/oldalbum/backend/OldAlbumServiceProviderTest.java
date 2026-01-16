@@ -2608,6 +2608,15 @@ class OldAlbumServiceProviderTest {
         assertEquals(diasTxt, OldAlbumServiceProvider.convertJpegUrlToTxtUrl(diasJpeg));
     }
 
+    @Test
+    void testStringIsNullOrBlank() {
+        var provider = new OldAlbumServiceProvider();
+        assertTrue(provider.stringIsNullOrBlank(null));
+        assertTrue(provider.stringIsNullOrBlank(""));
+        assertTrue(provider.stringIsNullOrBlank(" \t\n\r"));
+        assertFalse(provider.stringIsNullOrBlank(" EXIF "));
+    }
+
     private int findAlbumentriesRows(DataSource ds, boolean isLoggedIn) throws SQLException {
         var sql = "select count(albumentry_id) from albumentries where (not require_login or (require_login and require_login=?))";
         try (var connection = ds.getConnection()) {
