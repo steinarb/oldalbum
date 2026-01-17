@@ -1629,7 +1629,7 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
         provider.setLogService(logservice);
-        var originalUserComment = "This is a user comment";
+        var originalUserComment = "This is æ user cåmment";
 
         var exifUserComment = provider.formatExifUserComment(originalUserComment);
 
