@@ -1736,6 +1736,21 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testReadJpegWitExifUserCommentInUnicodeEncoding() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var imageFileName = "jpeg/acirc1_with_unicode_exif_usercomment.jpg";
+        var lastModifiedTime = findLastModifiedTimeOfClasspathResource(imageFileName);
+        var connectionFactory = mockHttpConnectionReturningClasspathResource(imageFileName, lastModifiedTime);
+        provider.setConnectionFactory(connectionFactory);
+
+        var imageMetadata = provider.readMetadata("http://localhost/acirc1_with_unicode_exif_usercomment.jpg");
+        assertNotNull(imageMetadata);
+        assertThat(imageMetadata.description()).startsWith("VFR på Polarsirkelsenteret");
+    }
+
+    @Test
     void testReadMetadataOnNonImageFileWithBrokenUrl() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();
