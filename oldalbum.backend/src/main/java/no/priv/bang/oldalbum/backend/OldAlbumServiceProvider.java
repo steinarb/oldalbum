@@ -113,6 +113,7 @@ import no.priv.bang.oldalbum.services.bean.LocaleBean;
 public class OldAlbumServiceProvider implements OldAlbumService {
 
     static final byte[] EXIF_ASCII_ENCODING = Arrays.copyOf("ASCII".getBytes(StandardCharsets.UTF_8), 8);
+    static final byte[] EXIF_UNICODE_ENCODING = Arrays.copyOf("UNICODE".getBytes(StandardCharsets.UTF_8), 8);
     static final int EXIF_DATETIME = 306;
     static final int EXIF_DESCRIPTION = 0x010e;
     static final int EXIF_EXIF = 34665;
@@ -864,10 +865,10 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     }
 
     public byte[] formatExifUserComment(String userComment) {
-        var userCommentInUtf8 = userComment.getBytes(StandardCharsets.UTF_8);
-        var userCommentWithTag = new byte[EXIF_ASCII_ENCODING.length + userCommentInUtf8.length];
-        System.arraycopy(EXIF_ASCII_ENCODING, 0, userCommentWithTag, 0, EXIF_ASCII_ENCODING.length);
-        System.arraycopy(userCommentInUtf8, 0, userCommentWithTag, EXIF_ASCII_ENCODING.length, userCommentInUtf8.length);
+        var userCommentInUtf16be = userComment.getBytes(StandardCharsets.UTF_16BE);
+        var userCommentWithTag = new byte[EXIF_UNICODE_ENCODING.length + userCommentInUtf16be.length];
+        System.arraycopy(EXIF_UNICODE_ENCODING, 0, userCommentWithTag, 0, EXIF_UNICODE_ENCODING.length);
+        System.arraycopy(userCommentInUtf16be, 0, userCommentWithTag, EXIF_UNICODE_ENCODING.length, userCommentInUtf16be.length);
         return userCommentWithTag;
     }
 

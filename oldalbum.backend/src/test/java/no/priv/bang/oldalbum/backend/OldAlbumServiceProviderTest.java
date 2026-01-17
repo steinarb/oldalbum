@@ -1550,7 +1550,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(150);
+        assertThat(userObject).hasSize(162);
     }
 
     @Test
@@ -1565,7 +1565,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(86);
+        assertThat(userObject).hasSize(98);
     }
 
     @Test
@@ -1580,7 +1580,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(130);
+        assertThat(userObject).hasSize(142);
     }
 
     @Test
@@ -1635,8 +1635,8 @@ class OldAlbumServiceProviderTest {
 
         var splitUserComment = provider.splitUserCommentInEncodingAndComment(exifUserComment);
         assertThat(splitUserComment).hasSize(2);
-        assertThat(splitUserComment.get(0)).isEqualTo(OldAlbumServiceProvider.EXIF_ASCII_ENCODING);
-        var decodedComment = new String(splitUserComment.get(1), StandardCharsets.UTF_8);
+        assertThat(splitUserComment.get(0)).isEqualTo(OldAlbumServiceProvider.EXIF_UNICODE_ENCODING);
+        var decodedComment = new String(splitUserComment.get(1), StandardCharsets.UTF_16);
         assertEquals(originalUserComment, decodedComment);
     }
 
