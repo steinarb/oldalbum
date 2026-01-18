@@ -30,7 +30,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 [[https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml][file:https://github.com/steinarb/oldalbum/actions/workflows/oldalbum-maven-ci-build.yml/badge.svg]]
 [[https://coveralls.io/github/steinarb/oldalbum][file:https://coveralls.io/repos/github/steinarb/oldalbum/badge.svg]]
 [[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/api/project_badges/measure?project=steinarb_oldalbum&metric=alert_status#.svg]]
-[[https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum][file:https://maven-badges.herokuapp.com/maven-central/no.priv.bang.oldalbum/oldalbum/badge.svg]]
+[[https://maven-badges.sml.io/sonatype-central/no.priv.bang.oldalbum/oldalbum][file:https://maven-badges.sml.io/sonatype-central/no.priv.bang.oldalbum/oldalbum/badge.svg]]
 [[https://www.javadoc.io/doc/no.priv.bang.oldalbum/oldalbum][file:https://www.javadoc.io/badge/no.priv.bang.oldalbum/oldalbum.svg]]
 
 [[https://sonarcloud.io/summary/new_code?id=steinarb_oldalbum][file:https://sonarcloud.io/images/project_badges/sonarcloud-white.svg]]
