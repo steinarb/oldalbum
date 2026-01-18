@@ -2641,6 +2641,17 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testCreatePictureFromUrWithNullMetadatal() {
+        var provider = new OldAlbumServiceProvider();
+        var parent = AlbumEntry.with().id(1).build();
+        var picture = provider.createPictureFromUrl(new Element("img"), parent, null, null);
+        assertThat(picture)
+            .hasFieldOrPropertyWithValue("contentType", null)
+            .hasFieldOrPropertyWithValue("description", null)
+            .hasFieldOrPropertyWithValue("groupByYear", null);
+    }
+
+    @Test
     void testStringIsNullOrBlank() {
         var provider = new OldAlbumServiceProvider();
         assertTrue(provider.stringIsNullOrBlank(null));

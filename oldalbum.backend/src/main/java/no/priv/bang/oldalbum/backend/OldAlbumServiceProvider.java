@@ -1176,7 +1176,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return bundle.getString(key);
     }
 
-    private AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, Integer importYear, String defaultTitle) {
+    AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, Integer importYear, String defaultTitle) {
         var basename = findBasename(link);
         var path = parent.path() + basename;
         var imageUrl = link.absUrl("href");
