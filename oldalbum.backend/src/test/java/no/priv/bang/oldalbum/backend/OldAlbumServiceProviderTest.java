@@ -1538,6 +1538,20 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testSetJfifCommentFromAlbumEntryDescriptionWhenDescriptionIsEmpty() {
+        var provider = new OldAlbumServiceProvider();
+        var entry = AlbumEntry.with().build();
+        var markerSequence = new IIOMetadataNode("markerSequence");
+        var com = new IIOMetadataNode("com");
+        var notReplaced = "Not replaced!";
+        com.setAttribute("comment", notReplaced);
+        markerSequence.appendChild(com);
+        provider.setJfifCommentFromAlbumEntryDescription(markerSequence, entry);
+        var comList = markerSequence.getElementsByTagName("com");
+        assertThat(comList.item(0).getAttributes().getNamedItem("comment").getNodeValue()).isEqualTo(notReplaced);
+    }
+
+    @Test
     void testWriteDateTitleAndDescriptionToExifDataStructure() throws Exception {
         var provider = new OldAlbumServiceProvider();
         var markerSequence = new IIOMetadataNode("markerSequence");
