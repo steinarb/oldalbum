@@ -1001,9 +1001,12 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     void decodeExifUserCommentWithEncoding(final Builder metadataBuilder, Entry entry) {
         var userCommentRaw = (byte[]) entry.getValue();
         var splitUserComment = splitUserCommentInEncodingAndComment(userCommentRaw);
-        if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
+        if (Arrays.compare(splitUserComment.get(0), EXIF_UNICODE_ENCODING) == 0) {
+            metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_16));
+            logger.info("decoded UNICODE usercomment {}", new String(splitUserComment.get(1), StandardCharsets.UTF_16));
+        } else if (Arrays.compare(splitUserComment.get(0), EXIF_ASCII_ENCODING) == 0) {
             metadataBuilder.description(new String(splitUserComment.get(1), StandardCharsets.UTF_8));
-            logger.info("decoded usercomment {}", new String(splitUserComment.get(1), StandardCharsets.UTF_8));
+            logger.info("decoded ASCII usercomment {}", new String(splitUserComment.get(1), StandardCharsets.UTF_8));
         } else {
             // Start of user comment not a valid EXIF encoding, try UTF-8 on the entire field
             metadataBuilder.description(new String(userCommentRaw, 0, indexOfFirstZeroByte(userCommentRaw), StandardCharsets.UTF_8));
