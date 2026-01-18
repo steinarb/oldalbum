@@ -1863,7 +1863,7 @@ class OldAlbumServiceProviderTest {
     void testIndexOfFirstZeroByte() {
         var provider = new OldAlbumServiceProvider();
         var emptyArray = new byte[0];
-        assertThat(provider.indexOfFirstZeroByte(emptyArray)).isEqualTo(0);
+        assertThat(provider.indexOfFirstZeroByte(emptyArray)).isZero();
         assertThat(provider.indexOfFirstZeroByte(OldAlbumServiceProvider.EXIF_ASCII_ENCODING)).isEqualTo(5);
         assertThat(provider.indexOfFirstZeroByte(OldAlbumServiceProvider.EXIF_UNICODE_ENCODING)).isEqualTo(7);
         var packedByteArrayWithoutNullBytes = Arrays.copyOf("ASCIIXXX".getBytes(StandardCharsets.UTF_8), 8);
