@@ -41,7 +41,7 @@ export default function ModifyPicture() {
     const [ postModifypicture ] = usePostModifypictureMutation();
     const navigate = useNavigate();
     const onModifyPictureClicked = async () => { await postModifypicture(picture); navigate(picture.path); }
-    const onCancelClicked = () => { dispatch(clearPicture()); navigate(parentalbum.path); }
+    const onCancelClicked = () => { dispatch(clearPicture()); navigate(picture.path); }
 
     return(
         <div>
