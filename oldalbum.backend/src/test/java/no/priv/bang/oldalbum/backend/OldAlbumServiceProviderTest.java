@@ -1564,7 +1564,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(162);
+        assertThat(userObject).hasSize(194);
     }
 
     @Test
@@ -1594,7 +1594,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(142);
+        assertThat(userObject).hasSize(174);
     }
 
     @Test
@@ -1609,7 +1609,7 @@ class OldAlbumServiceProviderTest {
         assertEquals(1, unknown.getLength());
         var exifNode = (IIOMetadataNode) unknown.item(0);
         var userObject = (byte[]) exifNode.getUserObject();
-        assertThat(userObject).hasSize(118);
+        assertThat(userObject).hasSize(150);
     }
 
     @Test

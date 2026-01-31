@@ -788,6 +788,7 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             replaceOrAddEntry(entries, TIFF.TAG_DATE_TIME, TIFF.TYPE_ASCII, formattedDateTime);
             var subDirectoryEntries = findEntriesOfSubdirectory(entries);
             replaceOrAddEntry(subDirectoryEntries, EXIF.TAG_DATE_TIME_ORIGINAL, TIFF.TYPE_ASCII, formattedDateTime);
+            replaceOrAddEntry(subDirectoryEntries, EXIF.TAG_DATE_TIME_DIGITIZED, TIFF.TYPE_ASCII, formattedDateTime);
             replaceOrAddEntry(entries, EXIF_EXIF, TIFF.TYPE_IFD, new IFD(subDirectoryEntries));
         }
 
