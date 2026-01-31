@@ -2331,8 +2331,10 @@ class OldAlbumServiceProviderTest {
         assertThat(lastAddedPicture.lastModified()).isNotNull();
 
         // Check that sort is incremented during batch import
-        var firstSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).min().getAsInt();
-        var lastSortValue = entriesAfterBatchAdd.stream().filter(e -> e.parent() == parentId).mapToInt(AlbumEntry::sort).max().getAsInt();
+        var firstImportedEntry = entriesAfterBatchAdd.get(1);
+        var lastImportedEntry = entriesAfterBatchAdd.getLast();
+        var firstSortValue = firstImportedEntry.sort();
+        var lastSortValue = lastImportedEntry.sort();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
 
         // Check that a second import will continue to increase the sort value
