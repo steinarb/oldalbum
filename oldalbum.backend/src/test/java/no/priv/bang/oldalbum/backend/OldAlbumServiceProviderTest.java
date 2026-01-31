@@ -2317,6 +2317,7 @@ class OldAlbumServiceProviderTest {
         var request = BatchAddPicturesRequest.with()
             .parent(parentId)
             .batchAddUrl("http://lorenzo.hjemme.lan/bilder/202349_001396/Export%20JPG%2016Base/")
+            .importYear(1996)
             .build();
         var entriesAfterBatchAdd = provider.batchAddPictures(request);
 
@@ -2336,6 +2337,11 @@ class OldAlbumServiceProviderTest {
         var firstSortValue = firstImportedEntry.sort();
         var lastSortValue = lastImportedEntry.sort();
         assertThat(lastSortValue).isGreaterThan(firstSortValue);
+
+        // Check that modified time is incremented even though imported images have the same modify time
+        var firstModifyTime = firstImportedEntry.lastModified();
+        var lastModifyTime = lastImportedEntry.lastModified();
+        assertThat(firstModifyTime).isBefore(lastModifyTime);
 
         // Check that a second import will continue to increase the sort value
         var entriesAfterSecondBatchAdd = provider.batchAddPictures(request);
@@ -2473,16 +2479,40 @@ class OldAlbumServiceProviderTest {
         var now = new Date();
         var metadata = ImageMetadata.with().lastModified(now).build();
 
-        var lastModifiedDate = provider.findLastModifiedDate(metadata, null);
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, null, 0);
 
         assertEquals(now, lastModifiedDate);
+    }
+
+    @Test
+    void testFindLastModifiedDateWithTimeAdded() {
+        var provider = new OldAlbumServiceProvider();
+        var now = new Date();
+        var metadata = ImageMetadata.with().lastModified(now).build();
+        var currentYear = LocalDateTime.now().getYear();
+
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, currentYear, 1);
+
+        assertThat(now).isBefore(lastModifiedDate);
+    }
+
+    @Test
+    void testFindLastModifiedDateWithTimeAddedAndNullImportYear() {
+        var provider = new OldAlbumServiceProvider();
+        var now = new Date();
+        var metadata = ImageMetadata.with().lastModified(now).build();
+
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, null, 1);
+
+        // Time not incremented when import year is null
+        assertThat(now).isEqualTo(lastModifiedDate);
     }
 
     @Test
     void testFindLastModifiedDateWhenMetadataIsNull() {
         var provider = new OldAlbumServiceProvider();
 
-        var lastModifiedDate = provider.findLastModifiedDate(null, null);
+        var lastModifiedDate = provider.findLastModifiedDate(null, null, 0);
 
         assertNull(lastModifiedDate);
     }
@@ -2492,7 +2522,7 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var metadata = ImageMetadata.with().build();
 
-        var lastModifiedDate = provider.findLastModifiedDate(metadata, null);
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, null, 0);
 
         assertNull(lastModifiedDate);
     }
@@ -2504,7 +2534,7 @@ class OldAlbumServiceProviderTest {
         var importYear = 1967;
         var metadata = ImageMetadata.with().lastModified(now).build();
 
-        var lastModifiedDate = provider.findLastModifiedDate(metadata, importYear);
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, importYear, 0);
 
         assertThat(lastModifiedDate).hasYear(importYear);
     }
@@ -2514,7 +2544,7 @@ class OldAlbumServiceProviderTest {
         var provider = new OldAlbumServiceProvider();
         var importYear = 1967;
 
-        var lastModifiedDate = provider.findLastModifiedDate(null, importYear);
+        var lastModifiedDate = provider.findLastModifiedDate(null, importYear, 0);
 
         assertThat(lastModifiedDate).hasYear(importYear);
     }
@@ -2525,7 +2555,7 @@ class OldAlbumServiceProviderTest {
         var importYear = 1967;
         var metadata = ImageMetadata.with().build();
 
-        var lastModifiedDate = provider.findLastModifiedDate(metadata, importYear);
+        var lastModifiedDate = provider.findLastModifiedDate(metadata, importYear, 0);
 
         assertThat(lastModifiedDate).hasYear(importYear);
     }
@@ -2660,7 +2690,7 @@ class OldAlbumServiceProviderTest {
     void testCreatePictureFromUrWithNullMetadatal() {
         var provider = new OldAlbumServiceProvider();
         var parent = AlbumEntry.with().id(1).build();
-        var picture = provider.createPictureFromUrl(new Element("img"), parent, null, null);
+        var picture = provider.createPictureFromUrl(new Element("img"), parent, null, null, 0);
         assertThat(picture)
             .hasFieldOrPropertyWithValue("contentType", null)
             .hasFieldOrPropertyWithValue("description", null)

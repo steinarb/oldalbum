@@ -1097,9 +1097,11 @@ public class OldAlbumServiceProvider implements OldAlbumService {
             var sort = findHighestSortValueInParentAlbum(request.parent());
             var unsortedPictures = new ArrayList<AlbumEntry>();
             var links = document.select("a");
+            var secondImportOffset = 0; // Incremented with one second for each image and added to timestamp to avoid images having identical time
             for (var link: links) {
                 if (hrefIsJpeg(link.attr("href"))) {
-                    unsortedPictures.add(createPictureFromUrl(link, parent, request.importYear(), request.defaultTitle()));
+                    unsortedPictures.add(createPictureFromUrl(link, parent, request.importYear(), request.defaultTitle(), secondImportOffset));
+                    ++secondImportOffset;
                 }
             }
             var pictures = Boolean.TRUE.equals(request.sortByDate()) ?
@@ -1177,13 +1179,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return bundle.getString(key);
     }
 
-    AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, Integer importYear, String defaultTitle) {
+    AlbumEntry createPictureFromUrl(Element link, AlbumEntry parent, Integer importYear, String defaultTitle, int secondImportOffset) {
         var basename = findBasename(link);
         var path = parent.path() + basename;
         var imageUrl = link.absUrl("href");
         var thumbnailUrl = findThumbnailUrl(link);
         var metadata = readMetadata(imageUrl);
-        var lastModified = findLastModifiedDate(metadata, importYear);
+        var lastModified = findLastModifiedDate(metadata, importYear, secondImportOffset);
         var contenttype = metadata != null ? metadata.contentType() : null;
         var contentlength = metadata != null ? metadata.contentLength() : 0;
         var title = !stringIsNullOrBlank(defaultTitle) ? defaultTitle : safeGetTitleFromMetadata(metadata);
@@ -1212,13 +1214,13 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         return Optional.ofNullable(metadata).map(ImageMetadata::title).orElse(null);
     }
 
-    Date findLastModifiedDate(ImageMetadata metadata, Integer importYear) {
+    Date findLastModifiedDate(ImageMetadata metadata, Integer importYear, int secondImportOffset) {
         if (importYear == null) {
             return metadata != null ? metadata.lastModified() : null;
         }
 
         var rawDate = metadata != null && metadata.lastModified() != null ? LocalDateTime.ofInstant(metadata.lastModified().toInstant(), ZoneId.systemDefault()) : LocalDateTime.now();
-        var adjustedDate = rawDate.withYear(importYear);
+        var adjustedDate = rawDate.plusSeconds(secondImportOffset).withYear(importYear);
         return Date.from(adjustedDate.atZone(ZoneId.systemDefault()).toInstant());
     }
 
