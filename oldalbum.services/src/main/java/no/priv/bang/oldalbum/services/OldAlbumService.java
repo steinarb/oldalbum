@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -45,6 +45,8 @@ public interface OldAlbumService {
     List<AlbumEntry> getChildren(int parent, boolean isLoggedIn);
 
     List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry);
+
+    List<AlbumEntry> touchPictureTimestamp(int pictureId);
 
     List<AlbumEntry> toggleEntryPasswordProtection(int albumEntryId);
 

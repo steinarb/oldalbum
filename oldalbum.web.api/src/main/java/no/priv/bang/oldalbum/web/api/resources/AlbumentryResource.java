@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -64,6 +64,12 @@ public class AlbumentryResource {
     @RequiresRoles("oldalbumadmin")
     public List<AlbumEntry> modifypicture(AlbumEntry modifiedPicture) {
         return oldalbum.updateEntry(modifiedPicture);
+    }
+
+    @Path("touchpicturetimestamp/{id}")
+    @GET
+    public List<AlbumEntry> touchpicturetimestamp(@PathParam("id") int id) {
+        return oldalbum.touchPictureTimestamp(id);
     }
 
     @Path("togglepasswordprotection/{id}")

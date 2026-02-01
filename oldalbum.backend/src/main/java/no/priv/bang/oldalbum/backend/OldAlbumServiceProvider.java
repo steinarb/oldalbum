@@ -38,6 +38,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -385,6 +386,36 @@ public class OldAlbumServiceProvider implements OldAlbumService {
         }
 
         return fetchAllRoutes(null, true); // All edits are logged in
+    }
+
+    @Override
+    public List<AlbumEntry> touchPictureTimestamp(int pictureId) {
+        LocalDateTime currentTimestampOfPicture = null;
+        try(var connection = datasource.getConnection()) {
+            try(var statement = connection.prepareStatement("select lastModified from albumentries where albumentry_id=?")) {
+                statement.setInt(1, pictureId);
+                try(var results = statement.executeQuery()) {
+                    while(results.next()) {
+                        currentTimestampOfPicture = results.getTimestamp("lastmodified").toLocalDateTime();
+                    }
+                }
+            }
+
+            if (currentTimestampOfPicture != null) {
+                var adjustedTimestamp = currentTimestampOfPicture.with(LocalTime.now()); // Adjust time part of timestamp to local wall clock time
+                try(var statement = connection.prepareStatement("update albumentries set lastModified=? where albumentry_id=?")) {
+                    statement.setTimestamp(1, Timestamp.valueOf(adjustedTimestamp));
+                    statement.setInt(2, pictureId);
+                    statement.execute();
+                }
+            } else {
+                logger.warn("Unable to find current timestamp of picture with id {}", pictureId);
+            }
+        } catch (SQLException e) {
+            logger.error("Failed to update album entry for id {}", pictureId, e);
+        }
+
+        return fetchAllRoutes(null, true);
     }
 
     @Override

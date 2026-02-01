@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.backend;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.within;
 import static org.mockito.Mockito.*;
 
 import java.io.File;
@@ -35,11 +36,15 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
@@ -488,6 +493,66 @@ class OldAlbumServiceProviderTest {
             .hasFieldOrPropertyWithValue("lastModified", modifiedDate)
             .hasFieldOrPropertyWithValue("requireLogin", requireLogin)
             .isEqualTo(modifiedPicture);
+    }
+
+    @Test
+    void testTouchPictureTimestamp() {
+        int pictureId = 17;
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        provider.setDataSource(datasource);
+        provider.activate(Collections.emptyMap());
+
+        var originalPicture = provider.fetchAllRoutes(null, false).stream().filter(r -> r.id() == pictureId).findFirst().get();
+        var expectedDate = originalPicture.lastModified().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        var expectedTime = LocalTime.now();
+        var updatedEntries = provider.touchPictureTimestamp(pictureId);
+        assertThat(logservice.getLogmessages()).isEmpty(); // Verify nothing logged
+        var updatedPicture = updatedEntries.stream().filter(r -> r.id() == pictureId).findFirst().get();
+        var touchedDateTime = updatedPicture.lastModified().toInstant().atZone(ZoneId.systemDefault());
+        assertThat(touchedDateTime.toLocalDate()).isEqualTo(expectedDate);
+        assertThat(touchedDateTime.toLocalTime()).isCloseTo(expectedTime, within(100, ChronoUnit.MILLIS));
+    }
+
+    @Test
+    void testTouchPictureTimestampWithNoTimestampFound() throws Exception {
+        int pictureId = 17;
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var results = mock(ResultSet.class);
+        var statement1 = mock(PreparedStatement.class);
+        when(statement1.executeQuery()).thenReturn(results);
+        var statement2 = mock(Statement.class);
+        when(statement2.executeQuery(anyString())).thenReturn(results);
+        var connection = mock(Connection.class);
+        when(connection.prepareStatement(anyString())).thenReturn(statement1);
+        when(connection.createStatement()).thenReturn(statement2);
+        var mockedDatasource = mock(DataSource.class);
+        when(mockedDatasource.getConnection()).thenReturn(connection);
+        provider.setDataSource(mockedDatasource);
+        provider.activate(Collections.emptyMap());
+
+        provider.touchPictureTimestamp(pictureId);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().getLast()).isEqualTo("[WARNING] Unable to find current timestamp of picture with id 17");
+    }
+
+    @Test
+    void testTouchPictureTimestampWithSqlExceptionThrown() throws Exception {
+        int pictureId = 17;
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        var mockedDatasource = mock(DataSource.class);
+        when(mockedDatasource.getConnection()).thenThrow(SQLException.class);
+        provider.setLogService(logservice);
+        provider.setDataSource(mockedDatasource);
+        provider.activate(Collections.emptyMap());
+
+        provider.touchPictureTimestamp(pictureId);
+        assertThat(logservice.getLogmessages()).isNotEmpty();
+        assertThat(logservice.getLogmessages().getFirst()).isEqualTo("[ERROR] Failed to update album entry for id 17 java.sql.SQLException");
     }
 
     @Test

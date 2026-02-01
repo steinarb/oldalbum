@@ -6,6 +6,7 @@ import { useSwipeable } from 'react-swipeable';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
+import TouchButton from './TouchButton';
 import Previous from './Previous';
 import Next from './Next';
 import PictureNavbar from './PictureNavbar';
@@ -47,6 +48,7 @@ export default function Picture(props) {
             <div className="btn-group" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
+                <TouchButton className="mx-1 my-1" item={item} />
             </div>
             <div {...swipeHandlers}>
                 <img className="img-fluid d-lg-none hide-on-landscape" src={item.imageUrl} />

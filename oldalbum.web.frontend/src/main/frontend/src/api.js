@@ -17,6 +17,15 @@ export const api = createApi({
         getLogout: builder.mutation({ query: () => ({url: '/logout', method: 'GET' }) }),
         getLogoutUnauthorized: builder.mutation({ query: () => ({url: '/logout', method: 'GET' }) }),
         getReloadshiroconfig: builder.mutation({ query: () => ({url: '/reloadshiroconfig', method: 'GET', responseHandler: 'text' }) }),
+        getTouchpicturetimestamp: builder.mutation({
+            query: (id) => ({url: '/touchpicturetimestamp/' + id.toString(), method: 'GET' }),
+            async onQueryStarted(body, { dispatch, queryFulfilled }) {
+                try {
+                    const { data: allroutesAfterTouchPictureTimestamp } = await queryFulfilled;
+                    dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterTouchPictureTimestamp));
+                } catch {}
+            },
+        }),
         getTogglepasswordprotection: builder.mutation({
             query: (id) => ({url: '/togglepasswordprotection/' + id.toString(), method: 'GET' }),
             async onQueryStarted(id, { dispatch, queryFulfilled }) {
@@ -132,6 +141,7 @@ export const {
     useGetLogoutMutation,
     useGetLogoutUnauthorizedMutation,
     useGetReloadshiroconfigMutation,
+    useGetTouchpicturetimestampMutation,
     useGetTogglepasswordprotectionMutation,
     usePostModifyalbumMutation,
     usePostAddalbumMutation,

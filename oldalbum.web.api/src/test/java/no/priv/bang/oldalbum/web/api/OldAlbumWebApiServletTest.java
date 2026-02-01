@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@ package no.priv.bang.oldalbum.web.api;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.AdditionalMatchers.*;
+import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.Mockito.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static javax.ws.rs.core.MediaType.*;
@@ -179,6 +180,24 @@ class OldAlbumWebApiServletTest extends ShiroTestBase {
         var response = new MockHttpServletResponse();
         createSubjectAndBindItToThread();
         loginUser("admin", "admin");
+        servlet.service(request, response);
+        assertEquals(HttpServletResponse.SC_OK, response.getStatus());
+        var routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });
+        assertThat(routes).isNotEmpty();
+    }
+
+    @Test
+    void testTouchpicturetimestamp() throws Exception {
+        var picture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
+        var logservice = new MockLogService();
+        var backendService = mock(OldAlbumService.class);
+        when(backendService.touchPictureTimestamp(anyInt())).thenReturn(Arrays.asList(picture));
+        var useradmin = mock(UserManagementService.class);
+        var servlet = simulateDSComponentActivationAndWebWhiteboardConfiguration(backendService, logservice, useradmin);
+        var request = buildGetUrl("/touchpicturetimestamp/17");
+        var response = new MockHttpServletResponse();
+        createSubjectAndBindItToThread();
+        loginUser("jad", "1ad");
         servlet.service(request, response);
         assertEquals(HttpServletResponse.SC_OK, response.getStatus());
         var routes = mapper.readValue(getBinaryContent(response), new TypeReference<List<AlbumEntry>>() { });

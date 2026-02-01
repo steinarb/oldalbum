@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -66,6 +66,17 @@ class AlbumentryResourceTest {
         var updatedPicture = allroutes.stream().filter(r -> r.id() == 2).findFirst().get();
         assertEquals(modifiedPicture.title(), updatedPicture.title());
         assertEquals(modifiedPicture.description(), updatedPicture.description());
+    }
+
+    @Test
+    void testTouchpicturetimestamp() {
+        var picture = AlbumEntry.with().id(2).parent(1).path("/moto/vfr96/acirc1").album(false).title("Picture has been updated").description("This is an updated picture description").imageUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/acirc1.jpg").thumbnailUrl("https://www.bang.priv.no/sb/pics/moto/vfr96/icons/acirc1.gif").sort(1).lastModified(new Date()).contentType("image/jpeg").contentLength(71072).requireLogin(true).build();
+        var resource = new AlbumentryResource();
+        var oldalbum = mock(OldAlbumService.class);
+        when(oldalbum.touchPictureTimestamp(anyInt())).thenReturn(Arrays.asList(picture));
+        resource.oldalbum = oldalbum;
+        var allroutes = resource.touchpicturetimestamp(picture.id());
+        assertThat(allroutes).isNotEmpty();
     }
 
     @Test
