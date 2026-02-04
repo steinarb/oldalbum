@@ -3,6 +3,7 @@ import { useSelector } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
+    usePostModifypictureMutation,
 } from '../api';
 import { NavLink } from 'react-router';
 import Locale from './Locale';
@@ -17,8 +18,20 @@ export default function PictureNavbar(props) {
     const { className, item, parent, title } = props;
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
+    const canModifyAlbum = useSelector(state => state.canModifyAlbum);
+    const loggedIn = useSelector(state => state.loggedIn);
+    const editMode = useSelector(state => state.editMode);
+    const editable = canModifyAlbum && loggedIn && editMode;
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const anchor = item.path.split('/').pop();
+    const [ postModifypicture ] = usePostModifypictureMutation();
+    const onSaveTitle = async (e) =>
+          {
+              if (e.key === 'Enter') {
+                  await postModifypicture({ ...item, title: e.target.innerText });
+                  e.target.blur();
+              }
+          }
 
     return (
         <div className={className}>
@@ -31,7 +44,12 @@ export default function PictureNavbar(props) {
                         </div>
                     </div>
                 </NavLink>
-                <h1 className="navbar-text">{title}</h1>
+                <h1 className="navbar-text">
+                    <div
+                        contentEditable={editable}
+                        onKeyDown={onSaveTitle}
+                    >{title}</div>
+                </h1>
                 <div className="d-flex flex-row">
                     <DownloadButton className="nav-link float-right" item={item} />
                     <Locale className="form-inline" />
