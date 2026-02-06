@@ -17,7 +17,7 @@ import {
     setDescription,
     setImageUrl,
     setThumbnailUrl,
-    setLastModified,
+    setLastModifiedDate,
     setRequireLogin,
     setGroupByYear,
 } from '../reducers/pictureSlice'
@@ -151,7 +151,7 @@ export default function AddPicture() {
                                 className="form-control"
                                 type="date"
                                 value={lastmodified}
-                                onChange={e => dispatch(setLastModified(e.target.value))} />
+                                onChange={e => dispatch(setLastModifiedDate(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
