@@ -73,6 +73,39 @@ export default function ModifyPicture() {
                         <img className="img-thumbnail fullsize-img-thumbnail" src={picture.imageUrl} />
                     </div>
                     <div className="form-group row mb-2">
+                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
+                        <div className="col-7">
+                            <input
+                                id="title"
+                                className="form-control"
+                                type="text"
+                                value={picture.title}
+                                onChange={e => dispatch(setTitle(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
+                        <div className="col-7">
+                            <input
+                                id="description"
+                                className="form-control"
+                                type="text"
+                                value={picture.description}
+                                onChange={e => dispatch(setDescription(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
+                        <div className="col-7">
+                            <input
+                                id="lastmodified"
+                                className="form-control"
+                                type="date"
+                                value={lastmodified}
+                                onChange={e => dispatch(setLastModified(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
                         <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
                         <div className="col-7">
                             <select
@@ -99,28 +132,6 @@ export default function ModifyPicture() {
                                 type="text"
                                 value={picture.basename}
                                 onChange={e => dispatch(setBasename(e.target.value))} />
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
-                        <div className="col-7">
-                            <input
-                                id="title"
-                                className="form-control"
-                                type="text"
-                                value={picture.title}
-                                onChange={e => dispatch(setTitle(e.target.value))} />
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
-                        <div className="col-7">
-                            <input
-                                id="description"
-                                className="form-control"
-                                type="text"
-                                value={picture.description}
-                                onChange={e => dispatch(setDescription(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
@@ -155,17 +166,6 @@ export default function ModifyPicture() {
                         <label htmlFor="contentType" className="col-form-label col-5">{text.contenttype}</label>
                         <div className="col-7">
                             <input id="contentType" readOnly className="form-control" type="text" value={picture.contentType}/>
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
-                        <div className="col-7">
-                            <input
-                                id="lastmodified"
-                                className="form-control"
-                                type="date"
-                                value={lastmodified}
-                                onChange={e => dispatch(setLastModified(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">

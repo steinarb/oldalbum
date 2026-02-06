@@ -73,36 +73,6 @@ export default function ModifyAlbum() {
                 </div>
                 <div className="container mt-2">
                     <div className="form-group row mb-2">
-                        <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
-                        <div className="col-7">
-                            <select
-                                id="parent"
-                                className="form-control"
-                                value={album.parent}
-                                onChange={e => dispatch(setParent(albums.find(a => a.id === parseInt(e.target.value))))}>
-                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
-                            </select>
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
-                        <div className="col-7">
-                            <input id="path" className="form-control" type="text" value={album.path} readOnly={true} />
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
-                        <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
-                        <div className="col-7">
-                            <input
-                                id="basename"
-                                disabled={album.path === '/'}
-                                className="form-control"
-                                type="text"
-                                value={album.basename}
-                                onChange={e => dispatch(setBasename(e.target.value))} />
-                        </div>
-                    </div>
-                    <div className="form-group row mb-2">
                         <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
                         <div className="col-7">
                             <input
@@ -133,6 +103,36 @@ export default function ModifyAlbum() {
                                 type="date"
                                 value={lastmodified}
                                 onChange={e => dispatch(setLastModified(e.target.value))} />
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
+                        <div className="col-7">
+                            <select
+                                id="parent"
+                                className="form-control"
+                                value={album.parent}
+                                onChange={e => dispatch(setParent(albums.find(a => a.id === parseInt(e.target.value))))}>
+                                { albums.map((val) => <option key={'album_' + val.id} value={val.id}>{val.title}</option>) }
+                            </select>
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
+                        <div className="col-7">
+                            <input id="path" className="form-control" type="text" value={album.path} readOnly={true} />
+                        </div>
+                    </div>
+                    <div className="form-group row mb-2">
+                        <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
+                        <div className="col-7">
+                            <input
+                                id="basename"
+                                disabled={album.path === '/'}
+                                className="form-control"
+                                type="text"
+                                value={album.basename}
+                                onChange={e => dispatch(setBasename(e.target.value))} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
