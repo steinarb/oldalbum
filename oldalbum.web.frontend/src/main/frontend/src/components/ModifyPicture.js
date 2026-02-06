@@ -59,6 +59,16 @@ export default function ModifyPicture() {
             <ModifyFailedErrorAlert/>
             <form onSubmit={ e => { e.preventDefault(); }}>
                 <div className="container">
+                    <div>&nbsp;</div>
+                    <div>
+                        <button className="btn btn-light me-1" type="button" onClick={onModifyPictureClicked}>{text.update}</button>
+                        <button
+                            className="btn btn-light me-1"
+                            type="button"
+                            onClick={onCancelClicked}>
+                        {text.cancel}</button>
+                    </div>
+                    <div>&nbsp;</div>
                     <div className="form-group row mb-2">
                         <img className="img-thumbnail fullsize-img-thumbnail" src={picture.imageUrl} />
                     </div>
@@ -166,14 +176,6 @@ export default function ModifyPicture() {
                             checked={picture.requireLogin}
                             onChange={e => dispatch(setRequireLogin(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
-                    </div>
-                    <div>
-                        <button className="btn btn-light me-1" type="button" onClick={onModifyPictureClicked}>{text.update}</button>
-                        <button
-                            className="btn btn-light me-1"
-                            type="button"
-                            onClick={onCancelClicked}>
-                        {text.cancel}</button>
                     </div>
                 </div>
             </form>

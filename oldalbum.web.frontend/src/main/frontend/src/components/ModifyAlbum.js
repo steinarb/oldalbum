@@ -58,6 +58,19 @@ export default function ModifyAlbum() {
             </nav>
             <ModifyFailedErrorAlert/>
             <form onSubmit={ e => { e.preventDefault(); }}>
+                <div>&nbsp;</div>
+                <div className="container">
+                    <button
+                        className="btn btn-light me-1"
+                        type="button"
+                        onClick={() => dispatch(onModifyAlbumClicked)}>
+                    {text.update}</button>
+                    <button
+                        className="btn btn-light me-1"
+                        type="button"
+                        onClick={onCancelClicked}>
+                    {text.cancel}</button>
+                </div>
                 <div className="container mt-2">
                     <div className="form-group row mb-2">
                         <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
@@ -158,18 +171,6 @@ export default function ModifyAlbum() {
                             checked={album.groupByYear}
                             onChange={e => dispatch(setGroupByYear(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.albumGroupByYear}</label>
-                    </div>
-                    <div className="container">
-                        <button
-                            className="btn btn-light me-1"
-                            type="button"
-                            onClick={() => dispatch(onModifyAlbumClicked)}>
-                            {text.update}</button>
-                        <button
-                            className="btn btn-light me-1"
-                            type="button"
-                            onClick={onCancelClicked}>
-                            {text.cancel}</button>
                     </div>
                 </div>
             </form>
