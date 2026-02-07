@@ -22,6 +22,9 @@ import {
     setGroupByYear,
 } from '../reducers/pictureSlice'
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
+import CopyPreviousTitleButton from './CopyPreviousTitleButton';
+import CopyPreviousDescriptionButton from './CopyPreviousDescriptionButton';
+import CopyPreviousLastModifiedDateButton from './CopyPreviousLastModifiedDateButton';
 
 export default function ModifyPicture() {
     const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
@@ -73,7 +76,7 @@ export default function ModifyPicture() {
                         <img className="img-thumbnail fullsize-img-thumbnail" src={picture.imageUrl} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
+                        <label htmlFor="title" className="col-form-label col-3">{text.title}</label>
                         <div className="col-7">
                             <input
                                 id="title"
@@ -82,9 +85,10 @@ export default function ModifyPicture() {
                                 value={picture.title}
                                 onChange={e => dispatch(setTitle(e.target.value))} />
                         </div>
+                        <CopyPreviousTitleButton className="col-2" item={picture} setTitle={setTitle} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
+                        <label htmlFor="description" className="col-form-label col-3">{text.description}</label>
                         <div className="col-7">
                             <input
                                 id="description"
@@ -93,9 +97,10 @@ export default function ModifyPicture() {
                                 value={picture.description}
                                 onChange={e => dispatch(setDescription(e.target.value))} />
                         </div>
+                        <CopyPreviousDescriptionButton className="col-2" item={picture} setDescription={setDescription} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
+                        <label htmlFor="lastmodified" className="col-form-label col-3">{text.lastmodified}</label>
                         <div className="col-7">
                             <input
                                 id="lastmodified"
@@ -104,9 +109,10 @@ export default function ModifyPicture() {
                                 value={lastmodified}
                                 onChange={e => dispatch(setLastModifiedDate(e.target.value))} />
                         </div>
+                        <CopyPreviousLastModifiedDateButton className="col-2" item={picture} setLastModifiedDate={setLastModifiedDate} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
+                        <label htmlFor="parent" className="col-form-label col-3">{text.parent}</label>
                         <div className="col-7">
                             <select
                                 id="parent"
@@ -118,13 +124,13 @@ export default function ModifyPicture() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
+                        <label htmlFor="path" className="col-form-label col-3">{text.path}</label>
                         <div className="col-7">
                             <input id="path" className="form-control" type="text" value={picture.path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
+                        <label htmlFor="basename" className="col-form-label col-3">{text.basefilename}</label>
                         <div className="col-7">
                             <input
                                 id="basename"
@@ -135,7 +141,7 @@ export default function ModifyPicture() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="imageUrl" className="col-form-label col-5">{text.imageurl}</label>
+                        <label htmlFor="imageUrl" className="col-form-label col-3">{text.imageurl}</label>
                         <div className="col-7">
                             <input
                                 id="imageUrl"
@@ -146,7 +152,7 @@ export default function ModifyPicture() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="thumbnailUrl" className="col-form-label col-5">{text.thumbnailurl}</label>
+                        <label htmlFor="thumbnailUrl" className="col-form-label col-3">{text.thumbnailurl}</label>
                         <div className="col-7">
                             <input
                                 id="thumbnailUrl"
@@ -157,13 +163,13 @@ export default function ModifyPicture() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="contentLength" className="col-form-label col-5">{text.contentlengthinbytes}</label>
+                        <label htmlFor="contentLength" className="col-form-label col-3">{text.contentlengthinbytes}</label>
                         <div className="col-7">
                             <input id="contentLength" readOnly className="form-control" type="text" value={picture.contentLength}/>
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="contentType" className="col-form-label col-5">{text.contenttype}</label>
+                        <label htmlFor="contentType" className="col-form-label col-3">{text.contenttype}</label>
                         <div className="col-7">
                             <input id="contentType" readOnly className="form-control" type="text" value={picture.contentType}/>
                         </div>

@@ -9,6 +9,8 @@ import {
     usePostModifyalbumMutation,
 } from '../api';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
+import CopyPreviousTitleButton from './CopyPreviousTitleButton';
+import CopyPreviousDescriptionButton from './CopyPreviousDescriptionButton';
 import {
     selectAlbum,
     setParent,
@@ -73,7 +75,7 @@ export default function ModifyAlbum() {
                 </div>
                 <div className="container mt-2">
                     <div className="form-group row mb-2">
-                        <label htmlFor="title" className="col-form-label col-5">{text.title}</label>
+                        <label htmlFor="title" className="col-form-label col-3">{text.title}</label>
                         <div className="col-7">
                             <input
                                 id="title"
@@ -82,9 +84,10 @@ export default function ModifyAlbum() {
                                 value={album.title}
                                 onChange={e => dispatch(setTitle(e.target.value))} />
                         </div>
+                        <CopyPreviousTitleButton className="col-2" item={album} setTitle={setTitle} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="description" className="col-form-label col-5">{text.description}</label>
+                        <label htmlFor="description" className="col-form-label col-3">{text.description}</label>
                         <div className="col-7">
                             <input
                                 id="description"
@@ -93,9 +96,10 @@ export default function ModifyAlbum() {
                                 value={album.description}
                                 onChange={e => dispatch(setDescription(e.target.value))} />
                         </div>
+                        <CopyPreviousDescriptionButton className="col-2" item={album} setDescription={setDescription} />
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="lastmodified" className="col-form-label col-5">{text.lastmodified}</label>
+                        <label htmlFor="lastmodified" className="col-form-label col-3">{text.lastmodified}</label>
                         <div className="col-7">
                             <input
                                 id="lastmodified"
@@ -106,7 +110,7 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="parent" className="col-form-label col-5">{text.parent}</label>
+                        <label htmlFor="parent" className="col-form-label col-3">{text.parent}</label>
                         <div className="col-7">
                             <select
                                 id="parent"
@@ -118,13 +122,13 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="path" className="col-form-label col-5">{text.path}</label>
+                        <label htmlFor="path" className="col-form-label col-3">{text.path}</label>
                         <div className="col-7">
                             <input id="path" className="form-control" type="text" value={album.path} readOnly={true} />
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <label htmlFor="basename" className="col-form-label col-5">{text.basefilename}</label>
+                        <label htmlFor="basename" className="col-form-label col-3">{text.basefilename}</label>
                         <div className="col-7">
                             <input
                                 id="basename"
@@ -136,7 +140,7 @@ export default function ModifyAlbum() {
                         </div>
                     </div>
                     <div className="form-group row mb-2">
-                        <div className="col-5" />
+                        <div className="col-3" />
                         <div className="col-7">
                             <button
                                 className="btn btn-light me-1"
