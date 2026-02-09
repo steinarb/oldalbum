@@ -125,3 +125,7 @@
 .oldalbum-modal {
     z-index: 10000;
 }
+
+.edit-buttons {
+    float: left;
+}

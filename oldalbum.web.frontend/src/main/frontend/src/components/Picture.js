@@ -45,7 +45,7 @@ export default function Picture(props) {
                     <Next className="align-self-end" next={next} />
                 </div>
             </div>
-            <div className="btn-group" role="group" aria-label="Modify album">
+            <div className="btn-group edit-buttons" role="group" aria-label="Modify album">
                 <ModifyButton className="mx-1 my-1" item={item} />
                 <DeleteButton className="mx-1 my-1" item={item} />
                 <TouchButton className="mx-1 my-1" item={item} />
