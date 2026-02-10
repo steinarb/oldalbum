@@ -34,7 +34,7 @@ export const pictureSlice = createSlice({
         setDescription: (state, action) => ({ ...state, description: action.payload }),
         setImageUrl: (state, action) => ({ ...state, imageUrl: action.payload }),
         setThumbnailUrl: (state, action) => ({ ...state, thumbnailUrl: action.payload }),
-        setLastModifiedDate: (state, action) => setLastModifiedDateWhileKeepingTimeOfDay(state, action),
+        setLastModifiedDate: setLastModifiedDateWhileKeepingTimeOfDay,
         setContentType: (state, action) => ({ ...state, contentType: action.payload }),
         setContentLength: (state, action) => ({ ...state, contentLength: parseInt(action.payload) }),
         setRequireLogin: (state, action) => ({ ...state, requireLogin: !!action.payload }),
