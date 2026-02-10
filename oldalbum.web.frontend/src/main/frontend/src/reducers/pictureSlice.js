@@ -82,7 +82,7 @@ function replaceLastElementInPathWithBasenameFromLoadedUrl(state, imageUrl, ends
 }
 
 function setLastModifiedDateWhileKeepingTimeOfDay(state, action) {
-    const lastModifiedTime = state.lastModified.split('T')[1];
+    const lastModifiedTime = new Date(state.lastModified).toISOString().split('T')[1];
     const lastModified = action.payload + 'T' + lastModifiedTime;
     return { ...state, lastModified };
 }
