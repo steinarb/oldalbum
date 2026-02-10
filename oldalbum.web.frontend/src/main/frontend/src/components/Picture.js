@@ -62,8 +62,8 @@ export default function Picture(props) {
                         <div className="col-auto"><Next className="ml-auto" next={next} /></div>
                     </div>
                 </div>
-                <PictureDescription className="hide-on-landscape d-lg-none" description={description}/>
-                <PictureDescription className="d-none d-lg-block" description={description}/>
+                <PictureDescription className="hide-on-landscape d-lg-none" item={item} metadata={metadata}/>
+                <PictureDescription className="d-none d-lg-block" item={item} metadata={metadata}/>
             </div>
         </div>
     );

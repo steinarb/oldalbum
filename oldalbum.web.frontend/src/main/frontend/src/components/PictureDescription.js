@@ -1,15 +1,15 @@
 import React from 'react';
 
 function PictureDescription(props) {
-    const { className, description } = props;
+    const { className, item, metadata } = props;
 
-    if (!description) {
+    if (!item.description && !metadata) {
         return null;
     }
 
     return (
         <div className={className}>
-            <div className="alert alert-primary d-flex justify-content-center" role="alert">{description}</div>
+            <div className="alert alert-primary d-flex justify-content-center" role="alert">{item.description} {metadata}</div>
         </div>
     );
 }
