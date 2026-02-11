@@ -25,13 +25,12 @@ export default function PictureNavbar(props) {
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const anchor = item.path.split('/').pop();
     const [ postModifypicture ] = usePostModifypictureMutation();
-    const onSaveTitle = async (e) =>
-          {
-              if (e.key === 'Enter') {
-                  await postModifypicture({ ...item, title: e.target.innerText });
-                  e.target.blur();
-              }
-          }
+    const onSaveTitle = async (e) => {
+        if (e.key === 'Enter') {
+            await postModifypicture({ ...item, title: e.target.innerText });
+            e.target.blur();
+        }
+    }
 
     return (
         <div className={className}>

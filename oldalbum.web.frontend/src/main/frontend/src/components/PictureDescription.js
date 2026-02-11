@@ -9,13 +9,12 @@ function PictureDescription(props) {
     const editMode = useSelector(state => state.editMode);
     const editable = canModifyAlbum && loggedIn && editMode;
     const [ postModifypicture ] = usePostModifypictureMutation();
-    const onSaveDescription = async (e) =>
-          {
-              if (e.key === 'Enter') {
-                  await postModifypicture({ ...item, description: e.target.innerText });
-                  e.target.blur();
-              }
-          }
+    const onSaveDescription = async (e) => {
+        if (e.key === 'Enter') {
+            await postModifypicture({ ...item, description: e.target.innerText });
+            e.target.blur();
+        }
+    }
 
     if (!item.description && !metadata) {
         return null;
