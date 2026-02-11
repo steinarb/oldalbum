@@ -25,7 +25,7 @@ function PictureDescription(props) {
         <div className={className}>
             <div className="alert alert-primary d-flex justify-content-center" role="alert">
                 <span contentEditable={editable} onKeyDown={onSaveDescription}>{item.description}</span>
-                {metadata}
+                &nbsp;{metadata}
             </div>
         </div>
     );
