@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-02-12 Thu 23:55> |  3.0.10 | Use authservice 3.0.8 (using liquibase 5.0.1), more improvements and fixes to picture metadata editing         |
 | <2026-02-07 Sat 10:57> |   3.0.9 | Use liquibase 5.0.1, many improvements and fixes to picture metadata editing                                   |
 | <2026-01-22 Thu 23:36> |   3.0.8 | Use postgresql 42.7.9                                                                                          |
 | <2026-01-20 Tue 21:09> |   3.0.7 | More robust EXIF parsing on JPEG import, correct EXIF structure on JPEG export                                 |
