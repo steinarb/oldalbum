@@ -1,6 +1,5 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { isAnyOf } from '@reduxjs/toolkit';
-import { parse } from 'qs';
 import { api } from './api';
 import { albumPrepare } from './reducers/albumSlice';
 import { picturePrepare } from './reducers/pictureSlice';

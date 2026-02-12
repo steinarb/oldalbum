@@ -5,7 +5,6 @@ import {
     useGetDisplaytextsQuery,
 } from '../api';
 import { NavLink } from 'react-router';
-import { stringify } from 'qs';
 
 export default function CopyPreviousLastModifiedDateButton(props) {
     const { item, setLastModifiedDate } = props;
