@@ -1,5 +1,5 @@
 /*
- * Copyright 2020-2024 Steinar Bang
+ * Copyright 2020-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -39,6 +39,7 @@ class AlbumEntryTest {
         var contenttype = "image/jpeg";
         var contentlength = 128186;
         var requirelogin = true;
+        var updateLoginRequirementForChildItems = false;
         var groupByYear = true;
         var bean = AlbumEntry.with()
             .id(id)
@@ -54,6 +55,7 @@ class AlbumEntryTest {
             .contentType(contenttype)
             .contentLength(contentlength)
             .requireLogin(requirelogin)
+            .updateLoginRequirementForChildItems(updateLoginRequirementForChildItems)
             .groupByYear(groupByYear)
             .childcount(childcount)
             .build();
@@ -71,6 +73,7 @@ class AlbumEntryTest {
         assertEquals(contenttype, bean.contentType());
         assertEquals(contentlength, bean.contentLength());
         assertEquals(requirelogin, bean.requireLogin());
+        assertEquals(updateLoginRequirementForChildItems, bean.updateLoginRequirementForChildItems());
         assertEquals(groupByYear, bean.groupByYear());
     }
 
@@ -90,6 +93,7 @@ class AlbumEntryTest {
         assertNull(bean.contentType());
         assertEquals(0, bean.contentLength());
         assertFalse(bean.requireLogin());
+        assertNull(bean.updateLoginRequirementForChildItems());
         assertNull(bean.groupByYear());
     }
 
@@ -109,6 +113,7 @@ class AlbumEntryTest {
             .contentType("image/jpeg")
             .contentLength(128186)
             .requireLogin(true)
+            .updateLoginRequirementForChildItems(true)
             .groupByYear(true)
             .childcount(4)
             .build();
@@ -127,6 +132,7 @@ class AlbumEntryTest {
         assertEquals(originalBean.contentType(), bean.contentType());
         assertEquals(originalBean.contentLength(), bean.contentLength());
         assertEquals(originalBean.requireLogin(), bean.requireLogin());
+        assertEquals(originalBean.updateLoginRequirementForChildItems(), bean.updateLoginRequirementForChildItems());
         assertEquals(originalBean.groupByYear(), bean.groupByYear());
     }
 

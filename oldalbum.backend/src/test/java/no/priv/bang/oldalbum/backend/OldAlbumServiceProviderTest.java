@@ -467,6 +467,114 @@ class OldAlbumServiceProviderTest {
     }
 
     @Test
+    void testUpdateEntryChangeLoginOfChildren() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasource6 = createNewTestDatabase("oldalbum6");
+        provider.setDataSource(datasource6);
+        provider.activate(Collections.emptyMap());
+        var albumentries1 = provider.fetchAllRoutes(null, true);
+        var albumBeforeLogin = albumentries1.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenBeforeLogin = albumentries1.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check preconditions Verify that album and children do not require login
+        assertThat(albumBeforeLogin.requireLogin()).isFalse();
+        assertThat(albumChildrenBeforeLogin).isNotEmpty();
+        assertThat(albumChildrenBeforeLogin.stream().filter(c -> c.requireLogin()).toList()).isEmpty();
+
+        // Do the update
+        var albumentries2 = provider.updateEntry(AlbumEntry.with(albumBeforeLogin).requireLogin(true).updateLoginRequirementForChildItems(true).build());
+        var albumAfterLogin = albumentries2.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenAfterLogin = albumentries2.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check that album and children all require login
+        assertThat(albumAfterLogin.requireLogin()).isTrue();
+        assertThat(albumChildrenAfterLogin).isNotEmpty();
+        assertThat(albumChildrenAfterLogin.stream().filter(c -> c.requireLogin()).toList()).hasSameSizeAs(albumChildrenAfterLogin);
+    }
+
+    @Test
+    void testUpdateEntryChangeLoginButNotOfChildren() throws Exception {
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasource7 = createNewTestDatabase("oldalbum7");
+        provider.setDataSource(datasource7);
+        provider.activate(Collections.emptyMap());
+        var albumentries1 = provider.fetchAllRoutes(null, true);
+        var albumBeforeLogin = albumentries1.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenBeforeLogin = albumentries1.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check preconditions Verify that album and children do not require login
+        assertThat(albumBeforeLogin.requireLogin()).isFalse();
+        assertThat(albumChildrenBeforeLogin).isNotEmpty();
+        assertThat(albumChildrenBeforeLogin.stream().filter(c -> c.requireLogin()).toList()).isEmpty();
+
+        // Do the update
+        var albumentries2 = provider.updateEntry(AlbumEntry.with(albumBeforeLogin).requireLogin(true).updateLoginRequirementForChildItems(false).build());
+        var albumAfterLogin = albumentries2.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenAfterLogin = albumentries2.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check that album require login but children do not require login
+        assertThat(albumAfterLogin.requireLogin()).isTrue();
+        assertThat(albumChildrenAfterLogin).isNotEmpty();
+        assertThat(albumChildrenAfterLogin.stream().filter(c -> c.requireLogin()).toList()).isEmpty();
+    }
+
+    @Test
+    void testUpdateEntryChangeLoginWithNullUpdateLoginRequirementForChildItems() throws Exception {
+        // Edge case: null updateLoginRequirementForChildItems instead of false
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasource8 = createNewTestDatabase("oldalbum8");
+        provider.setDataSource(datasource8);
+        provider.activate(Collections.emptyMap());
+        var albumentries1 = provider.fetchAllRoutes(null, true);
+        var albumBeforeLogin = albumentries1.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenBeforeLogin = albumentries1.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check preconditions Verify that album and children do not require login
+        assertThat(albumBeforeLogin.requireLogin()).isFalse();
+        assertThat(albumChildrenBeforeLogin).isNotEmpty();
+        assertThat(albumChildrenBeforeLogin.stream().filter(c -> c.requireLogin()).toList()).isEmpty();
+
+        // Do the update
+        var albumentries2 = provider.updateEntry(AlbumEntry.with(albumBeforeLogin).requireLogin(true).build());
+        var albumAfterLogin = albumentries2.stream().filter(a -> a.path().equals("/moto/places/")).findFirst().get();
+        var albumChildrenAfterLogin = albumentries2.stream().filter(a -> a.parent() == albumBeforeLogin.id()).toList();
+
+        // Check that album require login but children do not require login
+        assertThat(albumAfterLogin.requireLogin()).isTrue();
+        assertThat(albumChildrenAfterLogin).isNotEmpty();
+        assertThat(albumChildrenAfterLogin.stream().filter(c -> c.requireLogin()).toList()).isEmpty();
+    }
+
+    @Test
+    void testUpdateEntryChangeLoginOnPictureWithUpdateLoginRequirementForChildItems() throws Exception {
+        // Edge case: updateLoginRequirementForChildItems set to true on picture (which should not have this flag)
+        var provider = new OldAlbumServiceProvider();
+        var logservice = new MockLogService();
+        provider.setLogService(logservice);
+        var datasource9 = createNewTestDatabase("oldalbum9");
+        provider.setDataSource(datasource9);
+        provider.activate(Collections.emptyMap());
+        var albumentries1 = provider.fetchAllRoutes(null, true);
+        var pictureBeforeLogin = albumentries1.stream().filter(a -> a.path().equals("/moto/places/grava1")).findFirst().get();
+
+        // Check preconditions Verify that picture do not require login
+        assertThat(pictureBeforeLogin.requireLogin()).isFalse();
+
+        // Do the update
+        var albumentries2 = provider.updateEntry(AlbumEntry.with(pictureBeforeLogin).requireLogin(true).updateLoginRequirementForChildItems(true).build());
+        var pictureAfterLogin = albumentries2.stream().filter(a -> a.path().equals("/moto/places/grava1")).findFirst().get();
+
+        // Check that album require login but children do not require login
+        assertThat(pictureAfterLogin.requireLogin()).isTrue();
+    }
+
+    @Test
     void testUpdatePicture() {
         var provider = new OldAlbumServiceProvider();
         var logservice = new MockLogService();

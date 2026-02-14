@@ -20,6 +20,7 @@ import username from './usernameReducer';
 import sortingStatus from './sortingStatusReducer';
 import showEditControls from './showEditControlsSlice';
 import editMode from './editModeSlice';
+import updateLoginRequirementForChildItems from './updateLoginRequirementForChildItemsSlice';
 import canModifyAlbum from './canModifyAlbumReducer';
 import canLogin from './canLoginReducer';
 import displayPasswordProtectionWarningDialog from './displayPasswordProtectionWarningDialogSlice';
@@ -46,6 +47,7 @@ export default (basename) => combineReducers({
     sortingStatus,
     showEditControls,
     editMode,
+    updateLoginRequirementForChildItems,
     canModifyAlbum,
     canLogin,
     displayPasswordProtectionWarningDialog,

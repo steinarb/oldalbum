@@ -11,6 +11,7 @@ import {
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import CopyPreviousTitleButton from './CopyPreviousTitleButton';
 import CopyPreviousDescriptionButton from './CopyPreviousDescriptionButton';
+import { setUpdateLoginRequirementForChildItems } from '../reducers/updateLoginRequirementForChildItemsSlice';
 import {
     selectAlbum,
     setParent,
@@ -35,6 +36,8 @@ export default function ModifyAlbum() {
     useEffect(() => {allRoutesIsSuccess && dispatch(selectAlbum(allroutes.find(r => r.id === idInt)))}, [allroutes, idInt]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
+    const originalAlbumRequireLoginValue = useSelector(state => (state.albumentries[idInt] || {}).requireLogin || false);
+    const updateLoginRequirementForChildItems = useSelector(state => state.updateLoginRequirementForChildItems);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const album = useSelector(state => state.album);
     const uplocation = album.path;
@@ -42,7 +45,7 @@ export default function ModifyAlbum() {
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postModifyalbum ] = usePostModifyalbumMutation();
     const navigate = useNavigate();
-    const onModifyAlbumClicked = async () => { await postModifyalbum(album); navigate(uplocation); }
+    const onModifyAlbumClicked = async () => { await postModifyalbum({ ...album, updateLoginRequirementForChildItems }); navigate(uplocation); }
     const onCancelClicked = () => { dispatch(clearAlbum()); navigate(uplocation); }
 
     return(
@@ -167,6 +170,18 @@ export default function ModifyAlbum() {
                             onChange={e => dispatch(setRequireLogin(e.target.checked))} />
                         <label htmlFor="require-login" className="form-check-label col-11">{text.requireloggedinuser}</label>
                     </div>
+                    {originalAlbumRequireLoginValue != album.requireLogin && (
+                        <div className="form-group row mb-2">
+                            <span className="col-1">&nbsp;</span>
+                            <input
+                                id="update-album-children"
+                                className="form-check col-1"
+                                type="checkbox"
+                                checked={updateLoginRequirementForChildItems}
+                                onChange={e => dispatch(setUpdateLoginRequirementForChildItems(e.target.checked))} />
+                            <label htmlFor="require-login" className="form-check-label col-10">{text.updateLoginRequirementForChildItems}</label>
+                        </div>
+                    )}
                     <div className="form-group row mb-2">
                         <input
                             id="require-login"

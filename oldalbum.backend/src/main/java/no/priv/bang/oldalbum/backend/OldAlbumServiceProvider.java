@@ -360,8 +360,16 @@ public class OldAlbumServiceProvider implements OldAlbumService {
     @Override
     public List<AlbumEntry> updateEntry(AlbumEntry modifiedEntry) {
         var id = modifiedEntry.id();
-        var sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
         try(var connection = datasource.getConnection()) {
+            if (modifiedEntry.album() && Boolean.TRUE.equals(modifiedEntry.updateLoginRequirementForChildItems())) {
+                try(var statement = connection.prepareStatement("update albumentries set require_login=? where parent=?")) {
+                    statement.setBoolean(1, modifiedEntry.requireLogin());
+                    statement.setInt(2, modifiedEntry.id());
+                    statement.executeUpdate();
+                }
+            }
+
+            var sql = "update albumentries set parent=?, localpath=?, title=?, description=?, imageUrl=?, thumbnailUrl=?, lastModified=?, sort=?, require_login=?, group_by_year=? where albumentry_id=?";
             var sort = adjustSortValuesWhenMovingToDifferentAlbum(connection, modifiedEntry);
             try(var statement = connection.prepareStatement(sql)) {
                 statement.setInt(1, modifiedEntry.parent());

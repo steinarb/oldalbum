@@ -35,6 +35,7 @@ public record AlbumEntry(
     int contentLength,
     int childcount,
     boolean requireLogin,
+    Boolean updateLoginRequirementForChildItems,
     Boolean groupByYear)
 {
 
@@ -58,6 +59,7 @@ public record AlbumEntry(
         builder.contentLength = albumEntry.contentLength;
         builder.requireLogin = albumEntry.requireLogin;
         builder.groupByYear = albumEntry.groupByYear;
+        builder.updateLoginRequirementForChildItems = albumEntry.updateLoginRequirementForChildItems;
         builder.childcount = albumEntry.childcount;
         return builder;
     }
@@ -77,6 +79,7 @@ public record AlbumEntry(
         private int contentLength;
         private int childcount;
         private boolean requireLogin;
+        private Boolean updateLoginRequirementForChildItems;
         private Boolean groupByYear;
 
         private Builder() {}
@@ -97,6 +100,7 @@ public record AlbumEntry(
                 contentLength,
                 childcount,
                 requireLogin,
+                updateLoginRequirementForChildItems,
                 groupByYear);
         }
 
@@ -167,6 +171,11 @@ public record AlbumEntry(
 
         public Builder requireLogin(boolean requirelogin) {
             this.requireLogin = requirelogin;
+            return this;
+        }
+
+        public Builder updateLoginRequirementForChildItems(boolean updateLoginRequirementForChildItems) {
+            this.updateLoginRequirementForChildItems = updateLoginRequirementForChildItems;
             return this;
         }
 
