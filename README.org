@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-02-14 Sat 12:04> |  3.0.12 | Use postgresql 42.7.10                                                                                         |
 | <2026-02-14 Sat 00:20> |  3.0.11 | Use shiro 2.1, bang-servlet 3.0.4 (using shiro 2.1.0), authservice 3.0.9 (usng shiro 2.1.0)                    |
 | <2026-02-12 Thu 23:55> |  3.0.10 | Use authservice 3.0.8 (using liquibase 5.0.1), more improvements and fixes to picture metadata editing         |
 | <2026-02-07 Sat 10:57> |   3.0.9 | Use liquibase 5.0.1, many improvements and fixes to picture metadata editing                                   |
