@@ -3,6 +3,7 @@ import { isSavedPicture } from '../matchers';
 import { api } from '../api';
 import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';
 import { extractBasename } from '../pathutilities';
+import { isoNow, isoDate, replaceDateAndKeepTime } from '../isodate';
 
 const initialState = {
     id: -1,
@@ -14,7 +15,7 @@ const initialState = {
     description: '',
     imageUrl: '',
     thumbnailUrl: '',
-    lastModified: new Date().toISOString(),
+    lastModified: isoNow(),
     contentType: '',
     contentLength: 0,
     requireLogin: false,
@@ -25,7 +26,7 @@ export const pictureSlice = createSlice({
     name: 'picture',
     initialState,
     reducers: {
-        selectPicture: (_, action) => ({ ...action.payload, lastModified: new Date(action.payload.lastModified).toISOString(), basename: extractBasename(action.payload.path) }),
+        selectPicture: (_, action) => ({ ...action.payload, lastModified: isoDate(action.payload.lastModified), basename: extractBasename(action.payload.path) }),
         clearPicture: () => initialState,
         picturePrepare: (_, action) => ({ ...initialState, ...action.payload }),
         setParent: (state, action) => ({ ...state, parent: parseInt(action.payload) }),
@@ -82,13 +83,12 @@ function replaceLastElementInPathWithBasenameFromLoadedUrl(state, imageUrl, ends
 }
 
 function setLastModifiedDateWhileKeepingTimeOfDay(state, action) {
-    const lastModifiedTime = new Date(state.lastModified).toISOString().split('T')[1];
-    const lastModified = action.payload + 'T' + lastModifiedTime;
+    const lastModified = replaceDateAndKeepTime(state.lastModified, action.payload);
     return { ...state, lastModified };
 }
 
 function setMetadata(state, action) {
     const { contentLength=0, contentType='', description='', lastModified:epochSeconds=0, status=0, title='' } = action.payload;
-    const lastModified = new Date(epochSeconds).toISOString();
+    const lastModified = isoDate(epochSeconds);
     return { ...state, contentLength, contentType, description, lastModified, status, title };
 }

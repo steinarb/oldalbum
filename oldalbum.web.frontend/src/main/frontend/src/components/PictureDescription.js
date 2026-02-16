@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useSelector } from 'react-redux';
 import { usePostModifypictureMutation } from '../api';
+import { datePartOfDateTime, replaceDateAndKeepTime } from '../isodate';
 
 function PictureDescription(props) {
     const { className, item, metadata } = props;
@@ -16,7 +17,7 @@ function PictureDescription(props) {
             e.target.blur();
         }
     }
-    const lastModified = item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] : '';
+    const lastModified = item.lastModified ? datePartOfDateTime(item.lastModified) : '';
     const handleLastModifiedEditClick = () => {
         setIsEditingLastModified(true);
     }
@@ -24,9 +25,7 @@ function PictureDescription(props) {
         setIsEditingLastModified(false);
     }
     const onSaveLastModified = async (e) => {
-        const existingLastModifiedTime = new Date(item.lastModified).toISOString().split('T')[1];
-        const updatedLastModified = e.target.value + 'T' + existingLastModifiedTime;
-        await postModifypicture({ ...item, lastModified: updatedLastModified });
+        await postModifypicture({ ...item, lastModified: replaceDateAndKeepTime(item.lastModified, e.target.value) });
     }
 
     if (!item.description && !metadata) {

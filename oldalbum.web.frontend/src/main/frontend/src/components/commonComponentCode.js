@@ -1,10 +1,11 @@
+import { datePartOfDateTime } from '../isodate';
 
 export function pictureTitle(item) {
     return item.title || (item.path && item.path.replace(/\/$/, "").split(/\//).pop()) || '';
 }
 
 export function formatLastModified(item) {
-    return item.lastModified ? new Date(item.lastModified).toISOString().split('T')[0] + ' ' : '';
+    return item.lastModified ? datePartOfDateTime(item.lastModified) + ' ' : '';
 }
 
 export function formatImageType(item)  {

@@ -3,6 +3,7 @@ import { isSavedAlbum } from '../matchers';
 import { api } from '../api';
 import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';
 import { extractBasename } from '../pathutilities';
+import { isoNow } from '../isodate';
 
 const initialState = {
     id: -1,
@@ -29,7 +30,7 @@ export const albumSlice = createSlice({
         setTitle: (state, action) => ({ ...state, title: action.payload }),
         setDescription: (state, action) => ({ ...state, description: action.payload }),
         setLastModified: (state, action) => ({ ...state, lastModified: action.payload }),
-        setLastModifiedToCurrentDate: (state, _) => ({ ...state, lastModified: new Date().toISOString() }),
+        setLastModifiedToCurrentDate: (state, _) => ({ ...state, lastModified: isoNow() }),
         clearLastModified: (state, _) => ({ ...state, lastModified: initialState.lastModified }),
         setRequireLogin: (state, action) => ({ ...state, requireLogin: !!action.payload }),
         setGroupByYear: (state, action) => ({ ...state, groupByYear: !!action.payload }),

@@ -1,5 +1,6 @@
 import { createReducer } from '@reduxjs/toolkit';
 import { isAllroutes } from '../matchers';
+import { isoDate } from '../isodate';
 
 // Creates a map from id to array of children
 const childentriesByYearReducer = createReducer({}, builder => {
@@ -43,14 +44,14 @@ function scanAlbumsForLastDateOfChild(dateOfLastChildOfEachAlbum, albums) {
         const lastDateOfChild = dateOfLastChildOfEachAlbum[album.parent];
         if (lastDateOfChild === undefined) {
             if (album.lastModified) {
-                dateOfLastChildOfEachAlbum[album.parent] = new Date(album.lastModified).toISOString();
+                dateOfLastChildOfEachAlbum[album.parent] = isoDate(album.lastModified);
             } else {
                 dateOfLastChildOfEachAlbum[album.parent] = dateOfLastChildOfEachAlbum[album.id];
             }
         } else {
             if (album.lastModified) {
                 if (lastDateOfChild < album.lastModified) {
-                    dateOfLastChildOfEachAlbum[album.parent] = new Date(album.lastModified).toISOString();
+                    dateOfLastChildOfEachAlbum[album.parent] = isoDate(album.lastModified);
                 }
             } else {
                 if (lastDateOfChild < dateOfLastChildOfEachAlbum[album.id]) {
@@ -66,9 +67,9 @@ function findDateOfLastChildOfEachAlbum(allroutes) {
     for (const picture of allroutes.filter(r => !r.album)) {
         const lastDateOfChild = dateOfLastChildOfEachAlbum[picture.parent];
         if (lastDateOfChild === undefined) {
-            dateOfLastChildOfEachAlbum[picture.parent] = new Date(picture.lastModified).toISOString();
+            dateOfLastChildOfEachAlbum[picture.parent] = isoDate(picture.lastModified);
         } else {
-            const pictureLastModified = new Date(picture.lastModified).toISOString();
+            const pictureLastModified = isoDate(picture.lastModified);
             if (lastDateOfChild < pictureLastModified) {
                 dateOfLastChildOfEachAlbum[picture.parent] = pictureLastModified;
             }

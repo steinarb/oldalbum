@@ -23,6 +23,7 @@ import {
 } from '../reducers/pictureSlice'
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';
+import { isoNow } from '../isodate';
 
 export default function AddPicture() {
     const { data: allroutes, isSuccess: allRoutesIsSuccess } = useGetAllroutesQuery();
@@ -35,7 +36,7 @@ export default function AddPicture() {
     const parentalbum = albumentries[parentId] || {};
     const path = parentalbum.path || '';
     const sort = (parentalbum.childcount || 0) + 1;
-    useEffect(() => {allRoutesIsSuccess && dispatch(picturePrepare({ parent: parentId, path, sort, lastModified: new Date().toISOString() }))}, [allroutes, parentId]);
+    useEffect(() => {allRoutesIsSuccess && dispatch(picturePrepare({ parent: parentId, path, sort, lastModified: isoNow() }))}, [allroutes, parentId]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });

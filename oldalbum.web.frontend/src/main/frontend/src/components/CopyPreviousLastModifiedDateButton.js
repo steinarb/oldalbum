@@ -1,10 +1,11 @@
 import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { NavLink } from 'react-router';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
 } from '../api';
-import { NavLink } from 'react-router';
+import { datePartOfDateTime } from '../isodate';
 
 export default function CopyPreviousLastModifiedDateButton(props) {
     const { item, setLastModifiedDate } = props;
@@ -18,6 +19,6 @@ export default function CopyPreviousLastModifiedDateButton(props) {
         return null;
     }
 
-    const datePartOfPreviousLastModifed = new Date(previous.lastModified).toISOString().split('T')[0];
+    const datePartOfPreviousLastModifed = datePartOfDateTime(previous.lastModified);
     return(<button className={(props.className || '') + ' btn btn-light'} onClick={() => dispatch(setLastModifiedDate(datePartOfPreviousLastModifed))} >{text.copypreviousvalue}</button>);
 }
