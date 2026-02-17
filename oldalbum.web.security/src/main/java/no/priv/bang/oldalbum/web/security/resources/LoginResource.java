@@ -167,7 +167,7 @@ public class LoginResource extends HtmlTemplateResource {
 
     private Optional<String> findOriginalRequestUri() {
         return Optional.ofNullable(WebUtils.getSavedRequest(null))
-            .map(SavedRequest::getRequestURI);
+            .map(SavedRequest::getRequestUrl);
     }
 
     private void setCancelButtonUri(Document html, String originalRequestUri) {
