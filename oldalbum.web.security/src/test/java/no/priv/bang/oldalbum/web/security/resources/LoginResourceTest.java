@@ -19,6 +19,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.assertj.core.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
+import java.net.URI;
+
 import javax.servlet.http.HttpSession;
 import javax.ws.rs.InternalServerErrorException;
 import org.apache.shiro.authc.AuthenticationException;
@@ -37,16 +39,16 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testGetLogin() {
+        var originalUri = URI.create("https://mysite.com/localpath");
         var session = mock(HttpSession.class);
-        var dummyrequest = new MockHttpServletRequest();
+        var dummyrequest = MockHttpServletRequest.getRequest(originalUri);
         dummyrequest.setSession(session);
         var dummyresponse = new MockHttpServletResponse();
         createSubjectAndBindItToThread(dummyrequest, dummyresponse);
         var resource = new LoginResource();
-        var originalUri = "https://mysite.com";
-        var htmlfile = resource.getLogin(originalUri);
+        var htmlfile = resource.getLogin(null);
         var html = (String) htmlfile.getEntity();
-        assertThat(html).contains(originalUri);
+        assertThat(html).contains(originalUri.getPath());
     }
 
     @Test
