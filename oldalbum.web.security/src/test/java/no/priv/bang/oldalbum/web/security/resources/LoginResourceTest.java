@@ -1,5 +1,5 @@
 /*
- * Copyright 2024-2025 Steinar Bang
+ * Copyright 2024-2026 Steinar Bang
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,6 +37,11 @@ class LoginResourceTest extends ShiroTestBase {
 
     @Test
     void testGetLogin() {
+        var session = mock(HttpSession.class);
+        var dummyrequest = new MockHttpServletRequest();
+        dummyrequest.setSession(session);
+        var dummyresponse = new MockHttpServletResponse();
+        createSubjectAndBindItToThread(dummyrequest, dummyresponse);
         var resource = new LoginResource();
         var originalUri = "https://mysite.com";
         var htmlfile = resource.getLogin(originalUri);
