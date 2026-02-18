@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { useNavigate } from 'react-router';
 import { useSelector, useDispatch } from 'react-redux';
 import { Helmet } from "react-helmet";
 import { useSwipeable } from 'react-swipeable';
+import { selectPicture } from '../reducers/pictureSlice';
 import { pictureTitle, formatMetadata } from './commonComponentCode';
 import ModifyButton from './ModifyButton';
 import DeleteButton from './DeleteButton';
@@ -19,6 +20,7 @@ export default function Picture(props) {
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
+    useEffect(() => {dispatch(selectPicture(item))}, [item.id]);
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
