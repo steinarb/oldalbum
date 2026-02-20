@@ -20,7 +20,7 @@ export default function Picture(props) {
     const previous = useSelector(state => state.previousentry[item.id]);
     const next = useSelector(state => state.nextentry[item.id]);
     const dispatch = useDispatch();
-    useEffect(() => {dispatch(selectPicture(item))}, [item.id]);
+    useEffect(() => {dispatch(selectPicture(item))}, [item]);
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;
