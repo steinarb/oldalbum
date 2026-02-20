@@ -31,6 +31,8 @@ import AlbumEntryOfTypeAlbum from './AlbumEntryOfTypeAlbum';
 import AlbumEntryOfTypePicture from './AlbumEntryOfTypePicture';
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import MessageBanner from './MessageBanner';
+import { clearPicture } from '../reducers/pictureSlice';
+import { selectAlbum } from '../reducers/albumSlice';
 
 export default function Album(props) {
     const { item } = props;
@@ -49,6 +51,10 @@ export default function Album(props) {
     const sortingStatus = useSelector(state => state.sortingStatus);
     const targetId = hash.substr(1);
     const dispatch = useDispatch();
+    useEffect(() => {
+        dispatch(clearPicture());
+        dispatch(selectAlbum(item));
+    }, [item]);
     const title = pictureTitle(item);
     const pathFragments = item.path.split('/');
     pathFragments.pop(); // Remove empty element caused by trailing slash
