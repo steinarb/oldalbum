@@ -22,7 +22,7 @@ export default function App(props) {
             <PasswordProtectedWarningDialog/>
             <Router basename={basename}>
                 <Routes >
-                    { allroutes.map((item, index) => <Route exact key={index} path={item.path} element={albumOrPicture(item)} />) }
+                    { allroutes.map((item) => <Route exact key={'key_' + item.id.toString()} path={item.path} element={albumOrPicture(item)} />) }
                     <Route exact key="unauthorized" path="/unauthorized" element={<Unauthorized/>} />
                     <Route key="modifyalbum" path="/modifyalbum" element={<ModifyAlbum/>} />
                     <Route key="addalbum" path="/addalbum" element={<AddAlbum/>} />
