@@ -23,7 +23,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterTouchPictureTimestamp } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterTouchPictureTimestamp));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         getTogglepasswordprotection: builder.mutation({
@@ -33,7 +35,9 @@ export const api = createApi({
                     const { data: allroutesAfterPasswordToggle } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes', undefined, () => allroutesAfterPasswordToggle));
                     dispatch(SUCCESSFULL_CHANGE_OF_PASSWORD_REQUIREMENT(id));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postModifyalbum: builder.mutation({
@@ -42,7 +46,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterModifyAlbum } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterModifyAlbum));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postAddalbum: builder.mutation({
@@ -51,7 +57,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterAddAlbum } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterAddAlbum));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postBatchAddPictures: builder.mutation({
@@ -60,7 +68,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterBatchAddPictures } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterBatchAddPictures));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postModifypicture: builder.mutation({
@@ -69,7 +79,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterModifyPicture } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterModifyPicture));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postAddpicture: builder.mutation({
@@ -78,7 +90,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterAddPicture } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterAddPicture));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postImageMetadata: builder.mutation({ query: (url) => ({url: '/image/metadata', method: 'POST', body: { url } }) }),
@@ -88,7 +102,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterDeleteentry } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterDeleteentry));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postDeleteselection: builder.mutation({
@@ -97,7 +113,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterDeleteselection } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterDeleteselection));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postSortalbumbydate: builder.mutation({
@@ -106,7 +124,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterSortalbumbydate } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterSortalbumbydate));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postMovealbumentryup: builder.mutation({
@@ -115,7 +135,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterMovealbumentryup } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterMovealbumentryup));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
         postMovealbumentrydown: builder.mutation({
@@ -124,7 +146,9 @@ export const api = createApi({
                 try {
                     const { data: allroutesAfterMovealbumentrydown } = await queryFulfilled;
                     dispatch(api.util.updateQueryData('getAllroutes',  undefined, () => allroutesAfterMovealbumentrydown));
-                } catch {}
+                } catch {
+                    // Skip and continue
+                }
             },
         }),
     }),
