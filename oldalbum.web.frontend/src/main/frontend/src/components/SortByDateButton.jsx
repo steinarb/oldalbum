@@ -11,7 +11,7 @@ export default function SortByDateButton(props) {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
-    [ postSortalbumbydate ] = usePostSortalbumbydateMutation();
+    const [ postSortalbumbydate ] = usePostSortalbumbydateMutation();
     const onClicked = async () => await postSortalbumbydate(item);
 
     // Button doesn't show up if: 1. edit not allowed
