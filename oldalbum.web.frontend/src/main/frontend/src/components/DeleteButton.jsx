@@ -1,6 +1,5 @@
-import React from 'react';
 import { useNavigate } from 'react-router';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -17,7 +16,6 @@ export default function DeleteButton(props) {
     const childentries = useSelector(state => state.childentries[item.id]);
     const parentpath = (parent || {}).path || '';
     const children = childentries || [];
-    const dispatch = useDispatch();
     const [ postDeleteentry ] = usePostDeleteentryMutation();
     const navigate = useNavigate();
     const onDelete = async () => {

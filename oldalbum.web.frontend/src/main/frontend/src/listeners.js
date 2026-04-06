@@ -1,8 +1,6 @@
 import { createListenerMiddleware } from '@reduxjs/toolkit';
 import { isAnyOf } from '@reduxjs/toolkit';
 import { api } from './api';
-import { albumPrepare } from './reducers/albumSlice';
-import { picturePrepare } from './reducers/pictureSlice';
 import { setMessage, clearMessage } from './reducers/messageBannerSlice';
 import { toggleOn, toggleOff } from './reducers/editModeSlice';
 import { show, hide } from './reducers/showEditControlsSlice';
@@ -15,14 +13,12 @@ import {
     ALBUM_SELECT_ALL,
     START_SELECTION_DOWNLOAD,
 } from './reduxactions';
-import { isAllroutes } from './matchers';
-import { extractBasename } from './pathutilities';
 
 const listeners = createListenerMiddleware();
 
 listeners.startListening({
     matcher: api.endpoints.getLogout.matchFulfilled,
-    effect: (action, listenerApi) => {
+    effect: () => {
         location.reload(true); // Stay in current location after logout
     }
 })
@@ -119,22 +115,6 @@ listeners.startListening({
         listenerApi.dispatch(clearSelection());
     }
 })
-
-function allroutesHasData(listenerApi) {
-    return () =>  !!(listenerApi.getState().allroutes && listenerApi.getState().allroutes.length);
-}
-
-function findPathname(location, basename) {
-    if (basename === '/') {
-        return location.pathname;
-    }
-
-    return location.pathname.replace(new RegExp('^' + basename + '(.*)'), '$1');
-}
-
-function findAlbumentries(state) {
-    return state.albumentries || [];
-}
 
 function copyCurrentUrlToClipboard() {
     const currentLocation = document.createElement('textarea');

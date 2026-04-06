@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate, useLocation } from 'react-router';
 import { parse } from 'qs';
@@ -19,7 +19,6 @@ import {
     setThumbnailUrl,
     setLastModifiedDate,
     setRequireLogin,
-    setGroupByYear,
 } from '../reducers/pictureSlice'
 import ModifyFailedErrorAlert from './ModifyFailedErrorAlert';
 import { ADD_PICTURE_IMAGE_URL_SUCCESSFULLY_LOADED } from '../reduxactions';

@@ -1,5 +1,4 @@
-import React from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
@@ -12,7 +11,6 @@ export default function TouchButton(props) {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const showEditControls = useSelector(state => state.showEditControls);
-    const dispatch = useDispatch();
     const [ getTouchpicturetimestamp ] = useGetTouchpicturetimestampMutation();
     const onTouch = async () => { await getTouchpicturetimestamp(item.id); };
 

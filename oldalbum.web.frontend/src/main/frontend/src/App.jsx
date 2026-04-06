@@ -1,5 +1,3 @@
-import React from 'react';
-import { useSelector } from 'react-redux';
 import { useGetLoginQuery, useGetAllroutesQuery } from './api';
 import { Routes, Route, BrowserRouter as Router } from 'react-router';
 import './App.css';
@@ -15,7 +13,7 @@ import PasswordProtectedWarningDialog from './components/PasswordProtectedWarnin
 
 
 export default function App(props) {
-    const { history, basename } = props;
+    const { basename } = props;
     const { isSuccess: loginIsSuccess } = useGetLoginQuery();
     const { data: allroutes = [] } = useGetAllroutesQuery(undefined, { skip: !loginIsSuccess });
 

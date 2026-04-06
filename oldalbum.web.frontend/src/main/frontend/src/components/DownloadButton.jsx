@@ -1,4 +1,3 @@
-import React from 'react';
 import DataTransferDownload from './bootstrap/DataTransferDownload';
 import { useSelector, useDispatch } from 'react-redux';
 import {

@@ -1,10 +1,8 @@
-import React from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
     useGetDisplaytextsQuery,
 } from '../api';
-import { NavLink } from 'react-router';
 
 export default function CopyPreviousTitleButton(props) {
     const { item, setTitle } = props;

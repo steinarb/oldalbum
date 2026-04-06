@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { NavLink, useNavigate, useLocation } from 'react-router';
 import { parse } from 'qs';
@@ -40,7 +40,6 @@ export default function AddAlbum() {
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
     const album = useSelector(state => state.album);
-    const albums = (allRoutesIsSuccess && allroutes.filter(r => r.album)) || [];
     const uplocation = parentalbum.path || '/';
     const lastmodified = album.lastModified ? album.lastModified.split('T')[0] : '';
     const [ postAddalbum ] = usePostAddalbumMutation();
