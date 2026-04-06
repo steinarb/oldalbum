@@ -54,7 +54,7 @@ export default function Album(props) {
     useEffect(() => {
         dispatch(clearPicture());
         dispatch(selectAlbum(item));
-    }, [item]);
+    }, [dispatch, item]);
     const title = pictureTitle(item);
     const pathFragments = item.path.split('/');
     pathFragments.pop(); // Remove empty element caused by trailing slash

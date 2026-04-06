@@ -33,7 +33,9 @@ export default function AddAlbum() {
     const parentalbum = albumentries[parentId] || {};
     const path = (parentalbum.path ? parentalbum.path : '/') + '/';
     const sort = (parentalbum.childcount || 0) + 1;
-    useEffect(() => {allRoutesIsSuccess && dispatch(albumPrepare({ parent: parentId, path, sort }))}, [allroutes, parentId]);
+    useEffect(() => {
+        allRoutesIsSuccess && dispatch(albumPrepare({ parent: parentId, path, sort }));
+    }, [allRoutesIsSuccess, dispatch, allroutes, parentId, path, sort]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });

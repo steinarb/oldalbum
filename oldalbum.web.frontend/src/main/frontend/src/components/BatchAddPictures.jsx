@@ -21,7 +21,7 @@ export default function BatchAddPictures(props) {
 
     useEffect(() => {
         dispatch(setParent(item));
-    }, [item]);
+    }, [dispatch, item]);
 
     if (!showEditControls) {
         return null;

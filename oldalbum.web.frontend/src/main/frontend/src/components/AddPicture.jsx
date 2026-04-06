@@ -36,7 +36,9 @@ export default function AddPicture() {
     const parentalbum = albumentries[parentId] || {};
     const path = parentalbum.path || '';
     const sort = (parentalbum.childcount || 0) + 1;
-    useEffect(() => {allRoutesIsSuccess && dispatch(picturePrepare({ parent: parentId, path, sort, lastModified: isoNow() }))}, [allroutes, parentId]);
+    useEffect(() => {
+        allRoutesIsSuccess && dispatch(picturePrepare({ parent: parentId, path, sort, lastModified: isoNow() }));
+    }, [allRoutesIsSuccess, dispatch, allroutes, parentId, path, sort]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });

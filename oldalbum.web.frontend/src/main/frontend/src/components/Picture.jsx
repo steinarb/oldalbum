@@ -24,7 +24,7 @@ export default function Picture(props) {
     useEffect(() => {
         dispatch(clearAlbum());
         dispatch(selectPicture(item));
-    }, [item]);
+    }, [dispatch, item]);
     const title = pictureTitle(item);
     const metadata = formatMetadata(item);
     const description = item.description ? metadata ? item.description + ' ' + metadata : item.description : metadata;

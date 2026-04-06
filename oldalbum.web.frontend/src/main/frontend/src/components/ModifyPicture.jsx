@@ -33,7 +33,7 @@ export default function ModifyPicture() {
     const { id } = queryParams;
     const idInt = parseInt(id, 10);
     const dispatch = useDispatch();
-    useEffect(() => {allRoutesIsSuccess && dispatch(selectPicture(allroutes.find(r => r.id === idInt)))}, [allroutes, idInt]);
+    useEffect(() => {allRoutesIsSuccess && dispatch(selectPicture(allroutes.find(r => r.id === idInt)))}, [allRoutesIsSuccess, dispatch, allroutes, idInt]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });

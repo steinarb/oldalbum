@@ -33,7 +33,7 @@ export default function ModifyAlbum() {
     const { id } = queryParams;
     const idInt = parseInt(id, 10);
     const dispatch = useDispatch();
-    useEffect(() => {allRoutesIsSuccess && dispatch(selectAlbum(allroutes.find(r => r.id === idInt)))}, [allroutes, idInt]);
+    useEffect(() => {allRoutesIsSuccess && dispatch(selectAlbum(allroutes.find(r => r.id === idInt)))}, [allRoutesIsSuccess, dispatch, allroutes, idInt]);
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const originalAlbumRequireLoginValue = useSelector(state => (state.albumentries[idInt] || {}).requireLogin || false);
