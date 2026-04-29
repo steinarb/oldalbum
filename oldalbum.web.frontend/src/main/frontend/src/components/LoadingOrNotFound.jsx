@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { useSelector } from 'react-redux';
 import {
     useGetDefaultlocaleQuery,
@@ -13,7 +14,12 @@ export default function LoadingOrNotFound() {
     const { isSuccess: defaultLocaleIsSuccess } = useGetDefaultlocaleQuery();
     const locale = useSelector(state => state.locale);
     const { data: text = {} } = useGetDisplaytextsQuery(locale, { skip: !defaultLocaleIsSuccess });
-    const openGraphTitle = (document.head.querySelector('meta[property="og:title"]') || {}).content;
+    const [openGraphTitle] = useState(() => {
+        if (typeof document !== 'undefined') {
+            return document.head.querySelector('meta[property="og:title"]')?.content || '';
+        }
+        return '';
+    });
     const titleText = openGraphTitle || text.notfoundTitle;
     const message = openGraphTitle ? text.pageIsLoading : text.resourcenotfound;
 
