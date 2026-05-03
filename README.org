@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-05-03 Sun 21:43> |  3.0.15 | Use liquibase 5.0.2, authservice 3.0.12                                                                        |
 | <2026-05-02 Sat 14:19> |  3.0.14 | Use postgresql JDBC driver 42.7.11, jsoup 1.22.2, karaf 4.4.11                                                 |
 | <2026-02-27 Fri 22:39> |  3.0.13 | Use TwelveMonkeys 3.13.1, reqursively add/remove password protection on albums                                 |
 | <2026-02-14 Sat 12:04> |  3.0.12 | Use postgresql 42.7.10                                                                                         |
