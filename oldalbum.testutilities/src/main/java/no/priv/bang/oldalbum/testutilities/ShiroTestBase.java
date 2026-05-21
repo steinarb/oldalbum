@@ -16,8 +16,11 @@
 package no.priv.bang.oldalbum.testutilities;
 
 import static org.apache.shiro.web.util.WebUtils.SAVED_REQUEST_KEY;
+import static org.mockito.AdditionalAnswers.delegatesTo;
+import static org.mockito.Mockito.doReturn;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.withSettings;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -93,7 +96,7 @@ public class ShiroTestBase {
         when(session.getAttribute(SAVED_REQUEST_KEY))
             .thenReturn(savedRequest)
             .thenReturn(null);
-        var subject = (WebSubject) new WebSubject.Builder(webSecurityManager, request, response).session(session).buildSubject();
+        var subject = (WebSubject) new WebSubject.Builder(webSecurityManager, wrapRequestInMock(request), response).session(session).buildSubject();
         ThreadContext.bind(subject);
         return subject;
     }
@@ -110,6 +113,13 @@ public class ShiroTestBase {
         }
 
         return securitymanager;
+    }
+
+    // Workaround for MockHttpServletRequest not implementing all methods of HttpServletRequest interface in classpath
+    private HttpServletRequest wrapRequestInMock(HttpServletRequest request) {
+        var wrapped = mock(HttpServletRequest.class, withSettings().defaultAnswer(delegatesTo(request)));
+        doReturn("").when(wrapped).changeSessionId();
+        return wrapped;
     }
 
     private static SimpleAccountRealm findRealmFromSecurityManager(WebSecurityManager securitymanager) {
