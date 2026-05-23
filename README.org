@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-05-23 Sat 20:03> |  3.0.17 | Use shiro 2.2.0, bang-servlet 3.0.5 (using shiro 2.2.0), authservice 3.0.14 (usng shiro 2.2.0)                 |
 | <2026-05-17 Sun 22:40> |  3.0.16 | Use liquibase 5 0.2.13, authservice 3.0.13                                                                     |
 | <2026-05-03 Sun 21:43> |  3.0.15 | Use liquibase 5.0.2, authservice 3.0.12                                                                        |
 | <2026-05-02 Sat 14:19> |  3.0.14 | Use postgresql JDBC driver 42.7.11, jsoup 1.22.2, karaf 4.4.11                                                 |
