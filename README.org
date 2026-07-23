@@ -50,6 +50,7 @@ If JPEG image is downloaded or if an album is downloaded as a zip file, the imag
 
 | Date                   | Version | Description                                                                                                    |
 |------------------------+---------+----------------------------------------------------------------------------------------------------------------|
+| <2026-07-23 Thu 10:25> |  3.0.21 | Use TwelveMonkeys 3.14.0                                                                                       |
 | <2026-07-20 Mon 12:29> |  3.0.20 | Use postgresql JDBC driver 42.7.13                                                                             |
 | <2026-07-02 Thu 00:51> |  3.0.19 | Use postgresql JDBC driver 42.7.12                                                                             |
 | <2026-06-19 Fri 20:16> |  3.0.18 | Use shiro 2.2.1, bang-servlet 3.0.6 (using shiro 2.2.1), authservice 3.0.15 (using shiro 2.2.1)                |
