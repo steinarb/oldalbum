@@ -1,6 +1,7 @@
 *.log
 .classpath
 .dbeaver
+.flattened-pom.xml
 .project
 .settings/
 /.metadata/
