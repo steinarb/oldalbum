@@ -19,7 +19,7 @@ under the License.
     <parent>
         <groupId>no.priv.bang.oldalbum</groupId>
         <artifactId>oldalbum</artifactId>
-        <version>3.0.22-SNAPSHOT</version>
+        <version>${revision}</version>
     </parent>
     <artifactId>oldalbum.db.liquibase</artifactId>
 
